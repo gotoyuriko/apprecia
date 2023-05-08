@@ -7,14 +7,12 @@ export default function Logo() {
                 <Image
                     src="/logo.svg"
                     alt="Apprecia Logo"
-                    className="dark:invert object-contain"
-                    layout="responsive"
-                    width={1}
-                    height={2}
+                    className="object-contain"
+                    fill
                     priority
                 />
             </div>
-            <h1 className="font-bold text-2xl mt-5 ml-2 hidden md:block">Apprecia</h1>
+            <h1 className="font-bold text-2xl mt-2 ml-2 hidden md:block">Apprecia</h1>
         </div>
     );
 }

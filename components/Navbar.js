@@ -24,5 +24,5 @@ export default function Navbar() {
                 <Link href="/signin">Sign In</Link>
             </div>
         </nav>
-    )
+    );
 }

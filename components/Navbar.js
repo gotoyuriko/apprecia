@@ -1,7 +1,7 @@
-import { BiMenuAltLeft, BiX } from 'react-icons/bi'
+import { BiMenuAltLeft, BiX } from 'react-icons/bi';
 import Logo from "./Logo";
 import { useState } from 'react';
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function Navbar() {
     // Hamburger Toggle Button
@@ -10,7 +10,7 @@ export default function Navbar() {
         setIsOpen(!isOpen);
     };
     return (
-        <nav className="w-full flex items-center justify-evenly bg-[#f8fafc] py-6">
+        <nav className="w-full flex items-center justify-evenly bg-[#f8fafc] py-6 sticky top-0 z-50">
             {/* Hamburger */}
             <button className='text-4xl focus:outline-none' onClick={toggleMenu}>
                 {isOpen ? <BiX /> : <BiMenuAltLeft />}

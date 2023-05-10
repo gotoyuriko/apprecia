@@ -6,8 +6,11 @@ export default function Home() {
     <div className="w-full">
       <Navbar />
       {/* First View */}
-      <main className="flex h-96 w-full flex-col items-center justify-between relative">
-        <ThreeApprecia className='h-fit' />
+      <main className="flex h-96 w-full flex-col items-center justify-center 
+                        bg-fixed bg-center bg-cover bg-repeat">
+        {/* Overlay White Background */}
+
+        <ThreeApprecia className='h-full w-full' />
       </main>
     </div >
   );

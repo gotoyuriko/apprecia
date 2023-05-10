@@ -30,3 +30,16 @@ body {
       rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
   font-family: 'League Spartan', sans-serif;
 }
+
+.parallax_content {
+  display: flex;
+  height: 100%;
+  padding: 100%;
+  justify-content: center;
+  align-items: center;
+
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}

@@ -13,7 +13,8 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       fontFamily: {
-        'league-spartan': ['League Spartan', 'sans-serif']
+        'league-spartan': ['League Spartan', 'sans-serif'],
+        'roboto': ['Roboto', 'sans-serif']
       }
     },
   },

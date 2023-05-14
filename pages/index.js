@@ -1,6 +1,5 @@
 import ThreeApprecia from '@/components/ThreeApprecia';
 import Navbar from '../components/Nav/Navbar';
-import { useState } from 'react';
 import { auth } from '@/firebase/config';
 
 export default function Home() {

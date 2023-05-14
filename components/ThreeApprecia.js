@@ -13,7 +13,7 @@ export default function ThreeApprecia() {
                 backgroundRepeat: 'none'
             }
             } >
-            <Spline onLoad={() => setIsLoaded(false)}
+            <Spline onLoad={() => setIsLoaded(true)}
                 scene="https://prod.spline.design/UB-SpUKi5AWALdo7/scene.splinecode" />
         </main >
     );

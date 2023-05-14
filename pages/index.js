@@ -9,8 +9,15 @@ export default function Home() {
 
   const handleSplineLoad = () => {
     setIsLoaded(true);
-    const { gl } = document.getElementsByTagName("canvas")[0];
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    const canvasElement = document.getElementsByTagName('canvas')[0];
+    if (canvasElement) {
+      try {
+        const { gl } = canvasElement;
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      } catch (error) {
+        console.error('Error binding framebuffer:', error);
+      }
+    }
   };
 
   // This will run one time after the component mounts
@@ -22,35 +29,32 @@ export default function Home() {
     };
 
     // Check if the page has already loaded
-    if (document.readyState === 'complete') {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
       onPageLoad();
     } else {
-      window.addEventListener('load', onPageLoad, false);
+      document.addEventListener('DOMContentLoaded', onPageLoad);
       // Remove the event listener when component unmounts
-      return () => window.removeEventListener('load', onPageLoad);
+      return () => document.removeEventListener('DOMContentLoaded', onPageLoad);
     }
   }, []);
-
-
-  const backgroundStyles = isLoaded ?
-    {} :
-    {
-      width: '100%',
-      position: 'relative',
-      zIndex: 0,
-      background: 'url(/appreciabg.png)',
-      backgroundPosition: 'center',
-      backgroundSize: 'cover',
-      backgroundRepeat: 'none'
-    }
 
   return (
     <div className="w-full">
       <Navbar user={user} />
-      <main
-        className="flex h-96 w-full flex-col items-center justify-center bg-fixed bg-center bg-cover bg-repeat"
-        style={backgroundStyles}
-      >
+      <main className="flex h-96 w-full flex-col items-center justify-center bg-fixed bg-center bg-cover bg-repeat">
+        {!isLoaded && (
+          <div
+            style={{
+              width: '100%',
+              position: 'relative',
+              zIndex: 0,
+              background: 'url(/appreciabg.png)',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'none'
+            }}
+          />
+        )}
         <AppreciaView className="h-full w-full" onLoad={handleSplineLoad} />
       </main>
     </div>

@@ -1,4 +1,3 @@
-import { AuthContextProvider } from '@/context/AuthContext'
 import { Html, Head, Main, NextScript } from 'next/document'
 
 export default function Document(children) {
@@ -8,9 +7,6 @@ export default function Document(children) {
       <body>
         <Main />
         <NextScript />
-        <AuthContextProvider>
-          {children}
-        </AuthContextProvider>
       </body>
     </Html>
   )

@@ -1,6 +1,7 @@
 import AppreciaView from '@/components/AppreciaView';
 import Navbar from '../components/Nav/Navbar';
 import { auth } from '@/firebase/config';
+import { useState } from 'react';
 
 export default function Home() {
 

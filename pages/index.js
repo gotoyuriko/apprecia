@@ -1,4 +1,4 @@
-import ThreeApprecia from '@/components/ThreeApprecia';
+import AppreciaView from '@/components/AppreciaView';
 import Navbar from '../components/Nav/Navbar';
 import { auth } from '@/firebase/config';
 
@@ -11,7 +11,7 @@ export default function Home() {
     <div className="w-full">
       <Navbar user={user} />
       {/* onObjectLoad is the event when object is loaded */}
-      <ThreeApprecia className="h-full w-full" />
+      <AppreciaView className="h-full w-full" />
     </div >
   );
 }

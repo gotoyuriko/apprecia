@@ -19,7 +19,7 @@ export default function SignInForm() {
 
         // else successful
         console.log(result)
-        return router.push("/admin")
+        return router.push("/");
     }
 
     return (

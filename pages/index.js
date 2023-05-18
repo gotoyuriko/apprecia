@@ -32,11 +32,7 @@ export default function Home() {
           backgroundRepeat: 'no-repeat'
         }}
       >
-        {isLoaded ? (
-          <div>Loading...</div>
-        ) : (
-          <AppreciaView onSceneLoad={handleSceneLoad} />
-        )}
+        <AppreciaView isLoaded={isLoaded} onSceneLoad={handleSceneLoad} />
       </div>
     </div>
   );

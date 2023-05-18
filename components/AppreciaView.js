@@ -1,5 +1,12 @@
 import Spline from '@splinetool/react-spline';
+import { useEffect } from 'react';
 
 export default function AppreciaView({ onSceneLoad }) {
-    return <Spline scene="https://prod.spline.design/UB-SpUKi5AWALdo7/scene.splinecode" onLoad={onSceneLoad} />;
+    useEffect(() => {
+        onSceneLoad();
+    }, [onSceneLoad]);
+
+    return (
+        <Spline scene="https://prod.spline.design/UB-SpUKi5AWALdo7/scene.splinecode" />
+    );
 }

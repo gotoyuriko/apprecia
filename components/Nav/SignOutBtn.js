@@ -2,13 +2,12 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/firebase/config';
 import { useRouter } from 'next/router';
 
-export default function SignOutBtn({ setIsOpen }) {
+export default function SignOutBtn() {
     const router = useRouter();
     //Handle Logout
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            setIsOpen(false);
             router.push("/");
         } catch (error) {
             // Handle any errors that occur during logout
@@ -16,6 +15,6 @@ export default function SignOutBtn({ setIsOpen }) {
         }
     };
     return (
-        <button onClick={handleLogout} className='text-lg p-3 bg-black font-bold text-white rounded-lg md:hidden'> Sign Out </button>
+        <button onClick={handleLogout}> Sign Out </button>
     );
 }

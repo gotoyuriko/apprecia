@@ -6,7 +6,7 @@ import { BiUserCircle } from 'react-icons/bi';
 import { useState } from 'react';
 import SignOutBtn from './SignOutBtn';
 
-export default function ProfileMenu() {
+export default function ProfileMenu({ profileList }) {
     //Profile Icon
     const [anchorEl, setAnchorEl] = useState(null);
     const openProfile = Boolean(anchorEl);
@@ -36,10 +36,14 @@ export default function ProfileMenu() {
                 onClose={handleClose}
                 TransitionComponent={Fade}
             >
-                <MenuItem onClick={handleClose}>Menu 1</MenuItem>
-                <MenuItem onClick={handleClose}>Menu 2</MenuItem>
-                <MenuItem onClick={handleClose}>Sign Out</MenuItem>
-
+                {
+                    profileList && profileList.map((item, index) => (
+                        <MenuItem key={index} onClick={handleClose}>{item.name}</MenuItem>
+                    ))
+                }
+                <MenuItem onClick={handleClose}>
+                    <SignOutBtn />
+                </MenuItem>
             </Menu>
         </>
     );

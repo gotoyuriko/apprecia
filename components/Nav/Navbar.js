@@ -5,7 +5,6 @@ import Link from 'next/link';
 import NavItem from './NavItem';
 import SignInUpBtn from './SignInUpBtn';
 import ProfileMenu from './ProfileMenu';
-import SignOutBtn from './SignOutBtn';
 
 export default function Navbar({ user }) {
     // Menu List
@@ -14,6 +13,13 @@ export default function Navbar({ user }) {
         { name: 'About' },
         { name: 'FAQ' }
     ];
+
+    // Profile List
+    const profileList = [
+        { name: 'Profile' },
+        { name: 'Create Project' },
+        { name: 'Create New Room' }
+    ]
 
     // Hamburger Toggle Button
     const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +44,7 @@ export default function Navbar({ user }) {
                 <div>
                     {user ?
                         // Profile Menu
-                        <ProfileMenu />
+                        <ProfileMenu profileList={profileList} />
                         :
                         // Sign In and Sign Up && Desktop Style : False
                         < SignInUpBtn device={false} />
@@ -58,7 +64,7 @@ export default function Navbar({ user }) {
                 {/* === Sign in and up / Sign out Button === */}
                 <li className='mt-10'>
                     {user ?
-                        <SignOutBtn setIsOpen={setIsOpen} />
+                        null
                         :
                         // Sign In and Sign Up && Mobile Style : True
                         <SignInUpBtn device={true} />

@@ -22,8 +22,7 @@ export default function Home() {
       <Navbar user={user} />
       <div
         className="h-96"
-      >
-        {/* style={isLoaded ? {} : {
+        style={isLoaded ? {} : {
           width: '100%',
           position: 'relative',
           zIndex: 0,
@@ -31,8 +30,9 @@ export default function Home() {
           backgroundPosition: 'center',
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat'
-        }} */}
-        <AppreciaView isLoaded={isLoaded} onSceneLoad={handleSceneLoad} />
+        }}
+      >
+        <AppreciaView onSceneLoad={handleSceneLoad} />
       </div>
     </div>
   );

@@ -21,20 +21,16 @@ export default function Home() {
     <div className="w-full">
       <Navbar user={user} />
       <div
-        className="h-screen"
-        style={
-          isLoaded
-            ? {}
-            : {
-              width: '100%',
-              position: 'relative',
-              zIndex: 0,
-              background: 'url(/appreciabg.png)',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              backgroundRepeat: 'no-repeat'
-            }
-        }
+        className="h-96"
+        style={isLoaded ? {} : {
+          width: '100%',
+          position: 'relative',
+          zIndex: 0,
+          background: 'url(/appreciabg.png)',
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat'
+        }}
       >
         {isLoaded ? (
           <div>Loading...</div>

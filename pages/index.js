@@ -15,22 +15,22 @@ export default function Home() {
     <div className="w-full">
       <Navbar user={user} />
       <div
-        {
-        ...isLoaded ? style = {
-          width: '100%',
-          position: 'relative',
-          zIndex: 0,
-          background: 'url(/appreciabg.png)',
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
-          backgroundRepeat: 'none'
-        } : null
+        className="h-96"
+        style={
+          isLoaded
+            ? {
+              width: '100%',
+              position: 'relative',
+              zIndex: 0,
+              background: 'url(/appreciabg.png)',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat'
+            }
+            : {}
         }
-        className='h-96'
-        onLoad={() => setIsLoaded(true)}
-
       >
-        <AppreciaView onSceneLoad={handleSceneLoad} />
+        {isLoaded && <AppreciaView onSceneLoad={handleSceneLoad} />}
       </div>
     </div>
   );

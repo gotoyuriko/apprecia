@@ -1,17 +1,17 @@
 import AppreciaView from '@/components/AppreciaView';
 import Navbar from '../components/Nav/Navbar';
 import { auth } from '@/firebase/config';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 
 export default function Home() {
   const user = auth.currentUser;
-  const [isLoaded, setIsLoaded] = useState(false);
+  // const [isLoaded, setIsLoaded] = useState(false);
 
   return (
     <div className="w-full">
       <Navbar user={user} />
       <main className="flex h-96 w-full flex-col items-center justify-center bg-fixed bg-center bg-cover bg-repeat">
-        {!isLoaded && (
+        {/* {!isLoaded && (
           <div
             onLoad={() => setIsLoaded(true)}
             style={{
@@ -24,7 +24,7 @@ export default function Home() {
               backgroundRepeat: 'none'
             }}
           />
-        )}
+        )} */}
         <AppreciaView className="h-full w-full" />
       </main>
     </div>

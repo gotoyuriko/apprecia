@@ -21,7 +21,7 @@ export default function Home() {
     <div className="w-full">
       <Navbar user={user} />
       <div
-        className="h-96"
+        className="h-screen"
         style={
           isLoaded
             ? {}
@@ -36,7 +36,11 @@ export default function Home() {
             }
         }
       >
-        <AppreciaView onSceneLoad={handleSceneLoad} />
+        {isLoaded ? (
+          <div>Loading...</div>
+        ) : (
+          <AppreciaView onSceneLoad={handleSceneLoad} />
+        )}
       </div>
     </div>
   );

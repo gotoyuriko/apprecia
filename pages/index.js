@@ -7,6 +7,24 @@ export default function Home() {
   const user = auth.currentUser;
   const [isLoaded, setIsLoaded] = useState(false);
 
+  useEffect(() => {
+    // OpenGL関数の呼び出し
+    const textureID = glGenTextures(1);
+
+    // エラーチェック
+    const error = glGetError();
+    if (error !== GL_NO_ERROR) {
+      console.error('OpenGLエラーが発生しました:', getErrorMessage(error));
+    }
+
+    // 他のOpenGL関数の呼び出しや追加の処理を行うことができます
+
+    // コンポーネントがアンマウントされたときにOpenGLリソースを解放する必要がある場合は、クリーンアップ関数を返します
+    return () => {
+      // OpenGLリソースの解放などのクリーンアップ処理を行うことができます
+    };
+  }, []);
+
   return (
     <div className="w-full">
       <Navbar user={user} />

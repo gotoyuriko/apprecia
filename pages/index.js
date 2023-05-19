@@ -12,10 +12,10 @@ export default function Home() {
     setIsLoaded(false);
   }, []);
 
-  const handleSceneLoad = () => {
-    console.log('handleSceneLoad called');
-    setIsLoaded(true);
-  };
+  // const handleSceneLoad = () => {
+  //   console.log('handleSceneLoad called');
+  //   setIsLoaded(true);
+  // };
 
   return (
     <div className="w-full">
@@ -32,7 +32,7 @@ export default function Home() {
           backgroundRepeat: 'no-repeat'
         }}
       >
-        <AppreciaView onSceneLoad={handleSceneLoad} />
+        <AppreciaView />
       </div>
     </div>
   );

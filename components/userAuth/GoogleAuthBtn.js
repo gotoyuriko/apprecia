@@ -1,13 +1,13 @@
 import { FcGoogle } from "react-icons/fc";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "@/firebase/config";
+import { auth } from "@/firebase/firebaseConfig";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export default function GoogleAuthBtn({ formStatus }) {
     //Check if Google Authentication is Sign Up or Sign In
-    const [userAuth, setUserAuth] = useState(formStatus === 'signup');
+    const [status, setStatus] = useState(formStatus === 'signup');
     //Check if user information is null or not
     const [user, setuser] = useAuthState(auth);
 
@@ -19,6 +19,8 @@ export default function GoogleAuthBtn({ formStatus }) {
         } catch (error) {
             if (error.code === "auth/cancelled-popup-request") {
                 console.log("Google sign-in popup was cancelled by the user.");
+            } else if (e.code === "auth/account-exists-with-different-credential") {
+                error = "An account with the same email address already exists.";
             } else {
                 console.log("An error occurred during Google sign-in:", error);
             }
@@ -44,7 +46,7 @@ export default function GoogleAuthBtn({ formStatus }) {
                     <FcGoogle className="w-5 h-5" />
                 </div>
                 <p className="font-roboto text-base text-white">
-                    {userAuth ? "Sign up with Google" : "Sign in with Google"}
+                    {status ? "Sign up with Google" : "Sign in with Google"}
                 </p>
             </button>
         </>

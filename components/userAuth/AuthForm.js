@@ -1,12 +1,11 @@
-'use client';
-
 import { useState } from 'react';
-import signUp from '@/firebase/auth/signup';
-import signIn from '@/firebase/auth/signin';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/firebase/auth/AuthContext';
 
 export default function AuthForm({ formStatus }) {
-    const [userAuth, setUserAuth] = useState(formStatus === 'signup');
+    // Status of Form Style
+    const [status, setStatus] = useState(formStatus === 'signup');
+    // State of form data attribute
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -14,30 +13,32 @@ export default function AuthForm({ formStatus }) {
     });
     const router = useRouter();
     const [errormessage, setErrorMessage] = useState(null);
+    const { signin, signup } = useAuth();
 
     const handleForm = async (event) => {
         event.preventDefault();
         const { fullname, email, password } = formData;
 
-        const { result, error } = userAuth
-            ? await signUp(fullname, email, password)
-            : await signIn(email, password);
+        const { result, error } = status
+            ? await signup(fullname, email, password)
+            : await signin(email, password);
 
         if (error) {
-            setErrorMessage("An error occurred, please check your input.");
+            setErrorMessage(error);
         } else {
+            // console.log(result);
             console.log('Welcome to Apprecia !');
-            console.log('Hi, ' + fullname);
+            console.log('Hi, ' + result.displayName);
             router.push('/');
         }
     };
 
     return (
         <form onSubmit={handleForm} className="space-y-6 mt-3">
-            {userAuth ? (
+            {status && (
                 <div>
                     <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
-                        Your
+                        Your Name
                     </label>
                     <div className="mt-2">
                         <input
@@ -54,7 +55,7 @@ export default function AuthForm({ formStatus }) {
                         />
                     </div>
                 </div>
-            ) : null}
+            )}
             <div>
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                     Email address
@@ -105,7 +106,7 @@ export default function AuthForm({ formStatus }) {
                     type="submit"
                     className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                    {userAuth ? 'Create Account' : 'Sign in'}
+                    {status ? 'Create Account' : 'Sign in'}
                 </button>
                 <div>
                     {errormessage && <p className='pt-5 text-red-600 text-center'>{errormessage}</p>}

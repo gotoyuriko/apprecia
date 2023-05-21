@@ -50,12 +50,16 @@ export default function SearchBar() {
             </label>
             <div className="relative">
                 <AiOutlineSearch className="absolute left-5 top-1/2 transform -translate-y-1/2" />
-                <input
-                    id="search"
-                    type="search"
-                    placeholder="Search..."
-                    className="max-w-2xl px-10 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-black-500 pl-12"
-                />
+                <div className="max-w-screen-md">
+                    <div className="flex justify-center">
+                        <input
+                            id="search"
+                            type="search"
+                            placeholder="Search..."
+                            className="w-full max-w-screen-md px-10 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-black-500 pl-12"
+                        />
+                    </div>
+                </div>
             </div>
         </form>
     );

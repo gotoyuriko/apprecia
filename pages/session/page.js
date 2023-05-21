@@ -1,6 +1,5 @@
-'use client'
 import { useEffect } from "react";
-import { useAuthContext } from "@/firebase/AuthContext";
+import { useAuthContext } from "@/firebase/auth/AuthContext";
 import { useRouter } from "next/navigation";
 function Page() {
     const { user } = useAuthContext();

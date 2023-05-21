@@ -63,9 +63,7 @@ export default function Navbar({ user }) {
 
                 {/* === Sign in and up / Sign out Button === */}
                 <li className='mt-10'>
-                    {user ?
-                        null
-                        :
+                    {!user &&
                         // Sign In and Sign Up && Mobile Style : True
                         <SignInUpBtn device={true} />
                     }

@@ -1,6 +1,7 @@
+import ArtworkCard from '@/components/ArtworkCard';
 import Navbar from '../components/Nav/Navbar';
 import AppreciaView from '@/components/AppreciaView';
-import ArtworkCard from '@/components/ArtWorkCard';
+import Footer from '@/components/Footer';
 import SearchBar from '@/components/SearchBar';
 import { useAuth } from '@/firebase/auth/AuthContext';
 
@@ -12,7 +13,10 @@ export default function Home() {
       <Navbar user={currentUser} />
       <AppreciaView />
       <SearchBar />
-      <ArtworkCard />
+      <div className="flex justify-center">
+        <ArtworkCard />
+      </div>
+      <Footer />
     </div>
   );
 }

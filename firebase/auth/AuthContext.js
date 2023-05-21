@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { createContext, useContext, useState, useRef, useEffect } from "react";
-import { auth } from "../firebaseConfig";
+import { auth } from "../FirebaseConfig";
 
 // /**
 //  * To make the user data available throughout our app, 

@@ -1,9 +1,8 @@
 import * as React from 'react';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { CardActionArea, CardActions } from '@mui/material';
+import { AiOutlineEye, AiOutlineHeart, AiTwotoneHeart } from 'react-icons/ai';
 
 export default function ArtworkCard() {
     return (
@@ -15,20 +14,27 @@ export default function ArtworkCard() {
                     image="/appreciabg.png"
                     alt="green iguana"
                 />
-                <CardContent>
-                    <Typography gutterBottom variant="h6" component="div">
-                        Lizard
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        Lizards are a widespread group of squamate reptiles, with over 6,000
-                        species, ranging across all continents except Antarctica
-                    </Typography>
-                </CardContent>
             </CardActionArea>
-            <CardActions>
-                <Button size="small" color="primary">
-                    Share
-                </Button>
+            <CardActions className='flex justify-between items-center'>
+                <div className='flex flex-col'>
+                    <p className='text-xl font-bold'>
+                        Title
+                    </p>
+                    <p className='text-sm text-gray-400'>
+                        By Creator Name
+                    </p>
+                </div>
+                <div className='flex flex-row'>
+                    <div className='flex flex-row'>
+                        <AiOutlineHeart className='w-6 h-6' />
+                        {/* <AiTwotoneHeart /> */}
+                        <span className='ml-2'>10</span>
+                    </div>
+                    <div className='flex flex-row'>
+                        <AiOutlineEye className='ml-3 w-6 h-6' />
+                        <span className='ml-2'>10</span>
+                    </div>
+                </div>
             </CardActions>
         </Card>
     );

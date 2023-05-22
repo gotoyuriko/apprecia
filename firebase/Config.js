@@ -17,6 +17,6 @@ const firebaseConfig = {
 let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 // This object auth is used to monitor the authentication state of the user.
-const auth = getAuth(firebase_app);
+const fiauth = getAuth(firebase_app);
 const db = getFirestore(firebase_app);
-export { firebase_app, auth, db };
+export { firebase_app, fiauth, db };

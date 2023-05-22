@@ -1,6 +1,7 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { createContext, useContext, useState, useRef, useEffect } from "react";
-import { auth } from "../Config";
+import { fiauth } from "../Config";
+import { GoogleAuthProvider } from "firebase/auth";
 
 // /**
 //  * To make the user data available throughout our app, 
@@ -29,7 +30,7 @@ export function AuthProvider({ children }) {
         let result = null;
         let error = null;
         try {
-            const { user } = await createUserWithEmailAndPassword(auth, email, password);
+            const { user } = await createUserWithEmailAndPassword(fiauth, email, password);
             await updateProfile(user, { displayName: fullname });
 
             result = user;
@@ -48,8 +49,9 @@ export function AuthProvider({ children }) {
     async function signin(email, password) {
         let result = null;
         let error = null;
+
         try {
-            result = await signInWithEmailAndPassword(auth, email, password);
+            result = await signInWithEmailAndPassword(fiauth, email, password);
         } catch (e) {
             if (e.code === "auth/user-not-found") {
                 error = "User not found";
@@ -65,19 +67,23 @@ export function AuthProvider({ children }) {
 
     // Define a "signout" function that sign out with Firebase's "signOut" method
     function signout() {
-        return signOut(auth);
+        return signOut(fiauth);
     }
 
     // Google Authentication
     async function googleAuthentication() {
         let result = null;
         let error = null;
+
+        // Asynchronous sign in with pop up
+        const googleAuth = new GoogleAuthProvider();
+
         try {
-            result = await signInWithRedirect(auth, googleAuth);
+            result = await signInWithPopup(fiauth, googleAuth);
         } catch (error) {
             if (error.code === "auth/cancelled-popup-request") {
                 error = "Google sign-in popup was cancelled by the user.";
-            } else if (e.code === "auth/account-exists-with-different-credential") {
+            } else if (error.code === "auth/account-exists-with-different-credential") {
                 error = "An account with the same email address already exists.";
             } else {
                 console.log("An error occurred during Google sign-in:", error);
@@ -88,7 +94,7 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         // Call onAuthStateChanged with the Firebase auth object and a callback function that updates state when user signs in or out.
-        const unsubscribe = onAuthStateChanged(auth, async user => {
+        const unsubscribe = onAuthStateChanged(fiauth, async user => {
             // Update currentUser state with the authenticated user object (or null if no user is signed in)
             setCurrentUser(user);
             // set loading state to false as the component has finished it's initial loading and can now be displayed

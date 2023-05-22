@@ -1,20 +1,18 @@
 import { FcGoogle } from "react-icons/fc";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { fiauth } from "@/firebase/Config";
 
 export default function GoogleAuthBtn({ formStatus }) {
     //Check if Google Authentication is Sign Up or Sign In
     const [status, setStatus] = useState(formStatus === 'signup');
     //Check if user information is null or not
-    const [user, setuser] = useAuthState(AuthenticatorAssertionResponse);
+    const [user, setUser] = useAuthState(fiauth);
 
     // control router
     const router = useRouter();
 
-    // Asynchronous sign in with pop up
-    const googleAuth = new GoogleAuthProvider();
     const googleLogin = async () => {
         const { result, error } = await googleAuthentication();
         if (error) {

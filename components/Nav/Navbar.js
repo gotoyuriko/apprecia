@@ -9,16 +9,34 @@ import ProfileMenu from './ProfileMenu';
 export default function Navbar({ user }) {
     // Menu List
     const menuList = [
-        { name: 'Explore Work' },
-        { name: 'About' },
-        { name: 'FAQ' }
+        {
+            name: 'Explore Work',
+            link: '/'
+        },
+        {
+            name: 'About',
+            link: '/about'
+        },
+        {
+            name: 'FAQ',
+            link: '/faq'
+        }
     ];
 
     // Profile List
     const profileList = [
-        { name: 'Profile' },
-        { name: 'Create Project' },
-        { name: 'Create New Room' }
+        {
+            name: 'Profile',
+            link: '/profile'
+        },
+        {
+            name: 'Create New Project',
+            link: '/newproject'
+        },
+        {
+            name: 'Create New Room',
+            link: '/newroom'
+        }
     ]
 
     // Hamburger Toggle Button

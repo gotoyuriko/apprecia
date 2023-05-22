@@ -9,7 +9,7 @@ export default function GoogleAuthBtn({ formStatus }) {
     //Check if Google Authentication is Sign Up or Sign In
     const [status, setStatus] = useState(formStatus === 'signup');
     //Check if user information is null or not
-    const [user, setuser] = useAuthState(auth);
+    const [user, setuser] = useAuthState(AuthenticatorAssertionResponse);
 
     // Asynchronous sign in with pop up
     const googleAuth = new GoogleAuthProvider();

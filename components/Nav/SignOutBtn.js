@@ -1,5 +1,5 @@
-import { signOut } from 'firebase/auth';
 import { auth } from '@/firebase/FirebaseConfig';
+import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
 
 export default function SignOutBtn() {

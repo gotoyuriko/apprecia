@@ -5,6 +5,7 @@ import { IconContext } from 'react-icons'
 import { BiUserCircle } from 'react-icons/bi';
 import { useState } from 'react';
 import SignOutBtn from './SignOutBtn';
+import Link from 'next/link';
 
 export default function ProfileMenu({ profileList }) {
     //Profile Icon
@@ -38,7 +39,9 @@ export default function ProfileMenu({ profileList }) {
             >
                 {
                     profileList && profileList.map((item, index) => (
-                        <MenuItem key={index} onClick={handleClose}>{item.name}</MenuItem>
+                        <MenuItem key={index} onClick={handleClose}>
+                            <Link href={`${item.link}`}>{item.name}</Link>
+                        </MenuItem>
                     ))
                 }
                 <MenuItem onClick={handleClose}>

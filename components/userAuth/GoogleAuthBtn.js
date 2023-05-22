@@ -1,7 +1,6 @@
 import { FcGoogle } from "react-icons/fc";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
-import { auth } from "../firebase/FirebaseConfig";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 

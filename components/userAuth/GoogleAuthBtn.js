@@ -1,6 +1,6 @@
 import { FcGoogle } from "react-icons/fc";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import { auth } from "../firebase/FirebaseConfig";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -11,24 +11,20 @@ export default function GoogleAuthBtn({ formStatus }) {
     //Check if user information is null or not
     const [user, setuser] = useAuthState(AuthenticatorAssertionResponse);
 
+    // control router
+    const router = useRouter();
+
     // Asynchronous sign in with pop up
     const googleAuth = new GoogleAuthProvider();
     const googleLogin = async () => {
-        try {
-            const result = await signInWithPopup(auth, googleAuth);
-        } catch (error) {
-            if (error.code === "auth/cancelled-popup-request") {
-                console.log("Google sign-in popup was cancelled by the user.");
-            } else if (e.code === "auth/account-exists-with-different-credential") {
-                error = "An account with the same email address already exists.";
-            } else {
-                console.log("An error occurred during Google sign-in:", error);
-            }
+        const { result, error } = await googleAuthentication();
+        if (error) {
+            setErrorMessage(error);
+        } else {
+            console.log('Good Bye !');
+            router.push('/');
         }
     }
-
-    // control router
-    const router = useRouter();
 
     useEffect(() => {
         if (user != null) {

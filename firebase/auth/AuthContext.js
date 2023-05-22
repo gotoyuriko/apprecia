@@ -68,6 +68,24 @@ export function AuthProvider({ children }) {
         return signOut(auth);
     }
 
+    // Google Authentication
+    async function googleAuthentication() {
+        let result = null;
+        let error = null;
+        try {
+            result = await signInWithRedirect(auth, googleAuth);
+        } catch (error) {
+            if (error.code === "auth/cancelled-popup-request") {
+                error = "Google sign-in popup was cancelled by the user.";
+            } else if (e.code === "auth/account-exists-with-different-credential") {
+                error = "An account with the same email address already exists.";
+            } else {
+                console.log("An error occurred during Google sign-in:", error);
+            }
+        }
+        return { result, error };
+    }
+
     useEffect(() => {
         // Call onAuthStateChanged with the Firebase auth object and a callback function that updates state when user signs in or out.
         const unsubscribe = onAuthStateChanged(auth, async user => {
@@ -85,6 +103,7 @@ export function AuthProvider({ children }) {
         signin,
         signup,
         signout,
+        googleAuthentication,
         userInfo
     }
 

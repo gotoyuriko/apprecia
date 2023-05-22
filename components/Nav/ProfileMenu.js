@@ -4,8 +4,8 @@ import Fade from '@mui/material/Fade';
 import { IconContext } from 'react-icons'
 import { BiUserCircle } from 'react-icons/bi';
 import { useState } from 'react';
-import SignOutBtn from './SignOutBtn';
 import Link from 'next/link';
+import SignOutBtn from './SignOutBtn';
 
 export default function ProfileMenu({ profileList }) {
     //Profile Icon

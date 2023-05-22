@@ -1,7 +1,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "@/firebase/FirebaseConfig";
+import { auth } from "../firebase/FirebaseConfig";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 

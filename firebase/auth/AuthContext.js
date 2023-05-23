@@ -1,5 +1,12 @@
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
-import { createContext, useContext, useState, useRef, useEffect } from "react";
+import {
+    createUserWithEmailAndPassword,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    signOut,
+    updateProfile
+} from "firebase/auth";
+import { createContext, useContext, useState, useEffect } from "react";
 import { fiauth } from "../Config";
 import { GoogleAuthProvider } from "firebase/auth";
 
@@ -20,10 +27,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
     // Declare state variables for the authenticated user and loading status
     const [currentUser, setCurrentUser] = useState(null);
-    const [loading, setLoading] = useState(null);
-
-    // Define "userInfo" as a reference variable using useRef
-    const userInfo = useRef();
+    const [loading, setLoading] = useState(true);
 
     // Define a "signup" function that creates a new user with Firebase's "createUserWithEmailAndPassword" method
     async function signup(fullname, email, password) {
@@ -32,7 +36,6 @@ export function AuthProvider({ children }) {
         try {
             const { user } = await createUserWithEmailAndPassword(fiauth, email, password);
             await updateProfile(user, { displayName: fullname });
-
             result = user;
         } catch (e) {
             if (e.code === 'auth/email-already-in-use') {
@@ -80,10 +83,10 @@ export function AuthProvider({ children }) {
 
         try {
             result = await signInWithPopup(fiauth, googleAuth);
-        } catch (error) {
-            if (error.code === "auth/cancelled-popup-request") {
+        } catch (e) {
+            if (e.code === "auth/cancelled-popup-request") {
                 error = "Google sign-in popup was cancelled by the user.";
-            } else if (error.code === "auth/account-exists-with-different-credential") {
+            } else if (e.code === "auth/account-exists-with-different-credential") {
                 error = "An account with the same email address already exists.";
             } else {
                 console.log("An error occurred during Google sign-in:", error);
@@ -100,7 +103,6 @@ export function AuthProvider({ children }) {
             // set loading state to false as the component has finished it's initial loading and can now be displayed
             setLoading(false);
         });
-
         return unsubscribe;
     }, []);
 
@@ -109,8 +111,7 @@ export function AuthProvider({ children }) {
         signin,
         signup,
         signout,
-        googleAuthentication,
-        userInfo
+        googleAuthentication
     }
 
     return (

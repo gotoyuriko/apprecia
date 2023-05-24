@@ -1,6 +1,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/router";
 import { useAuth } from "@/firebase/auth/AuthContext";
+import AddUser from "@/firebase/AddUser";
 
 export default function GoogleAuthBtn({ formStatus }) {
     const { googleAuthentication } = useAuth();
@@ -13,8 +14,9 @@ export default function GoogleAuthBtn({ formStatus }) {
         if (error) {
             console.log("An error occurred during Google sign-in:", error);
         } else {
+            await AddUser("users", result.user);
             console.log('Welcome to Apprecia !');
-            console.log('Hi, ' + result.displayName);
+            console.log('Hi, ' + result.user.displayName);
             router.push('/');
         }
     }

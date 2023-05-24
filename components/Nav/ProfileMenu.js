@@ -6,8 +6,9 @@ import { BiUserCircle } from 'react-icons/bi';
 import { useState } from 'react';
 import Link from 'next/link';
 import SignOutBtn from './SignOutBtn';
+import Image from 'next/image';
 
-export default function ProfileMenu({ profileList }) {
+export default function ProfileMenu({ profileList, user }) {
     //Profile Icon
     const [anchorEl, setAnchorEl] = useState(null);
     const openProfile = Boolean(anchorEl);
@@ -22,12 +23,25 @@ export default function ProfileMenu({ profileList }) {
         <>
             {/* Profile */}
             <IconContext.Provider value={{ size: '2.5rem', className: 'text-center cursor-pointer', title: 'Profile menu' }}>
-                <BiUserCircle
-                    id="fade-button"
-                    aria-controls={openProfile ? 'fade-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={openProfile ? 'true' : undefined}
-                    onClick={handleClick} />
+                {user?.photoURL ?
+                    <Image
+                        width={50}
+                        height={50}
+                        src={user.photoURL}
+                        alt="Profile"
+                        className="rounded-full"
+                        id="fade-button"
+                        aria-controls={openProfile ? 'fade-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openProfile ? 'true' : undefined}
+                        onClick={handleClick} /> :
+                    <BiUserCircle
+                        id="fade-button"
+                        aria-controls={openProfile ? 'fade-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={openProfile ? 'true' : undefined}
+                        onClick={handleClick} />
+                }
             </IconContext.Provider >
             <Menu
                 id="fade-menu"

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/firebase/auth/AuthContext';
+import AddUser from "@/firebase/AddUser";
 
 export default function AuthForm({ formStatus }) {
     // Status of Form Style
@@ -26,9 +27,8 @@ export default function AuthForm({ formStatus }) {
         if (error) {
             setErrorMessage(error);
         } else {
-            // console.log(result);
-            console.log('Welcome to Apprecia !');
-            console.log('Hi, ' + result.displayName);
+            //If status is sign up, they add new users to database
+            status && await AddUser('users', result);
             router.push('/');
         }
     };

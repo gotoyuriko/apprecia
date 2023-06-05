@@ -23,7 +23,16 @@ const Project = ({ user }) => {
     const [images, setImages] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
     const [isURLValid, setIsURLValid] = useState(true);
+    const [errImgMsg, setErrImgMsg] = useState("");
+    const [successMsg, setSuccessMsg] = useState("");
     const fileInputRef = useRef(null);
+
+    const isButtonDisabled =
+        images.length === 0 ||
+        !projectData.title ||
+        !projectData.description ||
+        projectData.tags.length === 0 ||
+        projectData.skills.length === 0;
 
     const selectFiles = () => {
         fileInputRef.current.click();
@@ -35,11 +44,11 @@ const Project = ({ user }) => {
         for (let index = 0; index < files.length; index++) {
             const file = files[index];
             if (file.type.split('/')[0] !== 'image') {
-                alert('Please upload an image');
+                setErrImgMsg('Please upload an image');
                 continue;
             }
             if (file.size > 10 * 1024 * 1024) {
-                alert('File size exceeds the limit: ' + file.name);
+                setErrImgMsg('File size exceeds the limit: ' + file.name);
                 continue;
             }
             if (!images.some((e) => e.name === file.name)) {
@@ -73,11 +82,11 @@ const Project = ({ user }) => {
         for (let index = 0; index < files.length; index++) {
             const file = files[index];
             if (file.type.split('/')[0] !== 'image') {
-                alert('Please upload an image');
+                setErrImgMsg('Please upload an image');
                 continue;
             }
             if (file.size > 10 * 1024 * 1024) {
-                alert('File size exceeds the limit: ' + file.name);
+                setErrImgMsg('File size exceeds the limit: ' + file.name);
                 continue;
             }
             if (!images.some((e) => e.name === file.name)) {
@@ -90,12 +99,13 @@ const Project = ({ user }) => {
     };
 
     const validateURL = (url) => {
+        if (url === "") return true;
         const pattern = /^(ftp|http|https):\/\/[^ "]+$/;
         return pattern.test(url);
     };
 
-    const uploadProjectData = () => {
 
+    const uploadProjectData = () => {
         // Validate Project Link
         const isURLValid = validateURL(projectData.projectLink);
         setIsURLValid(isURLValid);
@@ -107,9 +117,9 @@ const Project = ({ user }) => {
         const currentDate = new Date();
         const timestamp = currentDate.toISOString();
 
-        // All iamge upload task are resolved as array
+        // All image upload tasks are resolved as an array
         const uploadPromises = [];
-        // Store imageUrls as array
+        // Store imageUrls as an array
         const imageUrls = [];
 
         images.forEach((image) => {
@@ -126,22 +136,32 @@ const Project = ({ user }) => {
         Promise.all(uploadPromises)
             .then(() => {
                 const projectDataWithImages = {
-                    ...projectData,
-                    timestamp: timestamp,
+                    title: projectData.title,
+                    description: projectData.description,
+                    tags: projectData.tags,
+                    skills: projectData.skills,
+                    projectLink: projectData.projectLink,
+                    uid: projectData.uid,
+                    createdAt: timestamp,
                     imageUrls: imageUrls,
                 };
 
                 addDoc(collection(db, 'artProjects'), projectDataWithImages)
                     .then(() => {
-                        console.log('Project Data Saved');
-                        router.push('/profile');
+                        setSuccessMsg('Project Data Saved! Redirecting...');
+                        setTimeout(() => {
+                            setSuccessMsg('');
+                            router.push('/profile');
+                        }, 2000);
                     })
                     .catch((error) => {
                         console.error('Error adding document: ', error);
+                        setSuccessMsg('');
                     });
             })
             .catch((error) => {
                 console.error('Error uploading images: ', error);
+                setSuccessMsg('');
             });
     };
 
@@ -153,6 +173,7 @@ const Project = ({ user }) => {
             <div className="flex flex-col md:flex-row">
                 <div className="flex-1 px-5 pb-5 lg:p-10">
                     {/* Upload Area */}
+                    <h1 className="text-xl text-gray-500">Upload Your Project Images<span className='text-red-600'>*</span></h1>
                     <div
                         className="shadow-inner rounded-lg h-48 md:h-96 w-full bg-gray-100 border-2 border-dashed border-gray-800 text-gray-600 font-bold flex justify-center items-center select-none mt-2.5"
                         onDragOver={onDragOver}
@@ -165,24 +186,12 @@ const Project = ({ user }) => {
                             <>
                                 <span className="mr-2 hover:opacity-60">Drag Images Here</span>
                                 <span className="mr-2">or</span>
-                                <span
-                                    className="ml-2 hover:opacity-60"
-                                    role="button"
-                                    onClick={selectFiles}
-                                >
-                                    Browse
-                                </span>
+                                <span className="ml-2 hover:opacity-60" role="button" onClick={selectFiles} > Browse </span>
                             </>
                         )}
-                        <input
-                            name="file"
-                            type="file"
-                            multiple
-                            className="hidden"
-                            ref={fileInputRef}
-                            onChange={onFileSelect}
-                        />
+                        <input name="file" type="file" multiple className="hidden" ref={fileInputRef} onChange={onFileSelect} required />
                     </div>
+                    <p className='text-red-600'>{errImgMsg}</p>
 
                     {/* Preview Images */}
                     <div className="w-full h-auto flex justify-start items-start flex-wrap max-h-52 overflow-y-auto mt-2.5">
@@ -204,43 +213,47 @@ const Project = ({ user }) => {
                 </div>
                 <div className="flex-1 w-full h-full px-5">
                     <div className="mb-4">
-                        <h1 className="text-xl text-gray-500">Project Title</h1>
+                        <h1 className="text-xl text-gray-500">Project Title<span className='text-red-600'>*</span></h1>
                         <input
                             className="w-full h-10 px-3 text-base font-bold placeholder-gray-600 border rounded-lg focus:shadow-outline"
                             type="text"
                             value={projectData.title}
                             onChange={(e) => setProjectData({ ...projectData, title: e.target.value })}
+                            required
                         />
                     </div>
                     <div className="mb-4">
-                        <h1 className="text-xl text-gray-500">Description</h1>
+                        <h1 className="text-xl text-gray-500">Description<span className='text-red-600'>*</span></h1>
                         <textarea
                             className="w-full h-40 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                             rows="4"
                             value={projectData.description}
                             onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
+                            required
                         />
                     </div>
                     <div className="mb-4">
-                        <h1 className="text-xl text-gray-500">Tags</h1>
+                        <h1 className="text-xl text-gray-500">Tags<span className='text-red-600'>*</span></h1>
                         <CreatableSelect
                             isMulti
                             options={tagOptions}
                             value={projectData.tags}
                             onChange={(selectedOptions) => setProjectData({ ...projectData, tags: selectedOptions })}
+                            required
                         />
                     </div>
                     <div className="mb-4">
-                        <h1 className="text-xl text-gray-500">Skill</h1>
+                        <h1 className="text-xl text-gray-500">Skill<span className='text-red-600'>*</span></h1>
                         <CreatableSelect
                             isMulti
                             options={skillOptions}
                             value={projectData.skills}
                             onChange={(selectedOptions) => setProjectData({ ...projectData, skills: selectedOptions })}
+                            required
                         />
                     </div>
                     <div className="mb-6">
-                        <h1 className="text-xl text-gray-500">Project Link (If Applicable)</h1>
+                        <h1 className="text-xl text-gray-500">Project Link</h1>
                         <input
                             className="w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                             type="url"
@@ -254,12 +267,14 @@ const Project = ({ user }) => {
                     </div>
                     <div className="mb-4">
                         <button
-                            className="w-full h-10 px-3 text-base text-white bg-black border rounded-lg focus:shadow-outline"
+                            className={isButtonDisabled ? `w-full h-10 px-3 text-base text-white bg-gray-300 border rounded-lg` : `w-full h-10 px-3 text-base text-white bg-black border rounded-lg focus:shadow-outline hover:bg-gray-800`}
                             role='button'
                             onClick={uploadProjectData}
+                            disabled={isButtonDisabled}
                         >
                             Create Project
                         </button>
+                        <p className='text-green-600'>{successMsg}</p>
                     </div>
                 </div>
             </div>

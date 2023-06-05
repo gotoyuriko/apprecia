@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 import CreatableSelect from 'react-select/creatable';
 import { v4 as uuid } from 'uuid';
@@ -6,8 +6,11 @@ import { addDoc, collection } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/firebase/Config';
 import { tagOptions, skillOptions } from '@/data/data';
+import { useRouter } from 'next/router';
 
 const Project = ({ user }) => {
+    const router = useRouter();
+
     const [projectData, setProjectData] = useState({
         title: '',
         description: '',
@@ -19,6 +22,7 @@ const Project = ({ user }) => {
 
     const [images, setImages] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
+    const [isURLValid, setIsURLValid] = useState(true);
     const fileInputRef = useRef(null);
 
     const selectFiles = () => {
@@ -41,10 +45,7 @@ const Project = ({ user }) => {
             if (!images.some((e) => e.name === file.name)) {
                 setImages((prevImages) => [
                     ...prevImages,
-                    {
-                        name: file.name,
-                        url: URL.createObjectURL(file),
-                    },
+                    file,
                 ]);
             }
         }
@@ -82,43 +83,65 @@ const Project = ({ user }) => {
             if (!images.some((e) => e.name === file.name)) {
                 setImages((prevImages) => [
                     ...prevImages,
-                    {
-                        name: file.name,
-                        url: URL.createObjectURL(file),
-                    },
+                    file,
                 ]);
             }
         }
     };
 
+    const validateURL = (url) => {
+        const pattern = /^(ftp|http|https):\/\/[^ "]+$/;
+        return pattern.test(url);
+    };
+
     const uploadProjectData = () => {
-        // Upload Image to Firebase Storage
-        if (images == null || images.length === 0) return;
 
-        const imageRef = ref(storage, `projectArtwork/${images[0].name + uuid()}`);
-        uploadBytes(imageRef, images[0])
+        // Validate Project Link
+        const isURLValid = validateURL(projectData.projectLink);
+        setIsURLValid(isURLValid);
+
+        // Upload Images to Firebase Storage
+        if (images == null || images.length === 0 || !isURLValid) return;
+
+        // Get the current date and time
+        const currentDate = new Date();
+        const timestamp = currentDate.toISOString();
+
+        // All iamge upload task are resolved as array
+        const uploadPromises = [];
+        // Store imageUrls as array
+        const imageUrls = [];
+
+        images.forEach((image) => {
+            const imageRef = ref(storage, `projectArtwork/${image.name + uuid()}`);
+            const uploadTask = uploadBytes(imageRef, image)
+                .then(() => getDownloadURL(imageRef))
+                .then((downloadURL) => {
+                    imageUrls.push(downloadURL);
+                });
+
+            uploadPromises.push(uploadTask);
+        });
+
+        Promise.all(uploadPromises)
             .then(() => {
-                getDownloadURL(imageRef)
-                    .then((downloadURL) => {
-                        const projectDataWithImage = {
-                            ...projectData,
-                            imageUrl: downloadURL, // Rename the field to "imageUrl"
-                        };
+                const projectDataWithImages = {
+                    ...projectData,
+                    timestamp: timestamp,
+                    imageUrls: imageUrls,
+                };
 
-                        addDoc(collection(db, 'artProjects'), projectDataWithImage)
-                            .then(() => {
-                                console.log('Project Data Saved');
-                            })
-                            .catch((error) => {
-                                console.error('Error adding document: ', error);
-                            });
+                addDoc(collection(db, 'artProjects'), projectDataWithImages)
+                    .then(() => {
+                        console.log('Project Data Saved');
+                        router.push('/profile');
                     })
                     .catch((error) => {
-                        console.error('Error getting download URL: ', error);
+                        console.error('Error adding document: ', error);
                     });
             })
             .catch((error) => {
-                console.error('Error uploading image: ', error);
+                console.error('Error uploading images: ', error);
             });
     };
 
@@ -174,7 +197,7 @@ const Project = ({ user }) => {
                                 >
                                     &times;
                                 </span>
-                                <Image src={image.url} alt={image.name} fill className="object-cover rounded" />
+                                <Image src={URL.createObjectURL(image)} alt={image.name} fill className="object-cover rounded" />
                             </div>
                         ))}
                     </div>
@@ -225,6 +248,9 @@ const Project = ({ user }) => {
                             value={projectData.projectLink}
                             onChange={(e) => setProjectData({ ...projectData, projectLink: e.target.value })}
                         />
+                        {isURLValid === false && (
+                            <p className="text-red-500 text-sm mt-1">Please enter a valid URL</p>
+                        )}
                     </div>
                     <div className="mb-4">
                         <button

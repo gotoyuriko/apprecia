@@ -2,6 +2,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,4 +20,6 @@ let firebase_app = getApps().length === 0 ? initializeApp(firebaseConfig) : getA
 // This object auth is used to monitor the authentication state of the user.
 const fiauth = getAuth(firebase_app);
 const db = getFirestore(firebase_app);
-export { firebase_app, fiauth, db };
+const storage = getStorage(firebase_app);
+
+export { firebase_app, fiauth, db, storage };

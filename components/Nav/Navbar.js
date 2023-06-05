@@ -5,39 +5,10 @@ import Link from 'next/link';
 import NavItem from './NavItem';
 import SignInUpBtn from './SignInUpBtn';
 import ProfileMenu from './ProfileMenu';
+import { menuList, profileList } from '@/data/data';
 
 export default function Navbar({ user }) {
-    // Menu List
-    const menuList = [
-        {
-            name: 'Explore Work',
-            link: '/'
-        },
-        {
-            name: 'About',
-            link: '/about'
-        },
-        {
-            name: 'FAQ',
-            link: '/faq'
-        }
-    ];
 
-    // Profile List
-    const profileList = [
-        {
-            name: 'Profile',
-            link: '/profile'
-        },
-        {
-            name: 'Create New Project',
-            link: '/newproject'
-        },
-        {
-            name: 'Create New Room',
-            link: '/newroom'
-        }
-    ]
 
     // Hamburger Toggle Button
     const [isOpen, setIsOpen] = useState(false);

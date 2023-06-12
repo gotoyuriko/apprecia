@@ -62,14 +62,20 @@ export const aboutFeatures = [
     {
         featureTitle: "Artistic Showcases",
         featureDescription: "Effortlessly display projects, portfolios, and collections in a stunning format.",
+        src: "/about/feature1.png",
+        alt: "Artistic Showcases"
     },
     {
         featureTitle: "Virtual Art Galleries",
         featureDescription: "Create virtual galleries and curate exhibitions with 360 VR panorama technology.",
+        src: "/about/feature2.png",
+        alt: "Virtual Art Galleries"
     },
     {
         featureTitle: "Discover and Appreciate",
         featureDescription: "Explore diverse artistic projects and gain inspiration from different genres and styles.",
+        src: "/about/feature3.png",
+        alt: "Discover and Appreciate"
     },
 ];
 

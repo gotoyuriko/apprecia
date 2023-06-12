@@ -7,7 +7,7 @@ const AboutView = () => {
     return (
         <>
             <Parallax pages={3} className="w-full h-full relative top-0 left-0">
-                <ParallaxLayer offset={0} speed={0.25}>
+                <ParallaxLayer offset={0} speed={-0.25}>
                     <div className="fixed -top-[20vh] md:-top-[10vh] lg:top-0 bg-center bg-contain bg-no-repeat w-full h-full opacity-60" id="artworks"></div>
                 </ParallaxLayer>
                 <ParallaxLayer offset={0} speed={-0.1}>
@@ -38,7 +38,7 @@ const AboutView = () => {
                                 {
                                     aboutFeatures.map((item, index) => {
                                         return (
-                                            <AboutCard key={index} title={item.featureTitle} des={item.featureDescription} />
+                                            <AboutCard key={index} title={item.featureTitle} des={item.featureDescription} src={item.src} alt={item.alt} />
                                         );
                                     })
                                 }

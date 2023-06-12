@@ -2,7 +2,7 @@ import { aboutFeatures } from '@/data/data';
 import { Parallax, ParallaxLayer } from '@react-spring/parallax';
 import AboutCard from './AboutCard';
 import Footer from './Footer';
-import { motion, useScroll } from "framer-motion"
+import { motion } from "framer-motion"
 import { useRef } from 'react';
 
 const AboutView = () => {

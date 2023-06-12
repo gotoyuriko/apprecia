@@ -36,17 +36,17 @@ body {
 
 /* About Page */
 #artworks {
-  background-image: url(../public/about/artworks.png);
+  background-image: url(../public/about/artworks.svg);
 }
 
 #people {
-  background-image: url(../public/about/people.png);
+  background-image: url(../public/about/people.svg);
 }
 
 #blockgray {
-  background-image: url(../public/about/blockgray.png);
+  background-image: url(../public/about/blockgray.svg);
 }
 
 #blockwhite {
-  background-image: url(../public/about/blockwhite.png);
+  background-image: url(../public/about/blockwhite.svg);
 }

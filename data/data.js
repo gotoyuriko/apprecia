@@ -57,6 +57,20 @@ export const tagOptions = [
     { value: 'Graphic Design', label: 'Graphic Design' },
 ];
 
+// FAQ List
+export const aboutFeatures = [
+    {
+        "featureTitle": "Artistic Showcases",
+        "featureDescription": "Artists can effortlessly display their projects, portfolios, and collections in a visually stunning and easily navigable format. From traditional paintings to digital art, sculptures to short films, every form of artistic expression finds a place in Apprecia."
+    }, {
+        "featureTitle": "Virtual Art Galleries",
+        "featureDescription": "Create your own virtual gallery spaces and curate exhibitions that transcend physical limitations. With our 360 VR panorama technology, users can explore and interact with artworks as if they were physically present, fostering a deeper connection between artists and viewers."
+    }, {
+        "featureTitle": "Discover and Appreciate",
+        "featureDescription": "Explore a vast array of artistic projects across different genres, styles, and mediums. Discover new talents, gain inspiration, and appreciate the diversity of creative expression. With Apprecia, you’ll embark on a journey through the boundless world of art."
+    }
+]
+
 
 // FAQ List
 export const faqList = [

@@ -33,3 +33,20 @@ body {
 .szh-accordion__item-content {
   transition: height 0.25s cubic-bezier(0, 0, 0, 1);
 }
+
+/* About Page */
+#artworks {
+  background-image: url(../public/about/artworks.png);
+}
+
+#people {
+  background-image: url(../public/about/people.png);
+}
+
+#blockgray {
+  background-image: url(../public/about/blockgray.png);
+}
+
+#blockwhite {
+  background-image: url(../public/about/blockwhite.png);
+}

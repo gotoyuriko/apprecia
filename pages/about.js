@@ -1,5 +1,4 @@
 import AboutView from "@/components/AboutView";
-import Footer from "@/components/Footer";
 import Navbar from "@/components/Nav/Navbar";
 import { useAuth } from "@/firebase/auth/AuthContext";
 

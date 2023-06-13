@@ -36,7 +36,7 @@ export default function Navbar({ user }) {
                         <ProfileMenu profileList={profileList} user={user} />
                         :
                         // Sign In and Sign Up && Desktop Style : False
-                        < SignInUpBtn device={false} />
+                        <SignInUpBtn device={false} />
                     }
 
                 </div>

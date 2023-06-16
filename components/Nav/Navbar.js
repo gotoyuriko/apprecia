@@ -8,8 +8,6 @@ import ProfileMenu from './ProfileMenu';
 import { menuList, profileList } from '@/data/data';
 
 export default function Navbar({ user }) {
-
-
     // Hamburger Toggle Button
     const [isOpen, setIsOpen] = useState(false);
 

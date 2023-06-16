@@ -146,24 +146,32 @@ const Project = ({ user }) => {
                     imageUrls: imageUrls,
                 };
 
-                addDoc(collection(db, 'artProjects'), projectDataWithImages)
+                // Remove fields with invalid keys
+                for (const key in projectDataWithImages) {
+                    if (key.startsWith("__") && key.endsWith("__")) {
+                        delete projectDataWithImages[key];
+                    }
+                }
+
+                addDoc(collection(db, "artProjects"), projectDataWithImages)
                     .then(() => {
-                        setSuccessMsg('Project Data Saved! Redirecting...');
+                        setSuccessMsg("Project Data Saved! Redirecting...");
                         setTimeout(() => {
-                            setSuccessMsg('');
-                            router.push('/profile');
+                            setSuccessMsg("");
+                            router.push("/profile");
                         }, 2000);
                     })
                     .catch((error) => {
-                        console.error('Error adding document: ', error);
-                        setSuccessMsg('');
+                        console.error("Error adding document: ", error);
+                        setSuccessMsg("");
                     });
             })
             .catch((error) => {
-                console.error('Error uploading images: ', error);
-                setSuccessMsg('');
+                console.error("Error uploading images: ", error);
+                setSuccessMsg("");
             });
     };
+
 
     return (
         <div className="min-h-screen py-5">

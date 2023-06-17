@@ -153,6 +153,17 @@ const Project = ({ user }) => {
                     }
                 }
 
+                // Filter out invalid keys in tags and skills arrays
+                projectDataWithImages.tags = projectDataWithImages.tags.map((tag) => {
+                    const { label, value } = tag;
+                    return { label: label.replace(/^__/i, ""), value };
+                });
+
+                projectDataWithImages.skills = projectDataWithImages.skills.map((skill) => {
+                    const { label, value } = skill;
+                    return { label: label.replace(/^__/i, ""), value };
+                });
+
                 addDoc(collection(db, "artProjects"), projectDataWithImages)
                     .then(() => {
                         setSuccessMsg("Project Data Saved! Redirecting...");

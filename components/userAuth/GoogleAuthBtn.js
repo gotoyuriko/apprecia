@@ -12,11 +12,9 @@ export default function GoogleAuthBtn({ formStatus }) {
         const { result, error } = await googleAuthentication();
 
         if (error) {
-            console.log("An error occurred during Google sign-in:", error);
+            console.error("An error occurred during Google sign-in:", error);
         } else {
             await AddUser("users", result.user);
-            console.log('Welcome to Apprecia !');
-            console.log('Hi, ' + result.user.displayName);
             router.push('/');
         }
     }

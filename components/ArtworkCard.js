@@ -15,7 +15,7 @@ export default function ArtworkCard({ title, description, imageUrls, uid }) {
                     setCreatorData(data);
                 })
                 .catch((error) => {
-                    console.log("Error getting user:", error);
+                    console.error("Error getting user:", error);
                 });
         }
     }, [uid]);

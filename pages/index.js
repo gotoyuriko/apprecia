@@ -15,11 +15,10 @@ export default function Home() {
     if (currentUser) {
       GetUserArtwork(currentUser.uid)
         .then((data) => {
-          console.log("Fetched Artwork Data");
           setArtworkData(data);
         })
         .catch((error) => {
-          console.log("Error getting user:", error);
+          console.error("Error getting user:", error);
         });
     }
   }, [currentUser]);
@@ -46,8 +45,8 @@ export default function Home() {
             }
           </div>
         </div>
-        <Footer />
       </div>
+      <Footer />
     </div>
   );
 }

@@ -90,8 +90,8 @@ export default function AuthForm({ formStatus }) {
                         id="password"
                         name="password"
                         type="password"
-                        placeholder="+8 characters"
-                        minLength={8}
+                        placeholder="+6 characters"
+                        minLength={6}
                         autoComplete="current-password"
                         required
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 

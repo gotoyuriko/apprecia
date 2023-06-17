@@ -35,7 +35,7 @@ export default async function AddUser(collectionName, userData) {
         }
     } catch (e) {
         error = e;
-        console.log("Error adding user:", error);
+        console.error("Error adding user:", error);
     }
 
     return { docRef, error };

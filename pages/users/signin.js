@@ -15,6 +15,8 @@ export default function SignIn() {
                         alt="Sign In Illustration"
                         className="object-contain"
                         fill
+                        sizes="(max-width: 600px) 100vw, 50vw"
+                        priority
                     />
                 </div>
                 <div className="px-10 py-10 md:px-0 md:mx-auto  w-full max-w-sm lg:basis-2/4">

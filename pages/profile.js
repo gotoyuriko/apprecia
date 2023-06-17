@@ -17,20 +17,17 @@ export default function Profile() {
         if (currentUser) {
             GetUser(currentUser.uid)
                 .then((data) => {
-                    console.log("Fetched Document Data");
                     setUserData(data);
                 })
                 .catch((error) => {
-                    console.log("Error getting user:", error);
+                    console.error("Error getting user:", error);
                 });
             GetUserArtwork(currentUser.uid)
                 .then((data) => {
-                    console.log("Fetched Artwork Data");
-                    console.log(data);
                     setArtworkData(data);
                 })
                 .catch((error) => {
-                    console.log("Error getting user:", error);
+                    console.error("Error getting user:", error);
                 });
         }
     }, [currentUser]);
@@ -48,6 +45,7 @@ export default function Profile() {
                                 src={userData.user_photoURL}
                                 alt="Profile Icon"
                                 className="w-16 h-16 rounded-full"
+                                priority
                             /> :
                             <BiUserCircle />
                         }

@@ -41,10 +41,10 @@ export function AuthProvider({ children }) {
             if (e.code === 'auth/email-already-in-use') {
                 error = "Email is already in use. You may go to 'Sign In'";
             } else {
-                console.log(e);
+                error = e;
+                console.error(error);
             }
         }
-
         return { result, error };
     }
 
@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
                 error = "Incorrect email or password";
             } else {
                 error = "An error occurred during sign-in";
-                console.log(e);
+                console.error(e);
             }
         }
         return { result, error };
@@ -89,7 +89,7 @@ export function AuthProvider({ children }) {
             } else if (e.code === "auth/account-exists-with-different-credential") {
                 error = "An account with the same email address already exists.";
             } else {
-                console.log("An error occurred during Google sign-in:", error);
+                console.error("An error occurred during Google sign-in:", error);
             }
         }
         return { result, error };

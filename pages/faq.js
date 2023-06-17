@@ -1,7 +1,6 @@
 import { Accordion, AccordionItem } from '@szhsin/react-accordion';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Nav/Navbar';
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { faqList } from '@/data/data';
 import { useAuth } from '@/firebase/auth/AuthContext';
 
@@ -20,9 +19,9 @@ export default function Faq() {
                     className="w-full px-2 md:px-28 pt-8 md:pt-12 text-left space-y-4 md:space-y-4"
                 >
                     {faqList.map((item, index) => (
-                        <>
+                        <div key={index}>
                             <AccordionItem
-                                key={index}
+
                                 header={
                                     <div>
                                         <h1 className='font-bold md:text-xl text-left'>{item.q}</h1>
@@ -35,7 +34,7 @@ export default function Faq() {
 
                             </AccordionItem>
                             <hr className="h-px my-8 bg-gray-600 border-0" />
-                        </>
+                        </div>
                     ))}
                 </Accordion>
             </div>

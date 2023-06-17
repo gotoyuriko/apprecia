@@ -1,15 +1,16 @@
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
-import { IconContext } from 'react-icons'
+import { IconContext } from 'react-icons';
 import { BiUserCircle } from 'react-icons/bi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SignOutBtn from './SignOutBtn';
 import Image from 'next/image';
+import GetUser from '@/firebase/users/GetUser';
 
 export default function ProfileMenu({ profileList, user }) {
-    //Profile Icon
+    // Profile Icon
     const [anchorEl, setAnchorEl] = useState(null);
     const openProfile = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -19,11 +20,35 @@ export default function ProfileMenu({ profileList, user }) {
         setAnchorEl(null);
     };
 
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await GetUser(user.uid);
+                setUserData(data);
+            } catch (error) {
+                console.error("Error getting user:", error);
+            }
+        };
+
+        fetchData();
+    }, [user]);
+
+    // Update Profile Link
+    userData ? profileList[0].link = `/profiles/${userData?.user_id}` : null;
+
     return (
         <>
             {/* Profile */}
-            <IconContext.Provider value={{ size: '2.5rem', className: 'text-center cursor-pointer', title: 'Profile menu' }}>
-                {user?.photoURL ?
+            <IconContext.Provider
+                value={{
+                    size: '2.5rem',
+                    className: 'text-center cursor-pointer',
+                    title: 'Profile menu',
+                }}
+            >
+                {user?.photoURL ? (
                     <Image
                         width={50}
                         height={50}
@@ -34,15 +59,18 @@ export default function ProfileMenu({ profileList, user }) {
                         aria-controls={openProfile ? 'fade-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={openProfile ? 'true' : undefined}
-                        onClick={handleClick} /> :
+                        onClick={handleClick}
+                    />
+                ) : (
                     <BiUserCircle
                         id="fade-button"
                         aria-controls={openProfile ? 'fade-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={openProfile ? 'true' : undefined}
-                        onClick={handleClick} />
-                }
-            </IconContext.Provider >
+                        onClick={handleClick}
+                    />
+                )}
+            </IconContext.Provider>
             <Menu
                 id="fade-menu"
                 MenuListProps={{ 'aria-labelledby': 'fade-button' }}
@@ -51,13 +79,12 @@ export default function ProfileMenu({ profileList, user }) {
                 onClose={handleClose}
                 TransitionComponent={Fade}
             >
-                {
-                    profileList && profileList.map((item, index) => (
+                {profileList &&
+                    profileList.map((item, index) => (
                         <MenuItem key={index} onClick={handleClose}>
-                            <Link href={`${item.link}`}>{item.name}</Link>
+                            <Link href={item.link}>{item.name}</Link>
                         </MenuItem>
-                    ))
-                }
+                    ))}
                 <MenuItem onClick={handleClose}>
                     <SignOutBtn />
                 </MenuItem>

@@ -5,45 +5,39 @@ import Footer from '@/components/Footer';
 import SearchBar from '@/components/SearchBar';
 import { useAuth } from '@/firebase/auth/AuthContext';
 import { useState, useEffect } from 'react';
-import GetUserArtwork from '@/firebase/GetUserArtwork';
+import GetArtwork from '@/firebase/GetArtwork';
 
 export default function Home() {
   const { currentUser } = useAuth();
   const [artworkData, setArtworkData] = useState(null);
 
   useEffect(() => {
-    if (currentUser) {
-      GetUserArtwork(currentUser.uid)
-        .then((data) => {
-          setArtworkData(data);
-        })
-        .catch((error) => {
-          console.error("Error getting user:", error);
-        });
-    }
-  }, [currentUser]);
+    GetArtwork()
+      .then((data) => {
+        setArtworkData(data);
+      })
+      .catch((error) => {
+        console.error("Error getting artwork:", error);
+      });
+  }, []);
 
   return (
     <div className="w-full">
       <Navbar user={currentUser} />
       <AppreciaView />
       <SearchBar />
-      <div className="container mx-auto py-8">
-        <div className="flex justify-center items-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 p-3 lg:py-8 lg:px-20">
-            {
-              artworkData && artworkData.map((item, index) => (
-                <div key={index}>
-                  <ArtworkCard
-                    title={item.title}
-                    description={item.description}
-                    imageUrls={item.imageUrls}
-                    uid={item.uid}
-                  />
-                </div>
-              ))
-            }
-          </div>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {artworkData &&
+            artworkData.map((item, index) => (
+              <div key={index}>
+                <ArtworkCard
+                  title={item.project_title}
+                  imageUrls={item.project_imageUrls}
+                  uid={item.project_id}
+                />
+              </div>
+            ))}
         </div>
       </div>
       <Footer />

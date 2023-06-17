@@ -44,23 +44,21 @@ export default function SearchBar() {
     }
 
     return (
-        <form className="p-10 relative">
+        <form className="relative px-10 pt-10 mx-auto text-center">
             <label htmlFor="search" className="hidden">
                 Search
             </label>
-            <div className="relative">
+            <div className="relative inline-block">
                 <AiOutlineSearch className="absolute left-5 top-1/2 transform -translate-y-1/2" />
-                <div className="max-w-screen-md">
-                    <div className="flex justify-center">
-                        <input
-                            id="search"
-                            type="search"
-                            placeholder="Search..."
-                            className="w-full max-w-screen-md px-10 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-black-500 pl-12"
-                        />
-                    </div>
-                </div>
+                <input
+                    id="search"
+                    type="search"
+                    placeholder="Search..."
+                    className="w-full w-80 md:w-[50vh] lg:w-[100vh] px-10 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-black-500 pl-12"
+                />
             </div>
         </form>
+
+
     );
 }

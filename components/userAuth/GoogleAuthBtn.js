@@ -1,7 +1,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/router";
 import { useAuth } from "@/firebase/auth/AuthContext";
-import AddUser from "@/firebase/AddUser";
+import AddUser from "@/firebase/users/AddUser";
 
 export default function GoogleAuthBtn({ formStatus }) {
     const { googleAuthentication } = useAuth();

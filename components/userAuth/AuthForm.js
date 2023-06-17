@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/firebase/auth/AuthContext';
-import AddUser from "@/firebase/AddUser";
+import AddUser from "@/firebase/users/AddUser";
 
 export default function AuthForm({ formStatus }) {
     // Status of Form Style

@@ -3,9 +3,9 @@ import CardMedia from '@mui/material/CardMedia';
 import { CardActionArea, CardActions } from '@mui/material';
 import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { useEffect, useState } from 'react';
-import GetUser from '@/firebase/GetUser';
+import GetUser from '@/firebase/users/GetUser';
 
-export default function ArtworkCard({ title, description, imageUrls, uid }) {
+export default function ArtworkCard({ title, imageUrls, uid }) {
     const [creatorData, setCreatorData] = useState(null);
 
     useEffect(() => {
@@ -31,7 +31,6 @@ export default function ArtworkCard({ title, description, imageUrls, uid }) {
                         objectFit: "cover",
                     }}
                     image={imageUrls[0]}
-                    alt="green iguana"
                 />
             </CardActionArea>
             <CardActions className="flex justify-between items-center">

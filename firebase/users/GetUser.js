@@ -1,4 +1,4 @@
-import { db } from "./Config";
+import { db } from "../Config";
 import { getDoc, doc } from "firebase/firestore";
 
 export default async function GetUser(uid) {

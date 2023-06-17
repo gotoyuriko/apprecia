@@ -7,17 +7,20 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/firebase/Config';
 import { tagOptions, skillOptions } from '@/data/data';
 import { useRouter } from 'next/router';
+import { useDropzone } from 'react-dropzone';
 
 const Project = ({ user }) => {
     const router = useRouter();
 
     const [projectData, setProjectData] = useState({
-        title: '',
-        description: '',
-        tags: [],
-        skills: [],
-        projectLink: '',
-        uid: user.uid
+        project_title: '',
+        project_description: '',
+        project_tags: [],
+        project_skills: [],
+        project_link: '',
+        user_id: user.uid,
+        project_createdAt: '',
+        project_imageUrls: []
     });
 
     const [images, setImages] = useState([]);
@@ -29,73 +32,51 @@ const Project = ({ user }) => {
 
     const isButtonDisabled =
         images.length === 0 ||
-        !projectData.title ||
-        !projectData.description ||
-        projectData.tags.length === 0 ||
-        projectData.skills.length === 0;
+        !projectData.project_title ||
+        !projectData.project_description ||
+        projectData.project_tags.length === 0 ||
+        projectData.project_skills.length === 0;
 
     const selectFiles = () => {
-        fileInputRef.current.click();
-    };
-
-    const onFileSelect = (event) => {
-        const files = event.target.files;
-        if (files.length === 0) return;
-        for (let index = 0; index < files.length; index++) {
-            const file = files[index];
-            if (file.type.split('/')[0] !== 'image') {
-                setErrImgMsg('Please upload an image');
-                continue;
-            }
-            if (file.size > 10 * 1024 * 1024) {
-                setErrImgMsg('File size exceeds the limit: ' + file.name);
-                continue;
-            }
-            if (!images.some((e) => e.name === file.name)) {
-                setImages((prevImages) => [
-                    ...prevImages,
-                    file,
-                ]);
-            }
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
         }
     };
+
+    const onFileSelect = (acceptedFiles) => {
+        if (Array.isArray(acceptedFiles)) {
+            const validatedFiles = acceptedFiles.filter((file) => {
+                // Validate file types
+                const acceptedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                const isValidType = acceptedTypes.includes(file.type);
+
+                // Validate file size
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                const isValidSize = file.size <= maxSize;
+
+                return isValidType && isValidSize;
+            });
+
+            // validated files
+            if (validatedFiles.length > 0) {
+                setImages((prevImages) => [...prevImages, ...validatedFiles]);
+            } else {
+                console.log('Invalid file(s) selected.');
+            }
+        } else {
+            console.log('Invalid file(s) selected.');
+        }
+    };
+
+    // Drag and Drop props
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop: onFileSelect,
+        accept: 'image/*',
+        maxSize: 10 * 1024 * 1024,
+    });
 
     const deleteImage = (index) => {
         setImages((prevImages) => prevImages.filter((image, i) => i !== index));
-    };
-
-    const onDragOver = (event) => {
-        event.preventDefault();
-        setIsDragging(true);
-        event.dataTransfer.dropEffect = 'copy';
-    };
-
-    const onDragLeave = (event) => {
-        event.preventDefault();
-        setIsDragging(false);
-    };
-
-    const onDrop = (event) => {
-        event.preventDefault();
-        setIsDragging(false);
-        const files = event.dataTransfer.files;
-        for (let index = 0; index < files.length; index++) {
-            const file = files[index];
-            if (file.type.split('/')[0] !== 'image') {
-                setErrImgMsg('Please upload an image');
-                continue;
-            }
-            if (file.size > 10 * 1024 * 1024) {
-                setErrImgMsg('File size exceeds the limit: ' + file.name);
-                continue;
-            }
-            if (!images.some((e) => e.name === file.name)) {
-                setImages((prevImages) => [
-                    ...prevImages,
-                    file,
-                ]);
-            }
-        }
     };
 
     const validateURL = (url) => {
@@ -104,10 +85,9 @@ const Project = ({ user }) => {
         return pattern.test(url);
     };
 
-
     const uploadProjectData = () => {
         // Validate Project Link
-        const isURLValid = validateURL(projectData.projectLink);
+        const isURLValid = validateURL(projectData.project_link);
         setIsURLValid(isURLValid);
 
         // Upload Images to Firebase Storage
@@ -135,42 +115,30 @@ const Project = ({ user }) => {
 
         Promise.all(uploadPromises)
             .then(() => {
-                const projectDataWithImages = {
-                    title: projectData.title,
-                    description: projectData.description,
-                    tags: projectData.tags,
-                    skills: projectData.skills,
-                    projectLink: projectData.projectLink,
-                    uid: projectData.uid,
-                    createdAt: timestamp,
-                    imageUrls: imageUrls,
+                const updatedProjectData = {
+                    ...projectData,
+                    project_createdAt: timestamp,
+                    project_imageUrls: imageUrls,
                 };
 
-                // Remove fields with invalid keys
-                for (const key in projectDataWithImages) {
-                    if (key.startsWith("__") && key.endsWith("__")) {
-                        delete projectDataWithImages[key];
-                    }
-                }
-
                 // Filter out invalid keys in tags and skills arrays
-                projectDataWithImages.tags = projectDataWithImages.tags.map((tag) => {
+                updatedProjectData.project_tags = updatedProjectData.project_tags.map((tag) => {
                     const { label, value } = tag;
                     return { label: label.replace(/^__/i, ""), value };
                 });
 
-                projectDataWithImages.skills = projectDataWithImages.skills.map((skill) => {
+                updatedProjectData.project_skills = updatedProjectData.project_skills.map((skill) => {
                     const { label, value } = skill;
                     return { label: label.replace(/^__/i, ""), value };
                 });
 
-                addDoc(collection(db, "artProjects"), projectDataWithImages)
+                addDoc(collection(db, "artProjects"), updatedProjectData)
                     .then(() => {
                         setSuccessMsg("Project Data Saved! Redirecting...");
                         setTimeout(() => {
                             setSuccessMsg("");
-                            router.push("/profile");
-                        }, 2000);
+                            router.push(`/profiles/${user.uid}`);
+                        }, 500);
                     })
                     .catch((error) => {
                         console.error("Error adding document: ", error);
@@ -184,6 +152,7 @@ const Project = ({ user }) => {
     };
 
 
+
     return (
         <div className="min-h-screen py-5">
             <h1 className="text-4xl font-bold text-center lg:text-start py-5 px-10">
@@ -194,23 +163,28 @@ const Project = ({ user }) => {
                     {/* Upload Area */}
                     <h1 className="text-xl text-gray-500">Upload Your Project Images<span className='text-red-600'>*</span></h1>
                     <div
-                        className="shadow-inner rounded-lg h-48 md:h-96 w-full bg-gray-100 border-2 border-dashed border-gray-800 text-gray-600 font-bold flex justify-center items-center select-none mt-2.5"
-                        onDragOver={onDragOver}
-                        onDragLeave={onDragLeave}
-                        onDrop={onDrop}
+                        {...getRootProps({ multiple: true })}
+                        className={`shadow-inner rounded-lg h-48 md:h-96 w-full bg-gray-100 border-2 border-dashed border-gray-800 text-gray-600 font-bold flex justify-center items-center select-none mt-2.5 ${isDragActive ? 'border-blue-600' : ''}`}
                     >
-                        {isDragging ? (
-                            <p className="font-bold text-gray-600">Drag & Drop Image Uploading</p>
+                        <input {...getInputProps()} />
+                        {isDragActive ? (
+                            <p className="font-bold text-gray-600">Drop the files here...</p>
                         ) : (
                             <>
                                 <span className="mr-2 hover:opacity-60">Drag Images Here</span>
                                 <span className="mr-2">or</span>
-                                <span className="ml-2 hover:opacity-60" role="button" onClick={selectFiles} > Browse </span>
+                                <span
+                                    className="ml-2 hover:opacity-60"
+                                    role="button"
+                                    onClick={selectFiles}
+                                >
+                                    Browse
+                                </span>
                             </>
                         )}
-                        <input name="file" type="file" multiple className="hidden" ref={fileInputRef} onChange={onFileSelect} required />
                     </div>
                     <p className='text-red-600'>{errImgMsg}</p>
+
 
                     {/* Preview Images */}
                     <div className="w-full h-auto flex justify-start items-start flex-wrap max-h-52 overflow-y-auto mt-2.5">
@@ -231,23 +205,35 @@ const Project = ({ user }) => {
                     </div>
                 </div>
                 <div className="flex-1 w-full h-full px-5">
+                    {/* Title */}
                     <div className="mb-4">
                         <h1 className="text-xl text-gray-500">Project Title<span className='text-red-600'>*</span></h1>
                         <input
                             className="w-full h-10 px-3 text-base font-bold placeholder-gray-600 border rounded-lg focus:shadow-outline"
                             type="text"
-                            value={projectData.title}
-                            onChange={(e) => setProjectData({ ...projectData, title: e.target.value })}
+                            value={projectData.project_title}
+                            onChange={(e) =>
+                                setProjectData((prevData) => ({
+                                    ...prevData,
+                                    project_title: e.target.value,
+                                }))
+                            }
                             required
                         />
                     </div>
+                    {/* Description */}
                     <div className="mb-4">
                         <h1 className="text-xl text-gray-500">Description<span className='text-red-600'>*</span></h1>
                         <textarea
                             className="w-full h-40 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                             rows="4"
-                            value={projectData.description}
-                            onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
+                            value={projectData.project_description}
+                            onChange={(e) =>
+                                setProjectData((prevData) => ({
+                                    ...prevData,
+                                    project_description: e.target.value,
+                                }))
+                            }
                             required
                         />
                     </div>
@@ -256,8 +242,13 @@ const Project = ({ user }) => {
                         <CreatableSelect
                             isMulti
                             options={tagOptions}
-                            value={projectData.tags}
-                            onChange={(selectedOptions) => setProjectData({ ...projectData, tags: selectedOptions })}
+                            value={projectData.project_tags}
+                            onChange={(selectedOptions) =>
+                                setProjectData((prevData) => ({
+                                    ...prevData,
+                                    project_tags: selectedOptions,
+                                }))
+                            }
                             required
                         />
                     </div>
@@ -266,8 +257,13 @@ const Project = ({ user }) => {
                         <CreatableSelect
                             isMulti
                             options={skillOptions}
-                            value={projectData.skills}
-                            onChange={(selectedOptions) => setProjectData({ ...projectData, skills: selectedOptions })}
+                            value={projectData.project_skills}
+                            onChange={(selectedOptions) =>
+                                setProjectData((prevData) => ({
+                                    ...prevData,
+                                    project_skills: selectedOptions,
+                                }))
+                            }
                             required
                         />
                     </div>
@@ -277,8 +273,13 @@ const Project = ({ user }) => {
                             className="w-full h-10 px-3 text-base placeholder-gray-600 border rounded-lg focus:shadow-outline"
                             type="url"
                             placeholder="Paste a hyperlink"
-                            value={projectData.projectLink}
-                            onChange={(e) => setProjectData({ ...projectData, projectLink: e.target.value })}
+                            value={projectData.project_link}
+                            onChange={(e) =>
+                                setProjectData((prevData) => ({
+                                    ...prevData,
+                                    project_link: e.target.value,
+                                }))
+                            }
                         />
                         {isURLValid === false && (
                             <p className="text-red-500 text-sm mt-1">Please enter a valid URL</p>

@@ -7,41 +7,62 @@ import { BiUserCircle, BiX } from 'react-icons/bi';
 import Link from 'next/link';
 import { motion } from "framer-motion";
 import { IconContext } from 'react-icons/lib';
+import UpdateLike from '@/firebase/likes/UpdateLike';
+import { useAuth } from '@/firebase/auth/AuthContext';
 
-export default function ArtworkCard({ title, description, imageUrls, tags, skills, link, uid }) {
+export default function ArtworkCard({ title, description, imageUrls, tags, skills, link, uid, createdAt, likesCount, likedBy }) {
+    const { currentUser } = useAuth();
+
     const [userData, setUserData] = useState(null);
     const [open, setOpen] = useState(false);
-    // Hide Scroll Bar when you trigger modal
-    open ? document.body.style.overflowY = 'hidden' : document.body.style.overflowY = 'unset';
+    const [isLiked, setIsLiked] = useState(false);
+    const [likesNo, setLikesNo] = useState(likesCount);
 
-    // Favorite Feature
-    const [isFavorite, setIsFavorite] = useState({ count: 0, liked: false });
-    const handleIsFavorite = () => {
-        setIsFavorite({
-            count: isFavorite.count + (isFavorite.liked ? -1 : 1),
-            liked: !isFavorite.liked
-        });
-
-    }
-
-    //Fetch Database
+    // Scroll Behavior
     useEffect(() => {
-        if (uid) {
-            GetUser(uid)
-                .then((data) => {
-                    setUserData(data);
-                })
-                .catch((error) => {
-                    console.error("Error getting user:", error);
-                });
+        document.body.style.overflowY = open ? 'hidden' : 'unset';
+    }, [open]);
+
+    // Project Like Counts
+    useEffect(() => {
+        setLikesNo(likesCount);
+    }, [likesCount]);
+
+    //Check if artwork was liked by you
+    useEffect(() => {
+        if (likedBy && currentUser) {
+            console.log(likedBy.includes(currentUser.uid));
+            setIsLiked(likedBy.includes(currentUser.uid));
         }
+    }, [likedBy, currentUser]);
+
+
+    // Fetch Data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await GetUser(uid);
+                setUserData(data);
+            } catch (error) {
+                console.error("Error getting user:", error);
+            }
+        };
+
+        fetchData();
     }, [uid]);
+
+    // Give / Remove Likes
+    const handleIsFavorite = async () => {
+        setIsLiked((prevIsLiked) => !prevIsLiked);
+        await UpdateLike(uid, createdAt, !isLiked);
+        setLikesNo((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
+    };
 
     return (
         <>
             {/* Project Card */}
-            <Card sx={{ maxWidth: 345 }} onClick={() => setOpen(!open)}>
-                <CardActionArea>
+            <Card sx={{ maxWidth: 345 }}>
+                <CardActionArea onClick={() => setOpen(!open)}>
                     <CardMedia component="img" sx={{ height: "200px", width: "100%", objectFit: "cover" }} image={imageUrls[0]} />
                 </CardActionArea>
                 <CardActions className="flex justify-between items-center">
@@ -53,8 +74,14 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                     </div>
                     <div className="flex flex-row">
                         <div className="flex flex-row">
-                            <AiOutlineHeart className="w-6 h-6" />
-                            <span className="ml-2">10</span>
+                            <IconContext.Provider value={{ color: "red" }}>
+                                {isLiked ? (
+                                    <AiFillHeart className="w-6 h-6 text-red-500 cursor-pointer" onClick={handleIsFavorite} />
+                                ) : (
+                                    <AiOutlineHeart className="w-6 h-6 cursor-pointer" onClick={handleIsFavorite} />
+                                )}
+                            </IconContext.Provider>
+                            <span className="ml-2">{likesNo}</span>
                         </div>
                         <div className="flex flex-row">
                             <AiOutlineEye className="ml-3 w-6 h-6" />
@@ -71,13 +98,15 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                     animate={{ opacity: 100 }}
                     exit={{ opacity: 0 }}
                     transition={{ ease: "easeOut", duration: 0.3 }}
-                    className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-80 bg-gray-900">
+                    className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-80 bg-gray-900"
+                >
                     <motion.div
                         initial={{ y: 100 }}
                         animate={{ y: 0 }}
                         exit={{ y: 100 }}
                         transition={{ ease: "easeOut", duration: 0.3 }}
-                        className="bg-white w-full lg:w-1/2 h-screen rounded-lg p-6 overflow-y-scroll">
+                        className="bg-white w-full lg:w-1/2 h-screen rounded-lg p-6 overflow-y-scroll"
+                    >
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 {userData?.user_photoURL ? (
@@ -102,12 +131,20 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                             </div>
                             <div className="flex items-center justify-around pt-5 lg:pt-0">
                                 <div className="flex flex-col items-center">
-                                    <IconContext.Provider value={{ color: "red" }} onClick={handleIsFavorite}>
-                                        {isFavorite.liked ?
-                                            <AiFillHeart className={`w-8 h-8 text-red-500 cursor-pointer`} onClick={handleIsFavorite} />
-                                            : <AiOutlineHeart className={`w-8 h-8 cursor-pointer`} onClick={handleIsFavorite} />}
+                                    <IconContext.Provider value={{ color: "red" }}>
+                                        {isLiked ? (
+                                            <AiFillHeart
+                                                className="w-8 h-8 text-red-500 cursor-pointer"
+                                                onClick={handleIsFavorite}
+                                            />
+                                        ) : (
+                                            <AiOutlineHeart
+                                                className="w-8 h-8 cursor-pointer"
+                                                onClick={handleIsFavorite}
+                                            />
+                                        )}
                                     </IconContext.Provider>
-                                    <p className="font-medium text-sm text-gray-400">{isFavorite.count}</p>
+                                    <p className="font-medium text-sm text-gray-400">{likesNo}</p>
                                 </div>
                                 <div className="flex flex-col items-center ml-10">
                                     <IconContext.Provider value={{ color: "gray" }}>
@@ -132,16 +169,16 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                         </div>
                         <p className="text-justify mt-4">{description}</p>
                         <hr className="my-4" />
-                        <div className='flex items-center flex-row justify-between'>
+                        <div className="flex items-center flex-row justify-between">
                             <div className="flex items-center justify-start">
-                                <div className='mr-5'>
+                                <div className="mr-5">
                                     <p className="font-normal text-sm">Tags</p>
                                     <div className="flex flex-wrap gap-1">
                                         {tags?.map((tag, index) => (
                                             <span
                                                 key={index}
                                                 className="text-sm text-white p-1.5 rounded"
-                                                style={{ backgroundColor: tag.color ? tag.color : '#aaa' }}
+                                                style={{ backgroundColor: tag.color ? tag.color : "#aaa" }}
                                             >
                                                 {tag.label}
                                             </span>
@@ -155,7 +192,7 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                             <span
                                                 key={index}
                                                 className="text-sm text-white p-1.5 rounded"
-                                                style={{ backgroundColor: skill.color ? skill.color : '#aaa' }}
+                                                style={{ backgroundColor: skill.color ? skill.color : "#aaa" }}
                                             >
                                                 {skill.label}
                                             </span>
@@ -164,18 +201,18 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                 </div>
                             </div>
 
-                            {link && link !== '' && (
+                            {link && link !== "" && (
                                 <Link href={link} target="_blank" className="flex items-center underline">
-                                    <AiOutlinePaperClip className="h-6 w-6" /> Vist {link.replace(/(^\w+:|^)\/\/(www\.)?/i, '').slice(0, 15)}...
+                                    <AiOutlinePaperClip className="h-6 w-6" /> Vist {link.replace(/(^\w+:|^)\/\/(www\.)?/i, "").slice(0, 15)}...
                                 </Link>
                             )}
                         </div>
                         <BiX
                             className="absolute top-2 lg:top-4 right-6 lg:right-72 w-8 lg:w-10 h-8 lg:h-10 lg:text-white text-black cursor-pointer"
-                            onClick={() => setOpen(!open)}
+                            onClick={() => setOpen(false)}
                         />
                     </motion.div>
-                </motion.div >
+                </motion.div>
             )}
         </>
     );

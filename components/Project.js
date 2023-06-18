@@ -1,13 +1,10 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import CreatableSelect from 'react-select/creatable';
-import { v4 as uuid } from 'uuid';
-import { addDoc, collection } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '@/firebase/Config';
 import { tagOptions, skillOptions } from '@/data/data';
 import { useRouter } from 'next/router';
 import { useDropzone } from 'react-dropzone';
+import AddArtwork from '@/firebase/artworks/AddArtwork';
 
 const Project = ({ user }) => {
     const router = useRouter();
@@ -81,10 +78,10 @@ const Project = ({ user }) => {
             if (validatedFiles.length > 0) {
                 setImages((prevImages) => [...prevImages, ...validatedFiles]);
             } else {
-                console.log('Invalid file(s) selected.');
+                setErrImgMsg('Invalid file(s) selected.');
             }
         } else {
-            console.log('Invalid file(s) selected.');
+            setErrImgMsg('Invalid file(s) selected.');
         }
     };
 
@@ -95,83 +92,39 @@ const Project = ({ user }) => {
         maxSize: 10 * 1024 * 1024,
     });
 
+    // Delete Preview Image
     const deleteImage = (index) => {
-        setImages((prevImages) => prevImages.filter((image, i) => i !== index));
+        setImages((prevImages) => prevImages.filter((__, i) => i !== index));
     };
 
+    // Validate URL
     const validateURL = (url) => {
         if (url === "") return true;
         const pattern = /^(ftp|http|https):\/\/[^ "]+$/;
         return pattern.test(url);
     };
 
-    const uploadProjectData = () => {
+    // Upload All Inputs to Firebase
+    const uploadProjectData = async () => {
         // Validate Project Link
-        const isURLValid = validateURL(projectData.project_link);
-        setIsURLValid(isURLValid);
+        setIsURLValid(validateURL(projectData.project_link));
 
-        // Upload Images to Firebase Storage
+        // Check if images is not empty and URL is valid
         if (images == null || images.length === 0 || !isURLValid) return;
 
-        // Get the current date and time
-        const currentDate = new Date();
-        const timestamp = currentDate.toISOString();
+        const { result, error } = AddArtwork(images, projectData);
 
-        // All image upload tasks are resolved as an array
-        const uploadPromises = [];
-        // Store imageUrls as an array
-        const imageUrls = [];
-
-        images.forEach((image) => {
-            const imageRef = ref(storage, `projectArtwork/${image.name + uuid()}`);
-            const uploadTask = uploadBytes(imageRef, image)
-                .then(() => getDownloadURL(imageRef))
-                .then((downloadURL) => {
-                    imageUrls.push(downloadURL);
-                });
-
-            uploadPromises.push(uploadTask);
-        });
-
-        Promise.all(uploadPromises)
-            .then(() => {
-                const updatedProjectData = {
-                    ...projectData,
-                    project_createdAt: timestamp,
-                    project_imageUrls: imageUrls,
-                };
-
-                // Filter out invalid keys in tags and skills arrays
-                updatedProjectData.project_tags = updatedProjectData.project_tags.map((tag) => {
-                    const { label, value } = tag;
-                    return { label: label.replace(/^__/i, ""), value };
-                });
-
-                updatedProjectData.project_skills = updatedProjectData.project_skills.map((skill) => {
-                    const { label, value } = skill;
-                    return { label: label.replace(/^__/i, ""), value };
-                });
-
-                addDoc(collection(db, "artProjects"), updatedProjectData)
-                    .then(() => {
-                        setSuccessMsg("Project Data Saved! Redirecting...");
-                        setTimeout(() => {
-                            setSuccessMsg("");
-                            router.push(`/profiles/${user.uid}`);
-                        }, 500);
-                    })
-                    .catch((error) => {
-                        console.error("Error adding document: ", error);
-                        setSuccessMsg("");
-                    });
-            })
-            .catch((error) => {
-                console.error("Error uploading images: ", error);
+        if (error) {
+            console.error("Error uploading images or adding document: ", error);
+            setSuccessMsg("");
+        } else {
+            setSuccessMsg("Project Data Saved! Redirecting...");
+            setTimeout(() => {
                 setSuccessMsg("");
-            });
+                router.push(`/profiles/${user.uid}`);
+            }, 300);
+        }
     };
-
-
 
     return (
         <div className="min-h-screen py-5">

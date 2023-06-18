@@ -5,20 +5,23 @@ import Footer from '@/components/Footer';
 import SearchBar from '@/components/SearchBar';
 import { useAuth } from '@/firebase/auth/AuthContext';
 import { useState, useEffect } from 'react';
-import GetArtwork from '@/firebase/GetArtwork';
+import GetArtwork from '@/firebase/artworks/GetArtwork';
 
 export default function Home() {
   const { currentUser } = useAuth();
   const [artworkData, setArtworkData] = useState(null);
 
   useEffect(() => {
-    GetArtwork()
-      .then((data) => {
+    const fetchData = async () => {
+      try {
+        const data = await GetArtwork();
         setArtworkData(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error getting artwork:", error);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -40,6 +43,9 @@ export default function Home() {
                   link={item.project_link}
                   skills={item.project_skills}
                   uid={item.user_id}
+                  createdAt={item.project_createdAt}
+                  likesCount={item.project_likesCount ?? 0}
+                  likedBy={item.project_likedBy ?? []}
                 />
               </div>
             ))}

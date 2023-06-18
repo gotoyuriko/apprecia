@@ -1,4 +1,4 @@
-import { db } from "./Config";
+import { db } from "../Config";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 
 export default async function GetArtwork() {

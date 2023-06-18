@@ -1,7 +1,7 @@
 import ArtworkCard from "@/components/ArtworkCard";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Nav/Navbar";
-import GetArtwork from "@/firebase/GetArtwork";
+import GetArtwork from "@/firebase/artworks/GetArtwork";
 import GetUser from "@/firebase/users/GetUser";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import Image from "next/image";
@@ -106,6 +106,9 @@ export default function Profile() {
                                         tags={filteredArtwork.project_tags}
                                         link={filteredArtwork.project_link}
                                         skills={filteredArtwork.project_skills}
+                                        createdAt={filteredArtwork.project_createdAt}
+                                        likesCount={filteredArtwork.project_likesCount ?? 0}
+                                        likedBy={filteredArtwork.project_likedBy ?? []}
                                     />
                                 </div>
                             ))

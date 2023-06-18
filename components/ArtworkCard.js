@@ -1,20 +1,30 @@
 import { Card, CardActionArea, CardActions, CardMedia } from '@mui/material';
-import { AiOutlineEye, AiOutlineHeart, AiOutlinePaperClip } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlinePaperClip } from 'react-icons/ai';
 import { useEffect, useState } from 'react';
 import GetUser from '@/firebase/users/GetUser';
 import Image from 'next/image';
 import { BiUserCircle, BiX } from 'react-icons/bi';
 import Link from 'next/link';
 import { motion } from "framer-motion";
+import { IconContext } from 'react-icons/lib';
 
 export default function ArtworkCard({ title, description, imageUrls, tags, skills, link, uid }) {
     const [userData, setUserData] = useState(null);
     const [open, setOpen] = useState(false);
     // Hide Scroll Bar when you trigger modal
     open ? document.body.style.overflowY = 'hidden' : document.body.style.overflowY = 'unset';
-    const [isFavorite, setIsFavorite] = useState(false);
-    const handleIsFavorite = () => setIsFavorite((cur) => !cur);
 
+    // Favorite Feature
+    const [isFavorite, setIsFavorite] = useState({ count: 0, liked: false });
+    const handleIsFavorite = () => {
+        setIsFavorite({
+            count: isFavorite.count + (isFavorite.liked ? -1 : 1),
+            liked: !isFavorite.liked
+        });
+
+    }
+
+    //Fetch Database
     useEffect(() => {
         if (uid) {
             GetUser(uid)
@@ -92,15 +102,18 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                             </div>
                             <div className="flex items-center justify-around pt-5 lg:pt-0">
                                 <div className="flex flex-col items-center">
-                                    <AiOutlineHeart
-                                        className={`w-8 h-8 ${isFavorite ? 'bg-red-300' : 'bg-none'}`}
-                                        onClick={handleIsFavorite}
-                                    />
-                                    <p className="font-medium text-sm">44,082,044</p>
+                                    <IconContext.Provider value={{ color: "red" }} onClick={handleIsFavorite}>
+                                        {isFavorite.liked ?
+                                            <AiFillHeart className={`w-8 h-8 text-red-500 cursor-pointer`} onClick={handleIsFavorite} />
+                                            : <AiOutlineHeart className={`w-8 h-8 cursor-pointer`} onClick={handleIsFavorite} />}
+                                    </IconContext.Provider>
+                                    <p className="font-medium text-sm text-gray-400">{isFavorite.count}</p>
                                 </div>
                                 <div className="flex flex-col items-center ml-10">
-                                    <AiOutlineEye className="w-8 h-8" />
-                                    <p className="font-medium text-sm text-center">553,031</p>
+                                    <IconContext.Provider value={{ color: "gray" }}>
+                                        <AiOutlineEye className="w-8 h-8" />
+                                    </IconContext.Provider>
+                                    <p className="font-medium text-sm text-gray-400">553,031</p>
                                 </div>
                             </div>
                         </div>
@@ -163,8 +176,7 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                         />
                     </motion.div>
                 </motion.div >
-            )
-            }
+            )}
         </>
     );
 }

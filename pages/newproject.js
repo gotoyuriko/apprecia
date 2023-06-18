@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/firebase/auth/AuthContext';
 import Navbar from '../components/Nav/Navbar';
 import Footer from '@/components/Footer';
-import Project from './Project';
+import Project from '@/components/Project';
 
 const NewProject = () => {
     const { currentUser } = useAuth();

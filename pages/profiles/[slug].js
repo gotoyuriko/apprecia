@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { BiUserCircle } from "react-icons/bi";
 import { useRouter } from "next/router";
+import { IconContext } from "react-icons";
 
 export default function Profile() {
     const router = useRouter();
@@ -45,17 +46,27 @@ export default function Profile() {
             <div className="container mx-auto py-8">
                 <div className="flex justify-center items-center">
                     <div className="flex items-center justify-center">
-                        {userData?.user_photoURL ?
-                            <Image
-                                width={200}
-                                height={200}
-                                src={userData.user_photoURL}
-                                alt="Profile Icon"
-                                className="w-16 h-16 rounded-full"
-                                priority
-                            /> :
-                            <BiUserCircle />
-                        }
+                        {/* Profile */}
+                        <IconContext.Provider
+                            value={{
+                                size: '3.5rem',
+                                className: 'text-center',
+                                title: 'Profile menu',
+                            }}
+                        >
+                            {userData?.user_photoURL ? (
+                                <Image
+                                    width={50}
+                                    height={50}
+                                    src={userData.user_photoURL}
+                                    alt="Profile"
+                                    className="w-16 h-16 rounded-full"
+                                    priority
+                                />
+                            ) : (
+                                <BiUserCircle />
+                            )}
+                        </IconContext.Provider>
                     </div>
                     <div className="flex flex-col justify-start ml-5">
                         <h1 className="text-2xl font-bold">{userData?.user_name}</h1>
@@ -91,6 +102,10 @@ export default function Profile() {
                                         title={filteredArtwork.project_title}
                                         imageUrls={filteredArtwork.project_imageUrls}
                                         uid={filteredArtwork.user_id}
+                                        description={filteredArtwork.project_description}
+                                        tags={filteredArtwork.project_tags}
+                                        link={filteredArtwork.project_link}
+                                        skills={filteredArtwork.project_skills}
                                     />
                                 </div>
                             ))

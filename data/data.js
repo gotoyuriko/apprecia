@@ -32,29 +32,29 @@ export const profileList = [
 
 // Skill Option List
 export const skillOptions = [
-    { value: 'Photoshop', label: 'Photoshop' },
-    { value: 'Illustrator', label: 'Illustrator' },
-    { value: 'Premiere Pro', label: 'Premiere Pro' },
-    { value: 'Blender', label: 'Blender' },
-    { value: 'Animate CC', label: 'Animate CC' },
-    { value: 'After Effect', label: 'After Effect' },
-    { value: 'Adobe XD', label: 'Adobe XD' },
-    { value: '3Ds Max', label: '3Ds Max' },
-    { value: 'Maya', label: 'Maya' },
-    { value: 'Procreate', label: 'Procreate' },
+    { value: 'Photoshop', label: 'Photoshop', color: '#0070de' },
+    { value: 'Illustrator', label: 'Illustrator', color: '#ff9a00' },
+    { value: 'Premiere Pro', label: 'Premiere Pro', color: '#ea77c0' },
+    { value: 'Blender', label: 'Blender', color: '#f5792a' },
+    { value: 'Animate CC', label: 'Animate CC', color: '#ff0000' },
+    { value: 'After Effect', label: 'After Effect', color: '#b536ff' },
+    { value: 'Adobe XD', label: 'Adobe XD', color: '#ff61f6' },
+    { value: '3Ds Max', label: '3Ds Max', color: '#b8b8b8' },
+    { value: 'Maya', label: 'Maya', color: '#1e9e00' },
+    { value: 'Procreate', label: 'Procreate', color: '#fbd947' },
 ];
 
 // Tag Option List
 export const tagOptions = [
-    { value: 'Illustration', label: 'Illustration' },
-    { value: 'Digital Drawing', label: 'Digital Drawing' },
-    { value: 'Traditional Drawing', label: 'Traditional Drawing' },
-    { value: 'Photo Editing', label: 'Photo Editing' },
-    { value: 'Animation', label: 'Animation' },
-    { value: '3D Modeling', label: '3D Modeling' },
-    { value: 'Film', label: 'Film' },
-    { value: 'UI / UX Design', label: 'UI / UX Design' },
-    { value: 'Graphic Design', label: 'Graphic Design' },
+    { value: 'Illustration', label: 'Illustration', color: '#ff8000' },
+    { value: 'Digital Drawing', label: 'Digital Drawing', color: '#5f27cd' },
+    { value: 'Traditional Drawing', label: 'Traditional Drawing', color: '#e84393' },
+    { value: 'Photo Editing', label: 'Photo Editing', color: '#3dc7ef' },
+    { value: 'Animation', label: 'Animation', color: '#ff3838' },
+    { value: '3D Modeling', label: '3D Modeling', color: '#00b894' },
+    { value: 'Film', label: 'Film', color: '#5352ed' },
+    { value: 'UI / UX Design', label: 'UI / UX Design', color: '#ff4757' },
+    { value: 'Graphic Design', label: 'Graphic Design', color: '#1e90ff' },
 ];
 
 // FAQ List

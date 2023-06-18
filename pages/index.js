@@ -6,7 +6,6 @@ import SearchBar from '@/components/SearchBar';
 import { useAuth } from '@/firebase/auth/AuthContext';
 import { useState, useEffect } from 'react';
 import GetArtwork from '@/firebase/GetArtwork';
-import BasicModal from '@/components/Modal';
 
 export default function Home() {
   const { currentUser } = useAuth();
@@ -27,15 +26,19 @@ export default function Home() {
       <Navbar user={currentUser} />
       <AppreciaView />
       <SearchBar />
-      <BasicModal />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <div className="flex justify-center mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {artworkData &&
             artworkData.map((item, index) => (
               <div key={index}>
                 <ArtworkCard
                   title={item.project_title}
+                  description={item.project_description}
                   imageUrls={item.project_imageUrls}
+                  tags={item.project_tags}
+                  link={item.project_link}
+                  skills={item.project_skills}
                   uid={item.user_id}
                 />
               </div>

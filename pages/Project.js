@@ -24,7 +24,6 @@ const Project = ({ user }) => {
     });
 
     const [images, setImages] = useState([]);
-    const [isDragging, setIsDragging] = useState(false);
     const [isURLValid, setIsURLValid] = useState(true);
     const [errImgMsg, setErrImgMsg] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
@@ -36,6 +35,27 @@ const Project = ({ user }) => {
         !projectData.project_description ||
         projectData.project_tags.length === 0 ||
         projectData.project_skills.length === 0;
+
+    const customStyles = {
+        control: (styles) => ({ ...styles, backgroundColor: 'white' }),
+        multiValue: (styles, { data }) => ({
+            ...styles,
+            backgroundColor: data.color + '1a',
+            // Apply transparency to the background color for multi-values
+        }),
+        multiValueLabel: (styles, { data }) => ({
+            ...styles,
+            color: data.color,
+        }),
+        multiValueRemove: (styles, { data }) => ({
+            ...styles,
+            color: data.color,
+            ':hover': {
+                backgroundColor: data.color,
+                color: 'white',
+            },
+        }),
+    }
 
     const selectFiles = () => {
         if (fileInputRef.current) {
@@ -249,6 +269,7 @@ const Project = ({ user }) => {
                                     project_tags: selectedOptions,
                                 }))
                             }
+                            styles={customStyles}
                             required
                         />
                     </div>
@@ -264,6 +285,7 @@ const Project = ({ user }) => {
                                     project_skills: selectedOptions,
                                 }))
                             }
+                            styles={customStyles}
                             required
                         />
                     </div>

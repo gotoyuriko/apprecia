@@ -43,8 +43,7 @@ export default function Profile() {
       <Navbar user={currentUser} />
       <div className="container mx-auto py-8">
         {/* Profile */}
-        <ProfileSection userData={userData} />
-
+        <ProfileSection userData={userData} setUserData={setUserData} />
 
         {artworkData?.filter((artwork) => artwork.user_id === userData?.user_id)
           .length === 0 ? (
@@ -57,8 +56,7 @@ export default function Profile() {
                 </p>
                 <button
                   onClick={() => router.push("/newproject")}
-                  className="mt-3 p-3 bg-black hover:bg-gray-600
- font-bold text-white rounded inline-block"
+                  className="mt-3 p-3 bg-black hover:bg-gray-600 font-bold text-white rounded inline-block"
                 >
                   Create Project
                 </button>
@@ -73,8 +71,8 @@ export default function Profile() {
           <div className="min-h-[70vh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 p-3 lg:py-8 lg:px-20 my-10">
             {artworkData
               ?.filter((artwork) => artwork.user_id === userData?.user_id)
-              .map((filteredArtwork) => (
-                <div key={filteredArtwork}>
+              .map((filteredArtwork, index) => (
+                <div key={index}>
                   <ArtworkCard
                     title={filteredArtwork.project_title}
                     imageUrls={filteredArtwork.project_imageUrls}

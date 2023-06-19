@@ -126,11 +126,6 @@ const Project = ({ user }) => {
         }
     };
 
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        setFormData({ ...formData, photoURL: URL.createObjectURL(file) });
-    };
-
     return (
         <div className="min-h-screen py-5">
             <h1 className="text-4xl font-bold text-center lg:text-start py-5 px-10">

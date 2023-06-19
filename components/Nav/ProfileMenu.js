@@ -31,7 +31,6 @@ export default function ProfileMenu({ profileList, user }) {
                 console.error("Error getting user:", error);
             }
         };
-
         fetchData();
     }, [user]);
 
@@ -48,18 +47,19 @@ export default function ProfileMenu({ profileList, user }) {
                     title: 'Profile menu',
                 }}
             >
-                {user?.photoURL ? (
+                {userData?.user_photoURL ? (
                     <Image
                         width={50}
                         height={50}
-                        src={user.photoURL}
+                        src={userData?.user_photoURL}
                         alt="Profile"
-                        className="rounded-full"
+                        className="rounded-full object-cover"
                         id="fade-button"
                         aria-controls={openProfile ? 'fade-menu' : undefined}
                         aria-haspopup="true"
                         aria-expanded={openProfile ? 'true' : undefined}
                         onClick={handleClick}
+                        style={{ borderRadius: '50%', aspectRatio: '1/1' }}
                     />
                 ) : (
                     <BiUserCircle

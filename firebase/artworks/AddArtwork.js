@@ -32,7 +32,7 @@ export default async function AddArtwork(images, projectData) {
             .map(tag => ({
                 label: tag.label.replace(/^__/i, ''),
                 value: tag.value,
-                color: tag.color,
+                color: tag.color ? tag.color : '#333333',
             }));
 
         updatedProjectData.project_skills = updatedProjectData.project_skills

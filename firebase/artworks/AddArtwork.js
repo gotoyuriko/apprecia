@@ -29,7 +29,6 @@ export default async function AddArtwork(images, projectData) {
 
         // Filter out invalid keys in tags and skills arrays
         updatedProjectData.project_tags = updatedProjectData.project_tags
-            .filter(tag => tag && tag.label && tag.value && tag.color)
             .map(tag => ({
                 label: tag.label.replace(/^__/i, ''),
                 value: tag.value,
@@ -37,11 +36,10 @@ export default async function AddArtwork(images, projectData) {
             }));
 
         updatedProjectData.project_skills = updatedProjectData.project_skills
-            .filter(skill => skill && skill.label && skill.value && skill.color)
             .map(skill => ({
                 label: skill.label.replace(/^__/i, ''),
                 value: skill.value,
-                color: skill.color,
+                color: skill.color ? skill.color : '#333333',
             }));
 
         docRef = await addDoc(collection(db, 'artProjects'), updatedProjectData);

@@ -37,7 +37,7 @@ const Project = ({ user }) => {
         control: (styles) => ({ ...styles, backgroundColor: 'white' }),
         multiValue: (styles, { data }) => ({
             ...styles,
-            backgroundColor: data.color + '1a',
+            backgroundColor: data.color ? data.color + '1a' : '#333333' + '1a',
             // Apply transparency to the background color for multi-values
         }),
         multiValueLabel: (styles, { data }) => ({
@@ -48,7 +48,7 @@ const Project = ({ user }) => {
             ...styles,
             color: data.color,
             ':hover': {
-                backgroundColor: data.color,
+                backgroundColor: data.color ? data.color : '#333333',
                 color: 'white',
             },
         }),
@@ -124,6 +124,11 @@ const Project = ({ user }) => {
                 router.push(`/profiles/${user.uid}`);
             }, 300);
         }
+    };
+
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        setFormData({ ...formData, photoURL: URL.createObjectURL(file) });
     };
 
     return (

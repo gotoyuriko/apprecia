@@ -8,7 +8,7 @@ export default async function UpdateLike(uid, createdAt, isLiked) {
     // Create a query to find the artProject's Document
     const q = query(collection(db, 'artProjects'), where('user_id', '==', uid), where('project_createdAt', '==', createdAt));
     const querySnapshot = await getDocs(q);
-    const artProjectRef = querySnapshot.docs[0].id;
+    const artProjectRef = doc(db, 'artProjects', querySnapshot.docs[0].id);
 
     try {
         if (isLiked) {
@@ -18,7 +18,7 @@ export default async function UpdateLike(uid, createdAt, isLiked) {
             });
 
             // Update artProject's Document
-            await updateDoc(doc(db, 'artProjects', artProjectRef), {
+            await updateDoc(artProjectRef, {
                 project_likesCount: increment(1),
                 project_likedBy: arrayUnion(uid)
             });
@@ -29,13 +29,12 @@ export default async function UpdateLike(uid, createdAt, isLiked) {
             });
 
             // Update artProject's Document
-            await updateDoc(doc(db, 'artProjects', artProjectRef), {
+            await updateDoc(artProjectRef, {
                 project_likesCount: increment(-1),
                 project_likedBy: arrayRemove(uid)
             });
         }
-
     } catch (error) {
-        console.error("Error adding artwork:", error);
+        console.error("Error updating like:", error);
     }
 }

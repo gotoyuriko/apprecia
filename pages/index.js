@@ -46,6 +46,7 @@ export default function Home() {
                   createdAt={item.project_createdAt}
                   likesCount={item.project_likesCount ?? 0}
                   likedBy={item.project_likedBy ?? []}
+                  viewsCount={item.project_viewsCount ?? 0}
                 />
               </div>
             ))}

@@ -109,6 +109,7 @@ export default function Profile() {
                                         createdAt={filteredArtwork.project_createdAt}
                                         likesCount={filteredArtwork.project_likesCount ?? 0}
                                         likedBy={filteredArtwork.project_likedBy ?? []}
+                                        viewsCount={filteredArtwork.project_viewsCount ?? 0}
                                     />
                                 </div>
                             ))

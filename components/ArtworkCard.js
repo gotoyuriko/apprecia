@@ -5,37 +5,32 @@ import GetUser from '@/firebase/users/GetUser';
 import Image from 'next/image';
 import { BiUserCircle, BiX } from 'react-icons/bi';
 import Link from 'next/link';
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { IconContext } from 'react-icons/lib';
 import UpdateLike from '@/firebase/likes/UpdateLike';
 import { useAuth } from '@/firebase/auth/AuthContext';
+import UpdateView from '@/firebase/projectviews/UpdateView';
 
-export default function ArtworkCard({ title, description, imageUrls, tags, skills, link, uid, createdAt, likesCount, likedBy }) {
+export default function ArtworkCard({ title, description, imageUrls, tags, skills, link, uid, createdAt, likesCount, likedBy, viewsCount }) {
     const { currentUser } = useAuth();
 
     const [userData, setUserData] = useState(null);
     const [open, setOpen] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
     const [likesNo, setLikesNo] = useState(likesCount);
+    const [viewsNo, setViewsNo] = useState(viewsCount);
 
     // Scroll Behavior
     useEffect(() => {
         document.body.style.overflowY = open ? 'hidden' : 'unset';
     }, [open]);
 
-    // Project Like Counts
-    useEffect(() => {
-        setLikesNo(likesCount);
-    }, [likesCount]);
-
     //Check if artwork was liked by you
     useEffect(() => {
         if (likedBy && currentUser) {
-            console.log(likedBy.includes(currentUser.uid));
             setIsLiked(likedBy.includes(currentUser.uid));
         }
     }, [likedBy, currentUser]);
-
 
     // Fetch Data
     useEffect(() => {
@@ -51,9 +46,21 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
         fetchData();
     }, [uid]);
 
+    // Open Modal
+    const handleIsModal = async () => {
+        setOpen(!open);
+        const hasViewed = await UpdateView(uid, createdAt);
+        hasViewed ? setViewsNo((prevViewsNo) => prevViewsNo + 1) : setViewsNo(viewsNo);
+    }
+
+    /* 
+    * Like Animation https://www.framer.com/motion/use-animate/
+    */
+    const controls = useAnimation();
     // Give / Remove Likes
-    const handleIsFavorite = async () => {
+    const handleIsLike = async () => {
         setIsLiked((prevIsLiked) => !prevIsLiked);
+        controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
         await UpdateLike(uid, createdAt, !isLiked);
         setLikesNo((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
     };
@@ -62,30 +69,42 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
         <>
             {/* Project Card */}
             <Card sx={{ maxWidth: 345 }}>
-                <CardActionArea onClick={() => setOpen(!open)}>
+                <CardActionArea onClick={handleIsModal}>
                     <CardMedia component="img" sx={{ height: "200px", width: "100%", objectFit: "cover" }} image={imageUrls[0]} />
                 </CardActionArea>
                 <CardActions className="flex justify-between items-center">
                     <div className="flex flex-col">
                         <p className="text-xl font-bold">{title}</p>
-                        <p className="text-sm text-gray-400">
+                        <Link href={`/profiles/${userData?.user_id}`} className="text-sm text-gray-400">
                             {userData?.user_name ? `By ${userData.user_name}` : ""}
-                        </p>
+                        </Link>
                     </div>
                     <div className="flex flex-row">
-                        <div className="flex flex-row">
+                        <div className="flex flex-col items-center mr-2">
                             <IconContext.Provider value={{ color: "red" }}>
-                                {isLiked ? (
-                                    <AiFillHeart className="w-6 h-6 text-red-500 cursor-pointer" onClick={handleIsFavorite} />
+                                {isLiked && currentUser ? (
+                                    <motion.div
+                                        onClick={currentUser && handleIsLike}
+                                        animate={controls}
+                                    >
+                                        <AiFillHeart className={`w-6 h-6 text-red-500 ${currentUser && 'cursor-pointer'}`} />
+                                    </motion.div>
                                 ) : (
-                                    <AiOutlineHeart className="w-6 h-6 cursor-pointer" onClick={handleIsFavorite} />
+                                    <motion.div
+                                        onClick={currentUser && handleIsLike}
+                                        animate={controls}
+                                    >
+                                        <AiOutlineHeart className={`w-6 h-6 text-red-500 ${currentUser && 'cursor-pointer'}`} />
+                                    </motion.div>
                                 )}
                             </IconContext.Provider>
-                            <span className="ml-2">{likesNo}</span>
+                            <span className='text-sm'>{likesNo}</span>
                         </div>
-                        <div className="flex flex-row">
-                            <AiOutlineEye className="ml-3 w-6 h-6" />
-                            <span className="ml-2">10</span>
+                        <div className="flex flex-col items-center">
+                            <IconContext.Provider value={{ color: "gray" }}>
+                                <AiOutlineEye className="w-6 h-6" />
+                            </IconContext.Provider>
+                            <span className='text-sm'>{viewsNo}</span>
                         </div>
                     </div>
                 </CardActions>
@@ -110,38 +129,45 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 {userData?.user_photoURL ? (
-                                    <Image
-                                        src={userData.user_photoURL}
-                                        alt="Profile"
-                                        width={50}
-                                        height={50}
-                                        className="w-16 h-16 rounded-full drop-shadow-md border-2"
-                                        priority
-                                    />
+                                    <Link href={`/profiles/${userData?.user_id}`}>
+                                        <Image
+                                            src={userData.user_photoURL}
+                                            alt="Profile"
+                                            width={50}
+                                            height={50}
+                                            className="w-16 h-16 rounded-full drop-shadow-md border-2"
+                                            priority
+                                        />
+                                    </Link>
                                 ) : (
                                     <BiUserCircle className="w-16 h-16" />
                                 )}
                                 <div className="flex flex-col">
                                     <p className="font-medium text-gray-700">{title}</p>
-                                    {/* Render user name */}
                                     {userData?.user_name && (
-                                        <p className="text-sm font-normal text-gray-400">{userData.user_name}</p>
+                                        <Link href={`/profiles/${userData?.user_id}`} className="text-sm font-normal text-gray-400">
+                                            {userData.user_name}
+                                        </Link>
                                     )}
                                 </div>
                             </div>
                             <div className="flex items-center justify-around pt-5 lg:pt-0">
                                 <div className="flex flex-col items-center">
                                     <IconContext.Provider value={{ color: "red" }}>
-                                        {isLiked ? (
-                                            <AiFillHeart
-                                                className="w-8 h-8 text-red-500 cursor-pointer"
-                                                onClick={handleIsFavorite}
-                                            />
+                                        {isLiked && currentUser ? (
+                                            <motion.div
+                                                onClick={currentUser && handleIsLike}
+                                                animate={controls}
+                                            >
+                                                <AiFillHeart className={`w-8 h-8 text-red-500 ${currentUser && 'cursor-pointer'}`} />
+                                            </motion.div>
                                         ) : (
-                                            <AiOutlineHeart
-                                                className="w-8 h-8 cursor-pointer"
-                                                onClick={handleIsFavorite}
-                                            />
+                                            <motion.div
+                                                onClick={currentUser && handleIsLike}
+                                                animate={controls}
+                                            >
+                                                <AiOutlineHeart className={`w-8 h-8 text-red-500 ${currentUser && 'cursor-pointer'}`} />
+                                            </motion.div>
                                         )}
                                     </IconContext.Provider>
                                     <p className="font-medium text-sm text-gray-400">{likesNo}</p>
@@ -150,7 +176,7 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                     <IconContext.Provider value={{ color: "gray" }}>
                                         <AiOutlineEye className="w-8 h-8" />
                                     </IconContext.Provider>
-                                    <p className="font-medium text-sm text-gray-400">553,031</p>
+                                    <p className="font-medium text-sm text-gray-400">{viewsNo}</p>
                                 </div>
                             </div>
                         </div>
@@ -203,7 +229,7 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
 
                             {link && link !== "" && (
                                 <Link href={link} target="_blank" className="flex items-center underline">
-                                    <AiOutlinePaperClip className="h-6 w-6" /> Vist {link.replace(/(^\w+:|^)\/\/(www\.)?/i, "").slice(0, 15)}...
+                                    <AiOutlinePaperClip className="h-6 w-6" /> {link.replace(/(^\w+:|^)\/\/(www\.)?/i, "").slice(0, 15)}...
                                 </Link>
                             )}
                         </div>

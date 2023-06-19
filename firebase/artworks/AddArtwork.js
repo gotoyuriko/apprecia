@@ -1,4 +1,3 @@
-
 import { db, storage } from '../Config';
 import { addDoc, collection } from 'firebase/firestore';
 import { v4 as uuid } from 'uuid';
@@ -25,24 +24,30 @@ export default async function AddArtwork(images, projectData) {
         const updatedProjectData = {
             ...projectData,
             project_createdAt: timestamp,
-            project_imageUrls: imageUrls,
+            project_imageUrls: imageUrls
         };
 
         // Filter out invalid keys in tags and skills arrays
-        updatedProjectData.project_tags = updatedProjectData.project_tags.map((tag) => {
-            const { label, value, color } = tag;
-            return { label: label.replace(/^__/i, ""), value, color };
-        });
+        updatedProjectData.project_tags = updatedProjectData.project_tags
+            .filter(tag => tag && tag.label && tag.value && tag.color)
+            .map(tag => ({
+                label: tag.label.replace(/^__/i, ''),
+                value: tag.value,
+                color: tag.color,
+            }));
 
-        updatedProjectData.project_skills = updatedProjectData.project_skills.map((skill) => {
-            const { label, value, color } = skill;
-            return { label: label.replace(/^__/i, ""), value, color };
-        });
+        updatedProjectData.project_skills = updatedProjectData.project_skills
+            .filter(skill => skill && skill.label && skill.value && skill.color)
+            .map(skill => ({
+                label: skill.label.replace(/^__/i, ''),
+                value: skill.value,
+                color: skill.color,
+            }));
 
-        docRef = await addDoc(collection(db, "artProjects"), updatedProjectData);
+        docRef = await addDoc(collection(db, 'artProjects'), updatedProjectData);
     } catch (e) {
         error = e;
-        console.error("Error adding artwork:", error);
+        console.error('Error adding artwork:', error);
     }
 
     return { docRef, error };

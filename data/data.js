@@ -21,11 +21,11 @@ export const profileList = [
         link: '/profile'
     },
     {
-        name: 'Create New Project',
+        name: 'Create Project',
         link: '/newproject'
     },
     {
-        name: 'Create New Room',
+        name: 'Create Room',
         link: '/newroom'
     }
 ]

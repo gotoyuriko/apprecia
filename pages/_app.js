@@ -1,4 +1,4 @@
-import { AuthContextProvider, AuthProvider } from '@/firebase/auth/AuthContext';
+import { AuthProvider } from '@/firebase/auth/AuthContext';
 import '@/styles/globals.css'
 
 export default function App({ Component, pageProps }) {

@@ -1,4 +1,4 @@
-import ArtworkCard from '@/components/ArtworkCard';
+import ArtworkCard from '@/components/ArtworkProject/ArtworkCard';
 import Navbar from '../components/Nav/Navbar';
 import AppreciaView from '@/components/AppreciaView';
 import Footer from '@/components/Footer';

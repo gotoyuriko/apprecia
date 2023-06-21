@@ -1,7 +1,7 @@
-import { db, storage } from '../Config';
-import { addDoc, collection } from 'firebase/firestore';
-import { v4 as uuid } from 'uuid';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from "../Config";
+import { addDoc, collection } from "firebase/firestore";
+import { v4 as uuid } from "uuid";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default async function AddArtwork(images, projectData) {
     let docRef = null;
@@ -24,28 +24,30 @@ export default async function AddArtwork(images, projectData) {
         const updatedProjectData = {
             ...projectData,
             project_createdAt: timestamp,
-            project_imageUrls: imageUrls
+            project_imageUrls: imageUrls,
         };
 
         // Filter out invalid keys in tags and skills arrays
-        updatedProjectData.project_tags = updatedProjectData.project_tags
-            .map(tag => ({
-                label: tag.label.replace(/^__/i, ''),
+        updatedProjectData.project_tags = updatedProjectData.project_tags.map(
+            (tag) => ({
+                label: tag.label.replace(/^__/i, ""),
                 value: tag.value,
-                color: tag.color ? tag.color : '#333333',
-            }));
+                color: tag.color ? tag.color : "#333333",
+            })
+        );
 
-        updatedProjectData.project_skills = updatedProjectData.project_skills
-            .map(skill => ({
-                label: skill.label.replace(/^__/i, ''),
+        updatedProjectData.project_skills = updatedProjectData.project_skills.map(
+            (skill) => ({
+                label: skill.label.replace(/^__/i, ""),
                 value: skill.value,
-                color: skill.color ? skill.color : '#333333',
-            }));
+                color: skill.color ? skill.color : "#333333",
+            })
+        );
 
-        docRef = await addDoc(collection(db, 'artProjects'), updatedProjectData);
+        docRef = await addDoc(collection(db, "artProjects"), updatedProjectData);
     } catch (e) {
         error = e;
-        console.error('Error adding artwork:', error);
+        console.error("Error adding artwork:", error);
     }
 
     return { docRef, error };

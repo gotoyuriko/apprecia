@@ -5,7 +5,7 @@ import Link from 'next/link';
 import NavItem from './NavItem';
 import SignInUpBtn from './SignInUpBtn';
 import ProfileMenu from './ProfileMenu';
-import { menuList, profileList } from '@/data/data';
+import { menuList, profileList } from '../../data/data';
 
 export default function Navbar({ user }) {
     // Hamburger Toggle Button

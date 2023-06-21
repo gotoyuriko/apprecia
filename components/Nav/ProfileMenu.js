@@ -35,7 +35,7 @@ export default function ProfileMenu({ profileList, user }) {
     }, [user]);
 
     // Update Profile Link
-    userData ? profileList[0].link = `/profiles/${userData?.user_id}` : null;
+    userData ? (profileList[0].link = `/profiles/${userData?.user_id}`) : null;
 
     return (
         <>

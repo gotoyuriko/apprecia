@@ -1,6 +1,5 @@
-import GetArtwork from '@/firebase/artworks/GetArtwork';
-import GetUser from '@/firebase/users/GetUser';
-import Image from 'next/image';
+import GetArtwork from '../firebase/artworks/GetArtwork';
+import GetUser from '../firebase/users/GetUser';
 import { useEffect, useState } from 'react';
 
 const AframeTest = () => {

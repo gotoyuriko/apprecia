@@ -1,4 +1,4 @@
-import { aboutFeatures } from '@/data/data';
+import { aboutFeatures } from '../../data/data';
 import { Parallax, ParallaxLayer } from '@react-spring/parallax';
 import AboutCard from './AboutCard';
 import Footer from '../Footer';

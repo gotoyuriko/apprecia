@@ -1,4 +1,4 @@
-import { useAuth } from '@/firebase/auth/AuthContext';
+import { useAuth } from '../../firebase/auth/AuthContext';
 import { useRouter } from 'next/router';
 
 export default function SignOutBtn() {

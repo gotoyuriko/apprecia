@@ -1,11 +1,11 @@
-import ArtworkCard from '@/components/ArtworkProject/ArtworkCard';
+import ArtworkCard from '../components/ArtworkProject/ArtworkCard';
 import Navbar from '../components/Nav/Navbar';
-import AppreciaView from '@/components/AppreciaView';
-import Footer from '@/components/Footer';
-import SearchBar from '@/components/SearchBar';
-import { useAuth } from '@/firebase/auth/AuthContext';
+import AppreciaView from '../components/AppreciaView';
+import Footer from '../components/Footer';
+import SearchBar from '../components/SearchBar';
+import { useAuth } from '../firebase/auth/AuthContext';
 import { useState, useEffect } from 'react';
-import GetArtwork from '@/firebase/artworks/GetArtwork';
+import GetArtwork from '../firebase/artworks/GetArtwork';
 
 export default function Home() {
   const { currentUser } = useAuth();

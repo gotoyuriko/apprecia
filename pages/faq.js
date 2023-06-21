@@ -1,8 +1,8 @@
 import { Accordion, AccordionItem } from '@szhsin/react-accordion';
-import Footer from '../components/Footer';
-import Navbar from '../components/Nav/Navbar';
-import { faqList } from '../data/data';
-import { useAuth } from '../firebase/auth/AuthContext';
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Nav/Navbar';
+import { faqList } from '@/data/data';
+import { useAuth } from '@/firebase/auth/AuthContext';
 
 export default function Faq() {
     const { currentUser } = useAuth();

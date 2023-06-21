@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/firebase/auth/AuthContext';
-import Navbar from '../components/Nav/Navbar';
+import Navbar from '@/components/Nav/Navbar';
 import Footer from '@/components/Footer';
 import Project from '@/components/ArtworkProject/Project';
 

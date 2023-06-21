@@ -1,7 +1,7 @@
-import { aboutFeatures } from '../../data/data';
+import { aboutFeatures } from '@data/data';
 import { Parallax, ParallaxLayer } from '@react-spring/parallax';
-import AboutCard from './AboutCard';
-import Footer from '../Footer';
+import AboutCard from '@components/About/AboutCard';
+import Footer from '@components/Footer';
 import { motion } from "framer-motion"
 import { useRef } from 'react';
 

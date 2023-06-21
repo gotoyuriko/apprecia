@@ -1,11 +1,11 @@
 import { BiMenuAltLeft, BiX } from 'react-icons/bi';
-import Logo from "./Logo";
 import { useState } from 'react';
 import Link from 'next/link';
+import { menuList, profileList } from '@/data/data';
+import Logo from './Logo';
 import NavItem from './NavItem';
 import SignInUpBtn from './SignInUpBtn';
 import ProfileMenu from './ProfileMenu';
-import { menuList, profileList } from '../../data/data';
 
 export default function Navbar({ user }) {
     // Hamburger Toggle Button

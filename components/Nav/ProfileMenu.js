@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SignOutBtn from './SignOutBtn';
 import Image from 'next/image';
-import GetUser from '@/firebase/users/GetUser';
+import GetUser from '../../firebase/users/GetUser';
 
 export default function ProfileMenu({ profileList, user }) {
     // Profile Icon

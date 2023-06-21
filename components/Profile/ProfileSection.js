@@ -208,7 +208,7 @@ export default function ProfileSection({ userData, setUserData }) {
                                 </button>
                             ) : null}
                         </div>
-                        <p className={`text-gray-600 text-justify max-w-lg break-words ${userData?.user_bio !== "" ? "ml-1 mt-1 block" : "ml-0 mt-0 hidden"}`}>
+                        <p className={`text-gray-600 text-justify max-w-lg break-words ${userData?.user_bio !== "" ? "ml-1 mt-1 block pr-5 md:pr-0" : "ml-0 mt-0 hidden"}`}>
                             {userData?.user_bio}
                         </p>
                     </div>

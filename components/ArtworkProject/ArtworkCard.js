@@ -68,7 +68,7 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
     return (
         <>
             {/* Project Card */}
-            <Card sx={{ maxWidth: 345 }}>
+            <Card sx={{ maxWidth: 380 }}>
                 <CardActionArea onClick={handleIsModal}>
                     <CardMedia component="img" sx={{ height: "200px", width: "100%", objectFit: "cover" }} image={imageUrls[0]} />
                 </CardActionArea>

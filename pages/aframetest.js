@@ -41,7 +41,7 @@ const AframeTest = () => {
 
     return (
         <>
-            <Navbar className='z-50' />
+            {/* <Navbar className='z-50' /> */}
             <a-scene>
                 <a-image src={firstArtwork} position='0 1.8 -2' ></a-image>
                 <a-sky src='/360panorama/room01.png'></a-sky>

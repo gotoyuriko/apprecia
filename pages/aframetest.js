@@ -1,3 +1,4 @@
+import Navbar from '@/components/Nav/Navbar';
 import GetArtwork from '@/firebase/artworks/GetArtwork';
 import GetUser from '@/firebase/users/GetUser';
 import { useEffect, useState } from 'react';
@@ -39,10 +40,13 @@ const AframeTest = () => {
     }, [artworkData, userData?.user_id]);
 
     return (
-        <a-scene>
-            <a-image src={firstArtwork} position='0 2 -3' width="3" height="1.5"></a-image>
-            <a-sky src='/360panorama/room01.png'></a-sky>
-        </a-scene>
+        <>
+            <Navbar className='z-50' />
+            <a-scene>
+                <a-image src={firstArtwork} position='0 1.8 -2' ></a-image>
+                <a-sky src='/360panorama/room01.png'></a-sky>
+            </a-scene>
+        </>
     );
 };
 

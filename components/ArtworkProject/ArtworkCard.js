@@ -1,17 +1,34 @@
-import { Card, CardActionArea, CardActions, CardMedia } from '@mui/material';
-import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlinePaperClip } from 'react-icons/ai';
-import { useEffect, useState } from 'react';
-import GetUser from '@/firebase/users/GetUser';
-import Image from 'next/image';
-import { BiUserCircle, BiX } from 'react-icons/bi';
-import Link from 'next/link';
+import { Card, CardActionArea, CardActions, CardMedia } from "@mui/material";
+import {
+    AiFillHeart,
+    AiOutlineEye,
+    AiOutlineHeart,
+    AiOutlinePaperClip,
+} from "react-icons/ai";
+import { useEffect, useState } from "react";
+import GetUser from "@/firebase/users/GetUser";
+import Image from "next/image";
+import { BiUserCircle, BiX } from "react-icons/bi";
+import Link from "next/link";
 import { motion, useAnimation } from "framer-motion";
-import { IconContext } from 'react-icons/lib';
-import UpdateLike from '@/firebase/likes/UpdateLike';
-import { useAuth } from '@/firebase/auth/AuthContext';
-import UpdateView from '@/firebase/projectviews/UpdateView';
+import { IconContext } from "react-icons/lib";
+import UpdateLike from "@/firebase/likes/UpdateLike";
+import { useAuth } from "@/firebase/auth/AuthContext";
+import UpdateView from "@/firebase/projectviews/UpdateView";
 
-export default function ArtworkCard({ title, description, imageUrls, tags, skills, link, uid, createdAt, likesCount, likedBy, viewsCount }) {
+export default function ArtworkCard({
+    title,
+    description,
+    imageUrls,
+    tags,
+    skills,
+    link,
+    uid,
+    createdAt,
+    likesCount,
+    likedBy,
+    viewsCount,
+}) {
     const { currentUser } = useAuth();
 
     const [userData, setUserData] = useState(null);
@@ -22,15 +39,15 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
 
     // Scroll Behavior
     useEffect(() => {
-        document.body.style.overflowY = open ? 'hidden' : 'unset';
+        document.body.style.overflowY = open ? "hidden" : "unset";
     }, [open]);
 
     //Check if artwork was liked by you
     useEffect(() => {
-        if (likedBy && currentUser) {
+        if (currentUser) {
             setIsLiked(likedBy.includes(currentUser.uid));
         }
-    }, [likedBy, currentUser]);
+    }, [likedBy, currentUser, title]);
 
     // Fetch Data
     useEffect(() => {
@@ -50,18 +67,20 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
     const handleIsModal = async () => {
         setOpen(!open);
         const hasViewed = await UpdateView(uid, createdAt);
-        hasViewed ? setViewsNo((prevViewsNo) => prevViewsNo + 1) : setViewsNo(viewsNo);
-    }
+        hasViewed
+            ? setViewsNo((prevViewsNo) => prevViewsNo + 1)
+            : setViewsNo(viewsNo);
+    };
 
-    /* 
-    * Like Animation https://www.framer.com/motion/use-animate/
-    */
+    /*
+     * Like Animation https://www.framer.com/motion/use-animate/
+     */
     const controls = useAnimation();
     // Give / Remove Likes
     const handleIsLike = async () => {
         setIsLiked((prevIsLiked) => !prevIsLiked);
         controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
-        await UpdateLike(uid, createdAt, !isLiked);
+        await UpdateLike(uid, createdAt, !isLiked, currentUser.uid);
         setLikesNo((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
     };
 
@@ -70,12 +89,19 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
             {/* Project Card */}
             <Card sx={{ maxWidth: 380 }}>
                 <CardActionArea onClick={handleIsModal}>
-                    <CardMedia component="img" sx={{ height: "200px", width: "100%", objectFit: "cover" }} image={imageUrls[0]} />
+                    <CardMedia
+                        component="img"
+                        sx={{ height: "200px", width: "100%", objectFit: "cover" }}
+                        image={imageUrls[0]}
+                    />
                 </CardActionArea>
                 <CardActions className="flex justify-between items-center">
                     <div className="flex flex-col">
                         <p className="text-xl font-bold">{title}</p>
-                        <Link href={`/profiles/${userData?.user_id}`} className="text-sm text-gray-400">
+                        <Link
+                            href={`/profiles/${userData?.user_id}`}
+                            className="text-sm text-gray-400"
+                        >
                             {userData?.user_name ? `By ${userData.user_name}` : ""}
                         </Link>
                     </div>
@@ -87,24 +113,30 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                         onClick={currentUser && handleIsLike}
                                         animate={controls}
                                     >
-                                        <AiFillHeart className={`w-6 h-6 text-red-500 ${currentUser && 'cursor-pointer'}`} />
+                                        <AiFillHeart
+                                            className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"
+                                                }`}
+                                        />
                                     </motion.div>
                                 ) : (
                                     <motion.div
                                         onClick={currentUser && handleIsLike}
                                         animate={controls}
                                     >
-                                        <AiOutlineHeart className={`w-6 h-6 text-red-500 ${currentUser && 'cursor-pointer'}`} />
+                                        <AiOutlineHeart
+                                            className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"
+                                                }`}
+                                        />
                                     </motion.div>
                                 )}
                             </IconContext.Provider>
-                            <span className='text-sm'>{likesNo}</span>
+                            <span className="text-sm">{likesNo}</span>
                         </div>
                         <div className="flex flex-col items-center">
                             <IconContext.Provider value={{ color: "gray" }}>
                                 <AiOutlineEye className="w-6 h-6" />
                             </IconContext.Provider>
-                            <span className='text-sm'>{viewsNo}</span>
+                            <span className="text-sm">{viewsNo}</span>
                         </div>
                     </div>
                 </CardActions>
@@ -145,7 +177,10 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                 <div className="flex flex-col">
                                     <p className="font-medium text-gray-700">{title}</p>
                                     {userData?.user_name && (
-                                        <Link href={`/profiles/${userData?.user_id}`} className="text-sm font-normal text-gray-400">
+                                        <Link
+                                            href={`/profiles/${userData?.user_id}`}
+                                            className="text-sm font-normal text-gray-400"
+                                        >
                                             {userData.user_name}
                                         </Link>
                                     )}
@@ -159,14 +194,20 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                                 onClick={currentUser && handleIsLike}
                                                 animate={controls}
                                             >
-                                                <AiFillHeart className={`w-8 h-8 text-red-500 ${currentUser && 'cursor-pointer'}`} />
+                                                <AiFillHeart
+                                                    className={`w-8 h-8 text-red-500 ${currentUser && "cursor-pointer"
+                                                        }`}
+                                                />
                                             </motion.div>
                                         ) : (
                                             <motion.div
                                                 onClick={currentUser && handleIsLike}
                                                 animate={controls}
                                             >
-                                                <AiOutlineHeart className={`w-8 h-8 text-red-500 ${currentUser && 'cursor-pointer'}`} />
+                                                <AiOutlineHeart
+                                                    className={`w-8 h-8 text-red-500 ${currentUser && "cursor-pointer"
+                                                        }`}
+                                                />
                                             </motion.div>
                                         )}
                                     </IconContext.Provider>
@@ -204,7 +245,9 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                             <span
                                                 key={index}
                                                 className="text-sm text-white p-1.5 rounded"
-                                                style={{ backgroundColor: tag.color ? tag.color : "#aaa" }}
+                                                style={{
+                                                    backgroundColor: tag.color ? tag.color : "#aaa",
+                                                }}
                                             >
                                                 {tag.label}
                                             </span>
@@ -218,7 +261,9 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                             <span
                                                 key={index}
                                                 className="text-sm text-white p-1.5 rounded"
-                                                style={{ backgroundColor: skill.color ? skill.color : "#aaa" }}
+                                                style={{
+                                                    backgroundColor: skill.color ? skill.color : "#aaa",
+                                                }}
                                             >
                                                 {skill.label}
                                             </span>
@@ -228,8 +273,13 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                             </div>
 
                             {link && link !== "" && (
-                                <Link href={link} target="_blank" className="flex items-center underline">
-                                    <AiOutlinePaperClip className="h-6 w-6" /> {link.replace(/(^\w+:|^)\/\/(www\.)?/i, "").slice(0, 15)}...
+                                <Link
+                                    href={link}
+                                    target="_blank"
+                                    className="flex items-center underline"
+                                >
+                                    <AiOutlinePaperClip className="h-6 w-6" />{" "}
+                                    {link.replace(/(^\w+:|^)\/\/(www\.)?/i, "").slice(0, 15)}...
                                 </Link>
                             )}
                         </div>

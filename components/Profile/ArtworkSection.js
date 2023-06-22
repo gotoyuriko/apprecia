@@ -25,17 +25,13 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
         },
     ];
 
-    const filteredArtworks = artworkData?.filter(
-        (artwork) => artwork.user_id === userData?.user_id
-    );
-    const likedArtworks = artworkData?.filter(
-        (artwork) => userData?.user_likedArtworks?.includes(artwork.artwork_id)
-    );
+    const yourArtworks = artworkData?.filter((artwork) => artwork.user_id === userData?.user_id);
+    const likedArtworks = artworkData?.filter((artwork) => artwork?.project_likedBy?.includes(currentUser.uid));
 
     const tabContent = () => {
         switch (activeTab) {
             case "artwork":
-                if (filteredArtworks?.length === 0) {
+                if (yourArtworks?.length === 0) {
                     return (
                         <div className="h-[70vh] w-full flex justify-center items-center">
                             {currentUser ? (
@@ -60,7 +56,7 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
                     );
                 } else {
                     return (
-                        <>{artworkCotent()}</>
+                        <>{artworkCotent(yourArtworks)}</>
                     );
                 }
             case "liked":
@@ -82,41 +78,45 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
                     );
                 } else {
                     return (
-                        <>{artworkCotent()}</>
+                        <>{artworkCotent(likedArtworks)}</>
                     );
                 }
             case "room":
-                if (likedArtworks?.length === 0) {
-                    return (
-                        <div className="h-[70vh] w-full flex justify-center items-center">
-                            {currentUser ? (
-                                <div className="flex flex-col">
-                                    <p className="font-bold text-lg text-center">
-                                        Room Section
-                                    </p>
-                                </div>
-                            ) : (
-                                <p className="font-bold text-lg">
-                                    Test
+                // if (likedArtworks?.length === 0) {
+                return (
+                    <div className="h-[70vh] w-full flex justify-center items-center">
+                        {currentUser ? (
+                            <div className="flex flex-col">
+                                <p className="font-bold text-lg text-center">
+                                    Room Section
                                 </p>
-                            )}
-                        </div>
-                    );
-                } else {
-                    return (
-                        <>{artworkCotent()}</>
-                    )
-                }
+                            </div>
+                        ) : (
+                            <p className="font-bold text-lg">
+                                Test
+                            </p>
+                        )}
+                    </div>
+                );
+            // } else {
+            // return (
+            //     <>{artworkCotent(likedArtworks)}</>
+            // )
+            // }
             default:
                 return null;
         }
     };
 
-    const artworkCotent = () => {
+    const artworkCotent = (filteredArtworks) => {
         return (
             <div className="min-h-[70vh] w-screen grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto gap-5 px-3 py-8 lg:px-20">
                 {filteredArtworks?.map((filteredArtwork, index) => (
-                    <div key={index}>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        key={index}>
                         <ArtworkCard
                             title={filteredArtwork.project_title}
                             imageUrls={filteredArtwork.project_imageUrls}
@@ -130,7 +130,7 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
                             likedBy={filteredArtwork.project_likedBy ?? []}
                             viewsCount={filteredArtwork.project_viewsCount ?? 0}
                         />
-                    </div>
+                    </motion.div>
                 ))}
             </div>
         )
@@ -154,13 +154,7 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
                     </button>
                 ))}
             </div>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-            >
-                {tabContent()}
-            </motion.div>
+            {tabContent()}
         </div>
     );
 }

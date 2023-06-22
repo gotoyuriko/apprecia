@@ -6,7 +6,7 @@
   This line imports a font from Google Fonts
   The URL provided specifies the font family, weights and display properties.
 */
-@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@500&display=swap");
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -14,19 +14,15 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-/* Disable Dark Mode */
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-} */
-
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
-  font-family: 'League Spartan', sans-serif;
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  font-family: "League Spartan", sans-serif;
 }
 
 /* This is to style FAQ Accordion transition */
@@ -35,18 +31,18 @@ body {
 }
 
 /* About Page */
-#artworks {
+#artworks{
   background-image: url(../public/about/artworks.svg);
 }
 
-#people {
+#people{
   background-image: url(../public/about/people.svg);
 }
 
-#blockgray {
+#blockgray{
   background-image: url(../public/about/blockgray.svg);
 }
 
-#blockwhite {
+#blockwhite{
   background-image: url(../public/about/blockwhite.svg);
 }

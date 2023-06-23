@@ -27,7 +27,7 @@ export default function ArtworkCard({
     createdAt,
     likesCount,
     likedBy,
-    viewsCount,
+    viewsCount
 }) {
     const { currentUser } = useAuth();
 

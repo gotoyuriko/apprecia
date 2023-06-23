@@ -8,7 +8,6 @@ import AddArtwork from '@/firebase/artworks/AddArtwork';
 
 const Project = ({ user }) => {
     const router = useRouter();
-
     const [projectData, setProjectData] = useState({
         project_title: '',
         project_description: '',
@@ -16,6 +15,7 @@ const Project = ({ user }) => {
         project_skills: [],
         project_link: '',
         user_id: user.uid,
+        user_name: user.displayName,
         project_createdAt: '',
         project_imageUrls: []
     });
@@ -37,8 +37,7 @@ const Project = ({ user }) => {
         control: (styles) => ({ ...styles, backgroundColor: 'white' }),
         multiValue: (styles, { data }) => ({
             ...styles,
-            backgroundColor: data.color ? data.color + '1a' : '#333333' + '1a',
-            // Apply transparency to the background color for multi-values
+            backgroundColor: data.color ? data.color + '1a' : '#333333' + '1a'
         }),
         multiValueLabel: (styles, { data }) => ({
             ...styles,

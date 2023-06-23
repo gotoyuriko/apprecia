@@ -25,9 +25,8 @@ export default function SearchBar({ artworkData, setFilteredData }) {
                 .length > 0
         );
 
-        if (searchKeyword === '') {
+        if (searchKeyword === "") {
             setFilteredData([...artworkData]);
-            return;
         } else {
             setFilteredData(searchedPosts);
         }

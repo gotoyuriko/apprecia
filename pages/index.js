@@ -1,15 +1,16 @@
-import ArtworkCard from '@/components/ArtworkProject/ArtworkCard';
-import Navbar from '@/components/Nav/Navbar';
-import AppreciaView from '@/components/AppreciaView';
-import Footer from '@/components/Footer';
-import SearchBar from '@/components/SearchBar';
-import { useAuth } from '@/firebase/auth/AuthContext';
-import { useState, useEffect } from 'react';
-import GetArtwork from '@/firebase/artworks/GetArtwork';
+import ArtworkCard from "@/components/ArtworkProject/ArtworkCard";
+import Navbar from "@/components/Nav/Navbar";
+import AppreciaView from "@/components/AppreciaView";
+import Footer from "@/components/Footer";
+import SearchBar from "@/components/SearchBar";
+import { useAuth } from "@/firebase/auth/AuthContext";
+import { useState, useEffect } from "react";
+import GetArtwork from "@/firebase/artworks/GetArtwork";
 
 export default function Home() {
   const { currentUser } = useAuth();
-  const [artworkData, setArtworkData] = useState(null);
+  const [artworkData, setArtworkData] = useState([]);
+  const [filteredData, setFilteredData] = useState(artworkData);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,16 +25,18 @@ export default function Home() {
     fetchData();
   }, []);
 
+
   return (
     <div className="w-full">
       <Navbar user={currentUser} />
       <AppreciaView />
-      <SearchBar />
+
+      <SearchBar artworkData={artworkData} setFilteredData={setFilteredData} />
 
       <div className="flex justify-center mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {artworkData &&
-            artworkData.map((item, index) => (
+          {filteredData &&
+            filteredData.map((item, index) => (
               <div key={index}>
                 <ArtworkCard
                   title={item.project_title}

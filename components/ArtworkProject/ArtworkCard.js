@@ -59,7 +59,6 @@ export default function ArtworkCard({
                 console.error("Error getting user:", error);
             }
         };
-
         fetchData();
     }, [uid]);
 

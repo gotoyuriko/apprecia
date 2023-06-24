@@ -15,10 +15,12 @@ const NewProject = () => {
         }
     }, [currentUser, router]);
 
+    const projectStatus = 'new';
+
     return (
         <div className="w-full">
             <Navbar user={currentUser} />
-            <Project user={currentUser} />
+            <Project user={currentUser} status={projectStatus} />
             <Footer />
         </div>
     );

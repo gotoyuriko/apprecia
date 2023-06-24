@@ -22,7 +22,7 @@ export const profileList = [
     },
     {
         name: 'Create Project',
-        link: '/newproject'
+        link: '/projects/newproject'
     },
     {
         name: 'Create Room',

@@ -50,5 +50,5 @@ export default async function AddArtwork(images, projectData) {
         console.error("Error adding artwork:", error);
     }
 
-    return { docRef, error };
+    return { error };
 }

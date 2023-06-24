@@ -3,7 +3,7 @@ import {
     updateDoc,
 } from "firebase/firestore";
 import { db, storage } from "../Config";
-import { deleteObject, ref } from "firebase/storage";
+import { deleteObject, ref, getDownloadURL } from "firebase/storage";
 
 export default async function UpdateSingleArtwork(images, artworkData, slug) {
     let error = null;
@@ -39,7 +39,7 @@ export default async function UpdateSingleArtwork(images, artworkData, slug) {
             // Extract the image file name from URL
             const imageFilename = imageUrl.split('%2F').pop().split('?')[0];
             // Delete the image from storage
-            await deleteObject(ref(storage, `projectArtwork / ${imageFilename}`));
+            await deleteObject(ref(storage, `projectArtwork/${imageFilename}`));
         }
 
         const updatedProjectData = {

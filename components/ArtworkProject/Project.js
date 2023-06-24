@@ -59,6 +59,11 @@ const Project = ({ user, status, slug }) => {
             artworkData.project_tags.length === 0 ||
             artworkData.project_skills.length === 0;
 
+    useEffect(() => {
+        console.log(isButtonDisabled);
+    }, [isButtonDisabled])
+
+
     const customStyles = {
         control: (styles) => ({ ...styles, backgroundColor: "white" }),
         multiValue: (styles, { data }) => ({
@@ -263,7 +268,7 @@ const Project = ({ user, status, slug }) => {
                             rows="4"
                             value={
                                 status === "new"
-                                    ? projectData.project_title
+                                    ? projectData.project_description
                                     : artworkData.project_description
                             }
                             onChange={(e) => {

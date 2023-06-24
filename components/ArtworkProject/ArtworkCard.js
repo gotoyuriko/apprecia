@@ -1,10 +1,5 @@
-import { Card, CardActionArea, CardActions, CardMedia } from "@mui/material";
-import {
-    AiFillHeart,
-    AiOutlineEye,
-    AiOutlineHeart,
-    AiOutlinePaperClip,
-} from "react-icons/ai";
+import { Button, Card, CardActionArea, CardActions, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Popover, Tooltip } from "@mui/material";
+import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlinePaperClip } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import GetUser from "@/firebase/users/GetUser";
 import Image from "next/image";
@@ -15,21 +10,14 @@ import { IconContext } from "react-icons/lib";
 import UpdateLike from "@/firebase/likes/UpdateLike";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import UpdateView from "@/firebase/projectviews/UpdateView";
+import { FiMoreVertical } from "react-icons/fi";
+import GetArtworkId from "@/firebase/artworks/GetArtworkId";
+import { useRouter } from "next/router";
+import DeleteArtwork from "@/firebase/artworks/DeleteArtwork";
 
-export default function ArtworkCard({
-    title,
-    description,
-    imageUrls,
-    tags,
-    skills,
-    link,
-    uid,
-    createdAt,
-    likesCount,
-    likedBy,
-    viewsCount
-}) {
+export default function ArtworkCard({ title, description, imageUrls, tags, skills, link, uid, createdAt, likesCount, likedBy, viewsCount }) {
     const { currentUser } = useAuth();
+    const router = new useRouter();
 
     const [userData, setUserData] = useState(null);
     const [open, setOpen] = useState(false);
@@ -83,6 +71,52 @@ export default function ArtworkCard({
         setLikesNo((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
     };
 
+    // Tooltip
+    const [tooltip, setTooltip] = useState(null);
+    const handleTooltip = (event) => {
+        setTooltip(event.currentTarget);
+    };
+    const handleTooltipClose = () => {
+        setTooltip(null);
+    };
+    const tooltipOpen = Boolean(tooltip);
+    const id = tooltipOpen ? 'simple-popover' : undefined;
+
+    // Edit Project
+    const handleEdit = () => {
+        const fetchData = async () => {
+            try {
+                const artworkId = await GetArtworkId(uid, createdAt);
+                router.push(`/projects/update/${artworkId}`)
+            } catch (error) {
+                console.error("Error getting artwork id:", error);
+            }
+        };
+
+        fetchData();
+    }
+
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    // Delete Project
+    const handleDeleteOpen = () => {
+        setDeleteOpen(true);
+    }
+    const handleDeleteClose = () => {
+        setDeleteOpen(false);
+    };
+    const handleDeleteProject = async () => {
+        const fetchData = async () => {
+            try {
+                const artworkId = await GetArtworkId(uid, createdAt);
+                await DeleteArtwork(imageUrls, artworkId);
+            } catch (error) {
+                console.error("Error getting artwork id or deleting artwork:", error);
+            }
+        };
+        await fetchData();
+        router.reload();
+    };
+
     return (
         <>
             {/* Project Card */}
@@ -112,20 +146,14 @@ export default function ArtworkCard({
                                         onClick={currentUser && handleIsLike}
                                         animate={controls}
                                     >
-                                        <AiFillHeart
-                                            className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"
-                                                }`}
-                                        />
+                                        <AiFillHeart className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"}`} />
                                     </motion.div>
                                 ) : (
                                     <motion.div
                                         onClick={currentUser && handleIsLike}
                                         animate={controls}
                                     >
-                                        <AiOutlineHeart
-                                            className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"
-                                                }`}
-                                        />
+                                        <AiOutlineHeart className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"}`} />
                                     </motion.div>
                                 )}
                             </IconContext.Provider>
@@ -218,6 +246,54 @@ export default function ArtworkCard({
                                     </IconContext.Provider>
                                     <p className="font-medium text-sm text-gray-400">{viewsNo}</p>
                                 </div>
+                                <Tooltip title="More" placement="right">
+                                    <div className="flex flex-col items-center ml-10 hover:cursor-pointer"
+                                        onClick={handleTooltip}>
+                                        <IconContext.Provider value={{ color: "gray" }}>
+                                            <FiMoreVertical className="w-8 h-8" />
+                                        </IconContext.Provider>
+                                    </div>
+                                </Tooltip>
+                                <Popover
+                                    id={id}
+                                    open={tooltipOpen}
+                                    anchorEl={tooltip}
+                                    onClose={handleTooltipClose}
+                                    anchorOrigin={{
+                                        vertical: 'center',
+                                        horizontal: 'center',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                >
+                                    <ul className="py-2">
+                                        <li onClick={handleEdit} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Edit</li>
+                                        <li onClick={handleDeleteOpen} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Delete</li>
+                                    </ul>
+                                </Popover>
+                                <Dialog
+                                    open={deleteOpen}
+                                    onClose={handleDeleteClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                >
+                                    <DialogTitle id="alert-dialog-title">Delete Project</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                            Are you sure you want to delete this project? This action cannot be undone.
+                                        </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleDeleteClose} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={handleDeleteProject} variant="contained" autoFocus>
+                                            Delete
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </div>
                         </div>
                         <hr className="my-4" />

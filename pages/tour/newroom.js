@@ -1,9 +1,9 @@
-import Navbar from '@/components/Nav/Navbar';
+import CreateTitleText from '@/components/VirtualTour/CreateTitleText';
 import GetArtwork from '@/firebase/artworks/GetArtwork';
 import GetUser from '@/firebase/users/GetUser';
 import { useEffect, useState } from 'react';
 
-const AframeTest = () => {
+const NewRoom = () => {
     const uid = 'dfqbciDedkY1YuNH0xBcXPe6iNG2';
     const [userData, setUserData] = useState('');
     const [artworkData, setArtworkData] = useState([]);
@@ -41,7 +41,7 @@ const AframeTest = () => {
 
     return (
         <>
-            {/* <Navbar className='z-50' /> */}
+            <CreateTitleText />
             <a-scene>
                 <a-image src={firstArtwork} position='0 1.8 -2' ></a-image>
                 <a-sky src='/360panorama/room01.png'></a-sky>
@@ -50,4 +50,4 @@ const AframeTest = () => {
     );
 };
 
-export default AframeTest;
+export default NewRoom;

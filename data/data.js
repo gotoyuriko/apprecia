@@ -26,7 +26,7 @@ export const profileList = [
     },
     {
         name: 'Create Room',
-        link: '/newroom'
+        link: '/tour/newroom'
     }
 ]
 

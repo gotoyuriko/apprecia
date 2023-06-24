@@ -53,7 +53,7 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
     // Open Modal
     const handleIsModal = async () => {
         setOpen(!open);
-        const hasViewed = await UpdateView(uid, createdAt);
+        const hasViewed = await UpdateView(uid, createdAt, currentUser);
         hasViewed
             ? setViewsNo((prevViewsNo) => prevViewsNo + 1)
             : setViewsNo(viewsNo);

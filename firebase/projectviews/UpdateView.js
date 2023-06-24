@@ -1,7 +1,7 @@
 import { collection, doc, getDocs, updateDoc, arrayUnion, increment, query, where } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function UpdateView(uid, createdAt) {
+export default async function UpdateView(uid, createdAt, currentUser) {
     try {
         // Create a query to find the artProject's Document
         const q = query(collection(db, 'artProjects'), where('user_id', '==', uid), where('project_createdAt', '==', createdAt));
@@ -15,11 +15,11 @@ export default async function UpdateView(uid, createdAt) {
         const viewedBy = artProjectData.project_viewedBy || [];
 
         // Check if the project has been viewed by the user
-        if (!viewedBy.includes(uid)) {
+        if (!viewedBy.includes(currentUser.uid)) {
             // Update artProject's Document
             await updateDoc(artProjectRef, {
                 project_viewsCount: increment(1),
-                project_viewedBy: arrayUnion(uid)
+                project_viewedBy: arrayUnion(currentUser.uid)
             });
             return true;
         }

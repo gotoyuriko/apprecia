@@ -8,7 +8,7 @@ import { deleteObject, ref } from "firebase/storage";
 import { storage } from "@/firebase/Config";
 import { useAuth } from "@/firebase/auth/AuthContext";
 
-export default function ProfileSection({ userData, setUserData }) {
+export default function ProfileSection({ userData, setUserData, slug }) {
     const { currentUser } = useAuth();
     const router = useRouter();
     const fileInputRef = useRef(null);
@@ -199,21 +199,22 @@ export default function ProfileSection({ userData, setUserData }) {
                     <div className="flex flex-col justify-start ml-5">
                         <div className="flex flex-row items-center">
                             <h1 className="text-2xl font-bold mr-3">{userData?.user_name}</h1>
-                            {currentUser ? (
-                                <button
+                            {currentUser && currentUser.uid === slug &&
+                                < button
                                     onClick={() => setEditMode(!editMode)}
                                     className="bg-gray-300 shadow hover:bg-gray-400 font-bold text-sm py-2 px-2 rounded"
                                 >
                                     Edit Profile
                                 </button>
-                            ) : null}
+                            }
                         </div>
                         <p className={`text-gray-600 text-justify max-w-lg break-words ${userData?.user_bio !== "" ? "ml-1 mt-1 block pr-5 md:pr-0" : "ml-0 mt-0 hidden"}`}>
                             {userData?.user_bio}
                         </p>
                     </div>
                 </div>
-                {currentUser ? (
+                {
+                    currentUser && currentUser.uid === slug &&
                     <div className="flex flex-row mt-5 lg:mt-0">
                         <button
                             onClick={() => router.push("/newproject")}
@@ -222,14 +223,14 @@ export default function ProfileSection({ userData, setUserData }) {
                             Create Project
                         </button>
                         <button
-                            onClick={() => router.push("/newroom")}
+                            onClick={() => router.push("/tour/newroom")}
                             className="bg-gray-500 shadow hover:bg-gray-600 text-white font-bold py-2 px-3 rounded"
                         >
                             Create Room
                         </button>
                     </div>
-                ) : null}
-            </div>
+                }
+            </div >
         );
     }
 }

@@ -59,11 +59,6 @@ const Project = ({ user, status, slug }) => {
             artworkData.project_tags.length === 0 ||
             artworkData.project_skills.length === 0;
 
-    useEffect(() => {
-        console.log(isButtonDisabled);
-    }, [isButtonDisabled])
-
-
     const customStyles = {
         control: (styles) => ({ ...styles, backgroundColor: "white" }),
         multiValue: (styles, { data }) => ({

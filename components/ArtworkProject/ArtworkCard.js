@@ -117,6 +117,8 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
         router.reload();
     };
 
+    console.log(currentUser && currentUser.uid === uid);
+
     return (
         <>
             {/* Project Card */}
@@ -246,54 +248,62 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                     </IconContext.Provider>
                                     <p className="font-medium text-sm text-gray-400">{viewsNo}</p>
                                 </div>
-                                <Tooltip title="More" placement="right">
-                                    <div className="flex flex-col items-center ml-10 hover:cursor-pointer"
-                                        onClick={handleTooltip}>
-                                        <IconContext.Provider value={{ color: "gray" }}>
-                                            <FiMoreVertical className="w-8 h-8" />
-                                        </IconContext.Provider>
-                                    </div>
-                                </Tooltip>
-                                <Popover
-                                    id={id}
-                                    open={tooltipOpen}
-                                    anchorEl={tooltip}
-                                    onClose={handleTooltipClose}
-                                    anchorOrigin={{
-                                        vertical: 'center',
-                                        horizontal: 'center',
-                                    }}
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
-                                >
-                                    <ul className="py-2">
-                                        <li onClick={handleEdit} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Edit</li>
-                                        <li onClick={handleDeleteOpen} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Delete</li>
-                                    </ul>
-                                </Popover>
-                                <Dialog
-                                    open={deleteOpen}
-                                    onClose={handleDeleteClose}
-                                    aria-labelledby="alert-dialog-title"
-                                    aria-describedby="alert-dialog-description"
-                                >
-                                    <DialogTitle id="alert-dialog-title">Delete Project</DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText id="alert-dialog-description">
-                                            Are you sure you want to delete this project? This action cannot be undone.
-                                        </DialogContentText>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleDeleteClose} color="primary">
-                                            Cancel
-                                        </Button>
-                                        <Button onClick={handleDeleteProject} variant="contained" autoFocus>
-                                            Delete
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
+
+                                {(currentUser && currentUser.uid === uid) ?
+                                    <>
+
+                                        <Tooltip title="More" placement="right">
+                                            <div className="flex flex-col items-center ml-10 hover:cursor-pointer"
+                                                onClick={handleTooltip}>
+                                                <IconContext.Provider value={{ color: "gray" }}>
+                                                    <FiMoreVertical className="w-8 h-8" />
+                                                </IconContext.Provider>
+                                            </div>
+                                        </Tooltip>
+                                        <Popover
+                                            id={id}
+                                            open={tooltipOpen}
+                                            anchorEl={tooltip}
+                                            onClose={handleTooltipClose}
+                                            anchorOrigin={{
+                                                vertical: 'center',
+                                                horizontal: 'center',
+                                            }}
+                                            transformOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'left',
+                                            }}
+                                        >
+                                            <ul className="py-2">
+                                                <li onClick={handleEdit} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Edit</li>
+                                                <li onClick={handleDeleteOpen} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Delete</li>
+                                            </ul>
+                                        </Popover>
+                                        <Dialog
+                                            open={deleteOpen}
+                                            onClose={handleDeleteClose}
+                                            aria-labelledby="alert-dialog-title"
+                                            aria-describedby="alert-dialog-description"
+                                        >
+                                            <DialogTitle id="alert-dialog-title">Delete Project</DialogTitle>
+                                            <DialogContent>
+                                                <DialogContentText id="alert-dialog-description">
+                                                    Are you sure you want to delete this project? This action cannot be undone.
+                                                </DialogContentText>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button onClick={handleDeleteClose} color="primary">
+                                                    Cancel
+                                                </Button>
+                                                <Button onClick={handleDeleteProject} variant="contained" autoFocus>
+                                                    Delete
+                                                </Button>
+                                            </DialogActions>
+                                        </Dialog>
+                                    </>
+                                    : null
+                                }
+
                             </div>
                         </div>
                         <hr className="my-4" />

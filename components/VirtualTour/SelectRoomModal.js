@@ -1,15 +1,23 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Popover, Tooltip } from "@mui/material";
+import { roomImages } from "@/data/data";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
-import { IconContext } from "react-icons";
-import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlinePaperClip } from "react-icons/ai";
-import { BiUserCircle, BiX } from "react-icons/bi";
-import { FiMoreVertical } from "react-icons/fi";
+import { useState } from "react";
 
-export default function SelectRoomModal() {
+export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenModalEnv }) {
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageChange = (imageId) => {
+        setSelectedImage(imageId);
+    };
+
+    const handleOnCreateRoom = () => {
+        const roomImage = roomImages.filter((room) => room.id === selectedImage);
+        setSelectRoom(roomImage[0].src);
+        setOpenModalEnv(false);
+    }
+
     return (
-        open && (
+        openModalEnv && (
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 100 }}
@@ -22,187 +30,58 @@ export default function SelectRoomModal() {
                     animate={{ y: 0 }}
                     exit={{ y: 100 }}
                     transition={{ ease: "easeOut", duration: 0.3 }}
-                    className="bg-white w-full lg:w-1/2 h-screen rounded-lg p-6 overflow-y-scroll"
+                    className="bg-white w-full lg:w-5/6 h-full lg:h-5/6 rounded-lg p-6 overflow-y-scroll md:overflow-y-hidden"
                 >
                     <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-3">
-                            {userData?.user_photoURL ? (
-                                <Link href={`/profiles/${userData?.user_id}`}>
-                                    <Image
-                                        src={userData.user_photoURL}
-                                        alt="Profile"
-                                        width={50}
-                                        height={50}
-                                        className="w-16 h-16 rounded-full drop-shadow-md border-2"
-                                        priority
-                                    />
-                                </Link>
-                            ) : (
-                                <BiUserCircle className="w-16 h-16" />
-                            )}
-                            <div className="flex flex-col">
-                                <p className="font-medium text-gray-700">{title}</p>
-                                {userData?.user_name && (
-                                    <Link
-                                        href={`/profiles/${userData?.user_id}`}
-                                        className="text-sm font-normal text-gray-400"
-                                    >
-                                        {userData.user_name}
-                                    </Link>
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-around pt-5 lg:pt-0">
-                            <div className="flex flex-col items-center">
-                                <IconContext.Provider value={{ color: "red" }}>
-                                    {isLiked && currentUser ? (
-                                        <motion.div
-                                            onClick={currentUser && handleIsLike}
-                                            animate={controls}
-                                        >
-                                            <AiFillHeart className={`w-8 h-8 text-red-500 ${currentUser && "cursor-pointer"}`} />
-                                        </motion.div>
-                                    ) : (
-                                        <motion.div
-                                            onClick={currentUser && handleIsLike}
-                                            animate={controls}
-                                        >
-                                            <AiOutlineHeart className={`w-8 h-8 text-red-500 ${currentUser && "cursor-pointer"}`} />
-                                        </motion.div>
-                                    )}
-                                </IconContext.Provider>
-                                <p className="font-medium text-sm text-gray-400">{likesNo}</p>
-                            </div>
-                            <div className="flex flex-col items-center ml-10">
-                                <IconContext.Provider value={{ color: "gray" }}>
-                                    <AiOutlineEye className="w-8 h-8" />
-                                </IconContext.Provider>
-                                <p className="font-medium text-sm text-gray-400">{viewsNo}</p>
-                            </div>
-
-                            {(currentUser && currentUser.uid === uid) ?
-                                <>
-
-                                    <Tooltip title="More" placement="right">
-                                        <div className="flex flex-col items-center ml-10 hover:cursor-pointer"
-                                            onClick={handleTooltip}>
-                                            <IconContext.Provider value={{ color: "gray" }}>
-                                                <FiMoreVertical className="w-8 h-8" />
-                                            </IconContext.Provider>
-                                        </div>
-                                    </Tooltip>
-                                    <Popover
-                                        id={id}
-                                        open={tooltipOpen}
-                                        anchorEl={tooltip}
-                                        onClose={handleTooltipClose}
-                                        anchorOrigin={{
-                                            vertical: 'center',
-                                            horizontal: 'center',
-                                        }}
-                                        transformOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'left',
-                                        }}
-                                    >
-                                        <ul className="py-2">
-                                            <li onClick={handleEdit} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Edit</li>
-                                            <li onClick={handleDeleteOpen} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Delete</li>
-                                        </ul>
-                                    </Popover>
-                                    <Dialog
-                                        open={deleteOpen}
-                                        onClose={handleDeleteClose}
-                                        aria-labelledby="alert-dialog-title"
-                                        aria-describedby="alert-dialog-description"
-                                    >
-                                        <DialogTitle id="alert-dialog-title">Delete Project</DialogTitle>
-                                        <DialogContent>
-                                            <DialogContentText id="alert-dialog-description">
-                                                Are you sure you want to delete this project? This action cannot be undone.
-                                            </DialogContentText>
-                                        </DialogContent>
-                                        <DialogActions>
-                                            <Button onClick={handleDeleteClose} color="primary">
-                                                Cancel
-                                            </Button>
-                                            <Button onClick={handleDeleteProject} variant="contained" autoFocus>
-                                                Delete
-                                            </Button>
-                                        </DialogActions>
-                                    </Dialog>
-                                </>
-                                : null
-                            }
-
-                        </div>
-                    </div>
-                    <hr className="my-4" />
-                    <div className="grid grid-cols-1 gap-4">
-                        {imageUrls.map((imageUrl, index) => (
-                            <Image
-                                key={index}
-                                src={imageUrl}
-                                alt="project artwork"
-                                width={600}
-                                height={800}
-                                className="w-full h-full object-cover object-center"
+                        <div className="flex-none flex flex-row items-center">
+                            <label htmlFor="tour" className="flex-none block text-base font-bold leading-6 text-gray-900 mr-1 md:mr-5">
+                                Tour Name
+                            </label>
+                            <input
+                                // onChange={(e) => setFormData({ ...formData, fullname: e.target.value })}
+                                id="tour"
+                                name="tour"
+                                type="text"
+                                autoComplete="tour"
+                                placeholder="Name Your Art Exhibition"
+                                required
+                                className="flex-none block w-full rounded-md border-0 py-1.5 text-gray-900 placeholder:text-gray-300
+                                        shadow-sm ring-1 ring-offset-transparent ring-inset ring-gray-300 
+                                        indent-2.5 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                             />
-                        ))}
-                    </div>
-                    <p className="text-justify mt-4">{description}</p>
-                    <hr className="my-4" />
-                    <div className="flex items-center flex-row justify-between">
-                        <div className="flex items-center justify-start">
-                            <div className="mr-5">
-                                <p className="font-normal text-sm">Tags</p>
-                                <div className="flex flex-wrap gap-1">
-                                    {tags?.map((tag, index) => (
-                                        <span
-                                            key={index}
-                                            className="text-sm text-white p-1.5 rounded"
-                                            style={{
-                                                backgroundColor: tag.color ? tag.color : "#aaa",
-                                            }}
-                                        >
-                                            {tag.label}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                            <div>
-                                <p className="font-normal text-sm">Skills</p>
-                                <div className="flex flex-wrap gap-1">
-                                    {skills?.map((skill, index) => (
-                                        <span
-                                            key={index}
-                                            className="text-sm text-white p-1.5 rounded"
-                                            style={{
-                                                backgroundColor: skill.color ? skill.color : "#aaa",
-                                            }}
-                                        >
-                                            {skill.label}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
                         </div>
-
-                        {link && link !== "" && (
-                            <Link
-                                href={link}
-                                target="_blank"
-                                className="flex items-center underline"
-                            >
-                                <AiOutlinePaperClip className="h-6 w-6" />{" "}
-                                {link.replace(/(^\w+:|^)\/\/(www\.)?/i, "").slice(0, 15)}...
-                            </Link>
-                        )}
+                        <button className="bg-black rounded text-white px-3 py-2 shadow hidden md:block"
+                            onClick={handleOnCreateRoom}>Create Room</button>
                     </div>
-                    <BiX
-                        className="absolute top-2 lg:top-4 right-6 lg:right-72 w-8 lg:w-10 h-8 lg:h-10 lg:text-white text-black cursor-pointer"
-                        onClick={() => setOpen(false)}
-                    />
+                    <hr className="my-4" />
+                    <div >
+                        <h1 className="font-bold">Select Your Room</h1>
+                        <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4 my-3">
+                            {roomImages.map((image) => (
+                                <label key={image.id} className="flex items-center w-64 h-32 md:w-96 md:h-48 relative left-0 right-0 m-auto" >
+                                    <input
+                                        type="radio"
+                                        name="image"
+                                        value={image.id}
+                                        checked={selectedImage === image.id}
+                                        onChange={() => handleImageChange(image.id)}
+                                        className="hidden"
+                                    />
+                                    <Image
+                                        fill
+                                        src={image.src}
+                                        alt={image.alt}
+                                        priority
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        className={`cursor-pointer ${selectedImage === image.id ? "ring-4 ring-blue-500" : ""}`}
+                                    />
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <button className="relative right-0 left-0 mx-auto mt-10 bg-black rounded text-white px-3 py-2 shadow block md:hidden"
+                        onClick={handleOnCreateRoom}>Create Room</button>
                 </motion.div>
             </motion.div>
         )

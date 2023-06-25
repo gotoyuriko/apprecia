@@ -9,6 +9,8 @@ const NewRoom = () => {
     const [userData, setUserData] = useState('');
     const [artworkData, setArtworkData] = useState([]);
     const [firstArtwork, setFirstArtwork] = useState('');
+    const [selectRoom, setSelectRoom] = useState('');
+    const [openModalEnv, setOpenModalEnv] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,6 +32,8 @@ const NewRoom = () => {
         fetchData();
     }, []);
 
+
+
     useEffect(() => {
         const filteredArtworks = artworkData?.filter(
             (artwork) => artwork.user_id === userData?.user_id
@@ -42,11 +46,11 @@ const NewRoom = () => {
 
     return (
         <>
-            <SelectRoomModal />
+            <SelectRoomModal setSelectRoom={setSelectRoom} openModalEnv={openModalEnv} setOpenModalEnv={setOpenModalEnv} />
             <CreateTitleText />
             <a-scene>
-                <a-image src={firstArtwork} position='0 1.8 -2' ></a-image>
-                <a-sky src='/360panorama/room01.png'></a-sky>
+                <a-image src={firstArtwork} position='0 1.8 -2'></a-image>
+                <a-sky src={selectRoom}></a-sky>
             </a-scene>
         </>
     );

@@ -57,7 +57,7 @@ export const tagOptions = [
     { value: 'Graphic Design', label: 'Graphic Design', color: '#1e90ff' },
 ];
 
-// FAQ List
+// About Key Feature List
 export const aboutFeatures = [
     {
         featureTitle: "Artistic Showcases",
@@ -116,3 +116,27 @@ export const faqList = [
     }
 ]
 
+
+// 360 panorama Room Image List
+export const roomImages = [
+    {
+        src: "/360panorama/room01.png",
+        alt: "Room 1",
+        id: 1
+    },
+    {
+        src: "/360panorama/room02.jpg",
+        alt: "Room 2",
+        id: 2
+    },
+    {
+        src: "/360panorama/room03.jpg",
+        alt: "Room 3",
+        id: 3
+    },
+    {
+        src: "/360panorama/room04.jpg",
+        alt: "Room 4",
+        id: 4
+    }
+];

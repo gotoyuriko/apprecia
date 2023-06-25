@@ -1,4 +1,5 @@
 import CreateTitleText from '@/components/VirtualTour/CreateTitleText';
+import SelectRoomModal from '@/components/VirtualTour/SelectRoomModal';
 import GetArtwork from '@/firebase/artworks/GetArtwork';
 import GetUser from '@/firebase/users/GetUser';
 import { useEffect, useState } from 'react';
@@ -41,6 +42,7 @@ const NewRoom = () => {
 
     return (
         <>
+            <SelectRoomModal />
             <CreateTitleText />
             <a-scene>
                 <a-image src={firstArtwork} position='0 1.8 -2' ></a-image>

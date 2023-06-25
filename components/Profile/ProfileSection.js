@@ -217,7 +217,7 @@ export default function ProfileSection({ userData, setUserData, slug }) {
                     currentUser && currentUser.uid === slug &&
                     <div className="flex flex-row mt-5 lg:mt-0">
                         <button
-                            onClick={() => router.push("/newproject")}
+                            onClick={() => router.push("/projects/newproject")}
                             className="bg-gray-800 shadow hover:bg-gray-700 text-white font-bold py-2 px-3 rounded mr-5"
                         >
                             Create Project

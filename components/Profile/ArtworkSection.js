@@ -12,21 +12,27 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
             label: "Artwork",
             value: "artwork",
             icon: BsFillPaletteFill,
+            style: `${currentUser ? 'block' : 'block'}`
         },
         {
             label: "Liked",
             value: "liked",
             icon: AiFillHeart,
+            style: `${currentUser ? 'block' : 'hidden'}`
         },
         {
             label: "Room",
             value: "room",
             icon: BsFillBoxFill,
+            style: `${currentUser ? 'block' : 'block'}`
         },
     ];
 
     const yourArtworks = artworkData?.filter((artwork) => artwork.user_id === userData?.user_id);
-    const likedArtworks = artworkData?.filter((artwork) => artwork?.project_likedBy?.includes(currentUser.uid));
+
+    const likedArtworks = currentUser ? artworkData?.filter((artwork) => artwork?.project_likedBy?.includes(currentUser.uid)) : '';
+
+
 
     const tabContent = () => {
         switch (activeTab) {
@@ -41,7 +47,7 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
                                         Start uploading your projects now!
                                     </p>
                                     <button
-                                        onClick={() => router.push("/newproject")}
+                                        onClick={() => router.push("/projects/newproject")}
                                         className="mt-3 p-3 bg-black hover:bg-gray-600 font-bold text-white rounded inline-block"
                                     >
                                         Create Project
@@ -60,27 +66,30 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
                     );
                 }
             case "liked":
-                if (likedArtworks?.length === 0) {
-                    return (
-                        <div className="h-[70vh] w-full flex justify-center items-center">
-                            {currentUser ? (
-                                <div className="flex flex-col">
-                                    <p className="font-bold text-lg text-center">
-                                        Artwork Section
+                if (currentUser !== null) {
+                    if (likedArtworks?.length === 0) {
+                        return (
+                            <div className="h-[70vh] w-full flex justify-center items-center">
+                                {currentUser ? (
+                                    <div className="flex flex-col">
+                                        <p className="font-bold text-lg text-center">
+                                            Artwork Section
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <p className="font-bold text-lg">
+                                        Test
                                     </p>
-                                </div>
-                            ) : (
-                                <p className="font-bold text-lg">
-                                    Test
-                                </p>
-                            )}
-                        </div>
-                    );
-                } else {
-                    return (
-                        <>{artworkCotent(likedArtworks)}</>
-                    );
+                                )}
+                            </div>
+                        );
+                    } else {
+                        return (
+                            <>{artworkCotent(likedArtworks)}</>
+                        );
+                    }
                 }
+
             case "room":
                 // if (likedArtworks?.length === 0) {
                 return (
@@ -140,11 +149,11 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
         <div className="py-5">
             {/* Tab */}
             <div className="flex justify-center px-2">
-                {data.map(({ label, value, icon }) => (
+                {data.map(({ label, value, icon, style }) => (
                     <button
                         key={value}
                         className={`mx-2 px-4 py-2 rounded-md 
-                            ${activeTab === value ? "bg-gray-800 text-white cursor-default" : "bg-gray-100 hover:bg-gray-500 hover:shadow hover:text-white"} `}
+                            ${activeTab === value ? "bg-gray-800 text-white cursor-default" : "bg-gray-100 hover:bg-gray-500 hover:shadow hover:text-white"} ${style}`}
                         onClick={() => setActiveTab(value)}
                     >
                         <div className="flex items-center">

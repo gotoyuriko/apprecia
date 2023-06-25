@@ -3,9 +3,11 @@ import { motion } from "framer-motion";
 import ArtworkCard from "../ArtworkProject/ArtworkCard";
 import { AiFillHeart } from 'react-icons/ai';
 import { BsFillPaletteFill, BsFillBoxFill } from 'react-icons/bs';
+import { useRouter } from "next/router";
 
 export default function ArtworkSection({ artworkData, userData, currentUser }) {
     const [activeTab, setActiveTab] = useState("artwork");
+    const router = useRouter();
 
     const data = [
         {

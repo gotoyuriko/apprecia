@@ -4,8 +4,6 @@ import { BiUserCircle } from "react-icons/bi";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import UpdateUser from "@/firebase/users/UpdateUser";
-import { deleteObject, ref } from "firebase/storage";
-import { storage } from "@/firebase/Config";
 import { useAuth } from "@/firebase/auth/AuthContext";
 
 export default function ProfileSection({ userData, setUserData, slug }) {
@@ -27,6 +25,7 @@ export default function ProfileSection({ userData, setUserData, slug }) {
                 bio: userData?.user_bio || "",
                 photoURL: userData?.user_photoURL || "",
             });
+            setProfileImage(userData?.user_photoURL || "");
         }
     }, [userData]);
 
@@ -50,18 +49,8 @@ export default function ProfileSection({ userData, setUserData, slug }) {
     const handleDeleteProfilePhoto = async () => {
         if (window.confirm("Are you sure you want to delete the profile photo?")) {
             try {
-                if (
-                    userData &&
-                    userData.user_photoURL &&
-                    !userData.user_photoURL.startsWith(
-                        "https://lh3.googleusercontent.com/"
-                    )
-                ) {
-                    const photoRef = ref(storage, userData.user_photoURL);
-                    await deleteObject(photoRef);
-                }
-                // Update the formData with an empty photoURL
                 setFormData({ ...formData, photoURL: "" });
+                setProfileImage(null);
             } catch (error) {
                 console.error("Error deleting profile photo:", error);
             }
@@ -72,7 +61,7 @@ export default function ProfileSection({ userData, setUserData, slug }) {
 
     const handleUpdateProfile = async () => {
         try {
-            await UpdateUser(formData, profileImage, userData.user_id);
+            await UpdateUser(formData, profileImage, userData.user_id, userData);
             const updatedUserData = {
                 ...userData,
                 user_name: formData.fullname,

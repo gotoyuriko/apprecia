@@ -104,21 +104,21 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
     const handleDeleteClose = () => {
         setDeleteOpen(false);
     };
-    const handleDeleteProject = async () => {
-        const fetchData = async () => {
-            try {
-                const artworkId = await GetArtworkId(uid, createdAt);
-                await DeleteArtwork(imageUrls, artworkId);
-            } catch (error) {
-                console.error("Error getting artwork id or deleting artwork:", error);
-                alert(error);
-            }
-        };
-        await fetchData();
-        // router.reload();
-    };
 
-    console.log(currentUser && currentUser.uid === uid);
+    const handleDeleteProject = async () => {
+        const artworkId = await GetArtworkId(uid, createdAt);
+
+        if (artworkId) {
+            try {
+                await DeleteArtwork(imageUrls, artworkId);
+                router.reload();
+            } catch (error) {
+                console.error("Error deleting artwork:", error);
+            }
+        } else {
+            console.error("Artwork not found");
+        }
+    };
 
     return (
         <>

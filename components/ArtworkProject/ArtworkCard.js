@@ -111,10 +111,11 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                 await DeleteArtwork(imageUrls, artworkId);
             } catch (error) {
                 console.error("Error getting artwork id or deleting artwork:", error);
+                alert(error);
             }
         };
         await fetchData();
-        router.reload();
+        // router.reload();
     };
 
     console.log(currentUser && currentUser.uid === uid);

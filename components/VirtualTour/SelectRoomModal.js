@@ -3,18 +3,16 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 
-export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenModalEnv }) {
+export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenModalEnv, setRoomData, roomData }) {
     const [selectedImage, setSelectedImage] = useState(null);
-
-    const handleImageChange = (imageId) => {
-        setSelectedImage(imageId);
-    };
 
     const handleOnCreateRoom = () => {
         const roomImage = roomImages.filter((room) => room.id === selectedImage);
         setSelectRoom(roomImage[0].src);
         setOpenModalEnv(false);
-    }
+    };
+
+    const isButtonDisabled = roomData.roomImage === '' || roomData.tourName === '';
 
     return (
         openModalEnv && (
@@ -34,15 +32,21 @@ export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenMo
                 >
                     <div className="flex justify-between items-center">
                         <div className="flex-none flex flex-row items-center">
-                            <label htmlFor="tour" className="flex-none block text-base font-bold leading-6 text-gray-900 mr-1 md:mr-5">
+                            <label
+                                htmlFor="tour"
+                                className="flex-none block text-base font-bold leading-6 text-gray-900 mr-1 md:mr-5"
+                            >
                                 Tour Name
                             </label>
                             <input
-                                // onChange={(e) => setFormData({ ...formData, fullname: e.target.value })}
+                                onChange={(e) =>
+                                    setRoomData({ ...roomData, tourName: e.target.value })
+                                }
                                 id="tour"
                                 name="tour"
                                 type="text"
                                 autoComplete="tour"
+                                value={roomData.tourName}
                                 placeholder="Name Your Art Exhibition"
                                 required
                                 className="flex-none block w-full rounded-md border-0 py-1.5 text-gray-900 placeholder:text-gray-300
@@ -50,25 +54,40 @@ export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenMo
                                         indent-2.5 placeholder:text-gray-400 sm:text-sm sm:leading-6"
                             />
                         </div>
-                        <button className="bg-black rounded text-white px-3 py-2 shadow hidden md:block"
-                            onClick={handleOnCreateRoom}>Create Room</button>
+                        <button
+                            className={
+                                isButtonDisabled
+                                    ? `px-3 py-2 text-base text-white bg-gray-300 rounded hidden md:block`
+                                    : `px-3 py-2 text-base text-white bg-black rounded focus:shadow-outline hover:bg-gray-800 hidden md:block`
+                            }
+                            onClick={handleOnCreateRoom}
+                            disabled={isButtonDisabled}
+                        >
+                            Create Room
+                        </button>
                     </div>
                     <hr className="my-4" />
-                    <div >
+                    <div>
                         <h1 className="font-bold">Select Your Room</h1>
                         <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4 my-3">
                             {roomImages.map((image) => (
-                                <label key={image.id} className="flex items-center w-64 h-32 md:w-96 md:h-48 relative left-0 right-0 m-auto" >
+                                <label
+                                    key={image.id}
+                                    className="flex items-center w-64 h-32 md:w-96 md:h-48 relative left-0 right-0 m-auto"
+                                >
                                     <input
                                         type="radio"
                                         name="image"
                                         value={image.id}
                                         checked={selectedImage === image.id}
-                                        onChange={() => handleImageChange(image.id)}
+                                        onChange={() => setSelectedImage(image.id)}
                                         className="hidden"
                                     />
                                     <Image
                                         fill
+                                        onClick={() =>
+                                            setRoomData({ ...roomData, roomImage: image.src })
+                                        }
                                         src={image.src}
                                         alt={image.alt}
                                         priority
@@ -80,8 +99,17 @@ export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenMo
                         </div>
                     </div>
 
-                    <button className="relative right-0 left-0 mx-auto mt-10 bg-black rounded text-white px-3 py-2 shadow block md:hidden"
-                        onClick={handleOnCreateRoom}>Create Room</button>
+                    <button
+                        className={
+                            isButtonDisabled
+                                ? `relative right-0 left-0 mx-auto mt-10 px-3 py-2 text-base text-white bg-gray-300 rounded block md:hidden`
+                                : `relative right-0 left-0 mx-auto mt-10 px-3 py-2 text-base text-white bg-black rounded focus:shadow-outline hover:bg-gray-800 block md:hidden`
+                        }
+                        onClick={handleOnCreateRoom}
+                        disabled={isButtonDisabled}
+                    >
+                        Create Room
+                    </button>
                 </motion.div>
             </motion.div>
         )

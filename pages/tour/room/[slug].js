@@ -1,4 +1,4 @@
-import CreateTitleText from '@/components/VirtualTour/CreateTitleText';
+import CreateTitleText from '@/components/VirtualTour/CreateRoomTitleText';
 import GetArtwork from '@/firebase/artworks/GetArtwork';
 import GetUser from '@/firebase/users/GetUser';
 import { useEffect, useState } from 'react';

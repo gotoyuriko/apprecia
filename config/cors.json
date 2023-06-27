@@ -4,7 +4,11 @@
             "*"
         ],
         "method": [
-            "GET"
+            "GET",
+            "HEAD"
+        ],
+        "responseHeader": [
+            "Access-Control-Allow-Origin"
         ],
         "maxAgeSeconds": 3600
     }

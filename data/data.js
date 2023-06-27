@@ -140,3 +140,50 @@ export const roomImages = [
         id: 4
     }
 ];
+
+// 360 panorama Artwork Image List
+export const panoramaArtworkImages = [
+    {
+        artworkId: 1,
+        rotation: '0 135 0',
+        position: '-1.35 1.8 1.35',
+        src: ''
+    },
+    {
+        artworkId: 2,
+        rotation: '0 90 0',
+        position: '-2 1.8 0',
+        src: ''
+    },
+    {
+        artworkId: 3,
+        rotation: '0 45 0',
+        position: '-1.35 1.8 -1.35',
+        src: ''
+    },
+    {
+        artworkId: 4,
+        rotation: '0 0 0',
+        position: '0 1.8 -2',
+        src: ''
+    },
+    {
+        artworkId: 5,
+        rotation: '0 -45 0',
+        position: '1.35 1.8 -1.35',
+        src: ''
+    },
+    {
+        artworkId: 6,
+        rotation: '0 -90 0',
+        position: '2 1.8 0',
+        src: ''
+    },
+    {
+        artworkId: 7,
+        rotation: '0 -135 0',
+        position: '1.35 1.8 1.35',
+        src: ''
+    }
+]
+

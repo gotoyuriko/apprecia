@@ -2,24 +2,68 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-export default function UploadArtwork({ user, openModalArt, setOpenModalArt, artworkData, selectPanel, setSelectPanel, setPanoramaImages }) {
+export default function UploadArtwork({
+    user,
+    openModalArt,
+    setOpenModalArt,
+    artworkData,
+    selectPanel,
+    setSelectPanel,
+    setTourData
+}) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const filteredCurrentUserArtwork = artworkData.filter(
         (artwork) => artwork.user_id === user.uid
     );
 
-
     const handleSelectArtwork = (url) => {
         setSelectPanel((prev) => ({ ...prev, [0]: { ...prev[0], src: url } }));
-        setPanoramaImages((prev) =>
-            prev.map((item) => {
+        setTourData((prevTourData) => {
+            const updatedArtwork = prevTourData.tour_room[0].room_artwork.map((item) => {
                 if (item.artworkId === selectPanel[0]?.artworkId) {
                     return { ...item, src: url };
                 }
                 return item;
-            })
-        );
+            });
+
+            return {
+                ...prevTourData,
+                tour_room: [
+                    {
+                        ...prevTourData.tour_room[0],
+                        room_artwork: updatedArtwork,
+                    },
+                ],
+            };
+        });
+        setSelectedImage("");
+        setOpenModalArt(false);
+    };
+
+    const handleDeleteArtwork = () => {
+        setSelectPanel((prev) => ({ ...prev, [0]: { ...prev[0], src: "" } }));
+
+        setTourData((prevTourData) => {
+            const updatedArtwork = prevTourData.tour_room[0].room_artwork.map((item) => {
+                if (item.artworkId === selectPanel[0]?.artworkId) {
+                    return { ...item, src: "" };
+                }
+                return item;
+            });
+
+            return {
+                ...prevTourData,
+                tour_room: [
+                    {
+                        ...prevTourData.tour_room[0],
+                        room_artwork: updatedArtwork,
+                    },
+                ],
+            };
+        });
+
+        setSelectedImage("");
         setOpenModalArt(false);
     };
 
@@ -46,21 +90,29 @@ export default function UploadArtwork({ user, openModalArt, setOpenModalArt, art
                         <p className="font-bold text-2xl ">
                             Select your artwork to showcase!
                         </p>
-                        <button
-                            className={
-                                isButtonDisabled
-                                    ? `px-3 py-2 text-base text-white bg-gray-300 rounded hidden md:block`
-                                    : `px-3 py-2 text-base text-white bg-black rounded focus:shadow-outline hover:bg-gray-800 hidden md:block`
-                            }
-                            disabled={isButtonDisabled}
-                        >
-                            Select
-                        </button>
+                        <div className="flex">
+                            <button
+                                className="px-3 py-2 text-base text-white bg-black rounded focus:shadow-outline hover:bg-gray-800 hidden md:block mr-3"
+                                onClick={() => handleDeleteArtwork()}
+                            >
+                                Delete
+                            </button>
+                            <button
+                                className={
+                                    isButtonDisabled
+                                        ? `px-3 py-2 text-base text-white bg-gray-300 rounded hidden md:block`
+                                        : `px-3 py-2 text-base text-white bg-black rounded focus:shadow-outline hover:bg-gray-800 hidden md:block`
+                                }
+                                onClick={() => handleSelectArtwork(selectedImage)}
+                                disabled={isButtonDisabled}
+                            >
+                                Select
+                            </button>
+                        </div>
                     </div>
 
                     <div
-                        className="container grid grid-cols-3 p-3 mx-auto overflow-y-scroll gap-4"
-                        style={{ height: "500px" }}
+                        className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-3 mx-auto overflow-y-scroll gap-4 w-full h-4/5"
                     >
                         {filteredCurrentUserArtwork.map((artwork, i) =>
                             artwork.project_imageUrls.map((imageUrl, j) => (
@@ -76,15 +128,34 @@ export default function UploadArtwork({ user, openModalArt, setOpenModalArt, art
                                     <Image
                                         src={imageUrl}
                                         alt="artwork Image"
-                                        onClick={() => handleSelectArtwork(imageUrl)}
                                         fill
                                         style={{ objectFit: "cover" }}
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        className={`cursor-pointer ${selectedImage === imageUrl ? "ring-8 ring-blue-500" : ""}`}
+                                        className={`cursor-pointer ${selectedImage === imageUrl ? "ring-8 ring-blue-500" : ""
+                                            }`}
                                     />
                                 </label>
                             ))
                         )}
+                    </div>
+                    <div className="flex justify-center pt-4">
+                        <button
+                            className="px-3 py-2 text-base text-white bg-black rounded focus:shadow-outline hover:bg-gray-800 block md:hidden mr-3"
+                            onClick={() => handleDeleteArtwork()}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            className={
+                                isButtonDisabled
+                                    ? `px-3 py-2 text-base text-white bg-gray-300 rounded block md:hidden`
+                                    : `px-3 py-2 text-base text-white bg-black rounded focus:shadow-outline hover:bg-gray-800 block md:hidden`
+                            }
+                            onClick={() => handleSelectArtwork(selectedImage)}
+                            disabled={isButtonDisabled}
+                        >
+                            Select
+                        </button>
                     </div>
                 </motion.div>
             </motion.div>

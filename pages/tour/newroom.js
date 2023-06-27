@@ -7,30 +7,18 @@ import UploadArtwork from "@/components/VirtualTour/UploadArtwork";
 import { panoramaArtworkImages } from "@/data/data";
 import GetArtwork from "@/firebase/artworks/GetArtwork";
 import { useAuth } from "@/firebase/auth/AuthContext";
-import GetUser from "@/firebase/users/GetUser";
 import { Scene, Entity } from "aframe-react";
 import { useEffect, useState } from "react";
+import Panel from "@/components/VirtualTour/Panel";
+import GetUser from "@/firebase/users/GetUser";
 
 const NewRoom = () => {
+
     const { currentUser } = useAuth();
 
-    // Modal
-    const [openModalEnv, setOpenModalEnv] = useState(true);
-    const [openModalArt, setOpenModalArt] = useState(false);
-    // Room
-    const [selectRoom, setSelectRoom] = useState("");
-    const [roomData, setRoomData] = useState({ tourName: "", roomImage: "" });
     // From Firebase
-    const [userData, setUserData] = useState("");
     const [artworkData, setArtworkData] = useState([]);
-    // Artwork
-    const [panoramaImages, setPanoramaImages] = useState([...panoramaArtworkImages]);
-    const [selectPanel, setSelectPanel] = useState("");
-
-    useEffect(() => {
-        console.log("panoramaImages", panoramaImages);
-        console.log("selectArtwork", selectPanel);
-    }, [selectPanel, panoramaImages]);
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,7 +28,6 @@ const NewRoom = () => {
             } catch (error) {
                 console.error("Error getting user:", error);
             }
-
             try {
                 const data = await GetArtwork();
                 setArtworkData(data);
@@ -50,37 +37,29 @@ const NewRoom = () => {
         };
 
         fetchData();
-    }, []);
+    }, [currentUser.uid]);
+
+    // Room
+    const [tourData, setTourData] = useState({
+        tour_name: "",
+        tour_room: [{
+            room_id: 1,
+            room_background: "",
+            room_artwork: [...panoramaArtworkImages]
+        }],
+        user_id: currentUser.uid,
+        user_name: userData?.user_name
+    });
+    // Select Panel to showcase your artwork
+    const [selectPanel, setSelectPanel] = useState("");
+
+    // Modal
+    const [openModalEnv, setOpenModalEnv] = useState(true);
+    const [openModalArt, setOpenModalArt] = useState(false);
 
     useEffect(() => {
-        // Unregister the component if it has already been registered
-        if (AFRAME.components["artwork-click"]) {
-            delete AFRAME.components["artwork-click"];
-        }
-
-        const handleClickEvent = (data) => {
-            event.preventDefault();
-            setSelectPanel(
-                panoramaImages.filter((artwork) => {
-                    return artwork.artworkId === data.id;
-                })
-            );
-            setOpenModalArt(true);
-        };
-
-        AFRAME.registerComponent("artwork-click", {
-            schema: {
-                src: { type: "string" },
-                id: { type: "number" },
-            },
-            init: function () {
-                this.el.addEventListener("click", () => handleClickEvent(this.data));
-            },
-            remove: function () {
-                this.el.removeEventListener("click", () => handleClickEvent(this.data));
-            },
-        });
-    }, []);
+        console.log(tourData);
+    }, [tourData]);
 
     return (
         <>
@@ -91,54 +70,30 @@ const NewRoom = () => {
                 artworkData={artworkData}
                 selectPanel={selectPanel}
                 setSelectPanel={setSelectPanel}
-                setPanoramaImages={setPanoramaImages}
+                setTourData={setTourData}
             />
             <SelectRoomModal
-                setSelectRoom={setSelectRoom}
                 openModalEnv={openModalEnv}
                 setOpenModalEnv={setOpenModalEnv}
-                setRoomData={setRoomData}
-                roomData={roomData}
+                setTourData={setTourData}
+                tourData={tourData}
             />
-            <AddRoomButton />
+            <AddRoomButton
+                tourData={tourData}
+                setTourData={setTourData} />
             <RoomPublishButton />
-            <EditEnvironment roomData={roomData} setOpenModalEnv={setOpenModalEnv} />
+            <EditEnvironment
+                tourData={tourData}
+                setOpenModalEnv={setOpenModalEnv} />
             <CreateRoomTitleText />
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
-                {panoramaImages.map((item, index) =>
-                    item.src === "" ? (
-                        <Entity
-                            key={index}
-                            geometry="primitive: plane;"
-                            material="color:#2f2f2f; side: double;"
-                            rotation={item.rotation}
-                            position={item.position}
-                            artwork-click={`src:${item.src}; id:${item.artworkId}`}
-                            class="clickable"
-                        >
-                            <Entity
-                                text={{
-                                    value: "Select your Artwork",
-                                    color: "#ffffff",
-                                    align: "center",
-                                }}
-                                position="0 0 0"
-                                scale="1.5 1.5 1.5"
-                            />
-                        </Entity>
-                    ) : (
-                        <Entity
-                            key={index}
-                            geometry="primitive: plane;"
-                            material={`src: ${item.src}; side: double;`}
-                            rotation={item.rotation}
-                            position={item.position}
-                            artwork-click
-                            class="clickable"
-                        />
-                    )
-                )}
-                <Entity primitive="a-sky" src={selectRoom} />
+                <Panel
+                    panoramaImages={tourData.tour_room[0].room_artwork}
+                    setSelectPanel={setSelectPanel}
+                    setOpenModalArt={setOpenModalArt} />
+                <Entity
+                    primitive="a-sky"
+                    src={tourData.tour_room[0].room_background} />
             </Scene>
         </>
     );

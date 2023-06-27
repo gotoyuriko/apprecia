@@ -3,16 +3,22 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 
-export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenModalEnv, setRoomData, roomData }) {
+export default function SelectRoomModal({ openModalEnv, setOpenModalEnv, setTourData, tourData }) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleOnCreateRoom = () => {
         const roomImage = roomImages.filter((room) => room.id === selectedImage);
-        setSelectRoom(roomImage[0].src);
+        setTourData({
+            ...tourData,
+            tour_room: [{
+                ...tourData.tour_room[0],
+                room_background: roomImage[0]?.src
+            }]
+        })
         setOpenModalEnv(false);
     };
 
-    const isButtonDisabled = roomData.roomImage === '' || roomData.tourName === '';
+    const isButtonDisabled = selectedImage === '' || tourData.tourName === '';
 
     return (
         openModalEnv && (
@@ -39,14 +45,12 @@ export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenMo
                                 Tour Name
                             </label>
                             <input
-                                onChange={(e) =>
-                                    setRoomData({ ...roomData, tourName: e.target.value })
-                                }
+                                onChange={(e) => setTourData({ ...tourData, tour_name: e.target.value })}
                                 id="tour"
                                 name="tour"
                                 type="text"
                                 autoComplete="tour"
-                                value={roomData.tourName}
+                                value={tourData.tour_name}
                                 placeholder="Name Your Art Exhibition"
                                 required
                                 className="flex-none block w-full rounded-md border-0 py-1.5 text-gray-900 placeholder:text-gray-300
@@ -85,9 +89,6 @@ export default function SelectRoomModal({ setSelectRoom, openModalEnv, setOpenMo
                                     />
                                     <Image
                                         fill
-                                        onClick={() =>
-                                            setRoomData({ ...roomData, roomImage: image.src })
-                                        }
                                         src={image.src}
                                         alt={image.alt}
                                         priority

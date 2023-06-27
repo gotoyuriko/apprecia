@@ -9,7 +9,8 @@ export default function UploadArtwork({
     artworkData,
     selectPanel,
     setSelectPanel,
-    setTourData
+    setTourData,
+    roomNo
 }) {
     const [selectedImage, setSelectedImage] = useState(null);
 

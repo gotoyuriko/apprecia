@@ -3,22 +3,31 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 
-export default function SelectRoomModal({ openModalEnv, setOpenModalEnv, setTourData, tourData }) {
+export default function SelectRoomModal({
+    openModalEnv,
+    setOpenModalEnv,
+    setTourData,
+    tourData,
+    roomNo,
+}) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleOnCreateRoom = () => {
         const roomImage = roomImages.filter((room) => room.id === selectedImage);
+        console.log('roomImage', roomImage)
         setTourData({
             ...tourData,
-            tour_room: [{
-                ...tourData.tour_room[0],
-                room_background: roomImage[0]?.src
-            }]
-        })
+            tour_room: [
+                {
+                    ...tourData.tour_room[roomNo - 1],
+                    room_background: roomImage[0]?.src,
+                },
+            ],
+        });
         setOpenModalEnv(false);
     };
 
-    const isButtonDisabled = selectedImage === '' || tourData.tourName === '';
+    const isButtonDisabled = selectedImage === "" || tourData.tourName === "";
 
     return (
         openModalEnv && (

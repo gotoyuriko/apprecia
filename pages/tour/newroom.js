@@ -50,16 +50,21 @@ const NewRoom = () => {
         user_id: currentUser.uid,
         user_name: userData?.user_name
     });
+
     // Select Panel to showcase your artwork
     const [selectPanel, setSelectPanel] = useState("");
+    // Switch Button
+    const [roomNo, setRoomNo] = useState(1);
 
     // Modal
     const [openModalEnv, setOpenModalEnv] = useState(true);
     const [openModalArt, setOpenModalArt] = useState(false);
 
     useEffect(() => {
-        console.log(tourData);
-    }, [tourData]);
+        console.log('tourData', tourData);
+        console.log('roomno', roomNo)
+
+    }, [tourData, roomNo]);
 
     return (
         <>
@@ -71,16 +76,21 @@ const NewRoom = () => {
                 selectPanel={selectPanel}
                 setSelectPanel={setSelectPanel}
                 setTourData={setTourData}
+                roomNo={roomNo}
             />
             <SelectRoomModal
                 openModalEnv={openModalEnv}
                 setOpenModalEnv={setOpenModalEnv}
                 setTourData={setTourData}
                 tourData={tourData}
+                roomNo={roomNo}
             />
             <AddRoomButton
                 tourData={tourData}
-                setTourData={setTourData} />
+                setTourData={setTourData}
+                roomNo={roomNo}
+                setRoomNo={setRoomNo}
+                setOpenModalEnv={setOpenModalEnv} />
             <RoomPublishButton />
             <EditEnvironment
                 tourData={tourData}
@@ -88,12 +98,12 @@ const NewRoom = () => {
             <CreateRoomTitleText />
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
                 <Panel
-                    panoramaImages={tourData.tour_room[0].room_artwork}
+                    panoramaImages={tourData.tour_room[(roomNo - 1)].room_artwork}
                     setSelectPanel={setSelectPanel}
                     setOpenModalArt={setOpenModalArt} />
                 <Entity
                     primitive="a-sky"
-                    src={tourData.tour_room[0].room_background} />
+                    src={tourData.tour_room[(roomNo - 1)].room_background} />
             </Scene>
         </>
     );

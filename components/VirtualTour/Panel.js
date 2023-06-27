@@ -58,7 +58,7 @@ export default function Panel({ panoramaImages, setSelectPanel, setOpenModalArt 
             <Entity
                 key={index}
                 geometry="primitive: plane;"
-                material={`src: ${item.src}; color: #cccccc; side: double;`}
+                material={`src: ${item.src}; color: #ffffff; side: double;`}
                 rotation={item.rotation}
                 position={item.position}
                 artwork-click

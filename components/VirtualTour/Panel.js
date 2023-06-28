@@ -33,6 +33,8 @@ export default function Panel({ panoramaImages, setSelectPanel, setOpenModalArt 
         });
     }, [panoramaImages, setOpenModalArt, setSelectPanel]);
 
+    if (!panoramaImages) return null;
+
     return panoramaImages.map((item, index) =>
         item.src === "" ? (
             <Entity

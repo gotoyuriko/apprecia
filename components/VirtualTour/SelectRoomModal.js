@@ -14,15 +14,13 @@ export default function SelectRoomModal({
 
     const handleOnCreateRoom = () => {
         const roomImage = roomImages.filter((room) => room.id === selectedImage);
-        console.log('roomImage', roomImage)
         setTourData({
             ...tourData,
-            tour_room: [
-                {
-                    ...tourData.tour_room[roomNo - 1],
-                    room_background: roomImage[0]?.src,
-                },
-            ],
+            tour_room: tourData.tour_room.map((room, index) =>
+                index === (roomNo - 1)
+                    ? { ...room, room_background: roomImage[0]?.src }
+                    : room
+            ),
         });
         setOpenModalEnv(false);
     };
@@ -54,7 +52,9 @@ export default function SelectRoomModal({
                                 Tour Name
                             </label>
                             <input
-                                onChange={(e) => setTourData({ ...tourData, tour_name: e.target.value })}
+                                onChange={(e) =>
+                                    setTourData({ ...tourData, tour_name: e.target.value })
+                                }
                                 id="tour"
                                 name="tour"
                                 type="text"
@@ -102,7 +102,8 @@ export default function SelectRoomModal({
                                         alt={image.alt}
                                         priority
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        className={`cursor-pointer ${selectedImage === image.id ? "ring-4 ring-blue-500" : ""}`}
+                                        className={`cursor-pointer ${selectedImage === image.id ? "ring-4 ring-blue-500" : ""
+                                            }`}
                                     />
                                 </label>
                             ))}

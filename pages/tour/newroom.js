@@ -16,15 +16,33 @@ const NewRoom = () => {
 
     const { currentUser } = useAuth();
 
+    // Room
+    const [tourData, setTourData] = useState({
+        tour_name: "",
+        tour_room: [{
+            room_id: 1,
+            room_background: "",
+            room_artwork: [...panoramaArtworkImages]
+        }],
+        user_id: currentUser.uid,
+        user_name: ''
+    });
+
     // From Firebase
     const [artworkData, setArtworkData] = useState([]);
-    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await GetUser(currentUser.uid);
-                setUserData(data);
+                const data = await GetUser(currentUser.uid);;
+                setTourData(
+                    {
+                        ...tourData,
+                        user_name: data?.user_name
+                    }
+                )
+                console.log("tourData", tourData);
+                console.log("data", data);
             } catch (error) {
                 console.error("Error getting user:", error);
             }
@@ -37,19 +55,8 @@ const NewRoom = () => {
         };
 
         fetchData();
-    }, [currentUser.uid]);
-
-    // Room
-    const [tourData, setTourData] = useState({
-        tour_name: "",
-        tour_room: [{
-            room_id: 1,
-            room_background: "",
-            room_artwork: [...panoramaArtworkImages]
-        }],
-        user_id: currentUser.uid,
-        user_name: userData?.user_name
-    });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Select Panel to showcase your artwork
     const [selectPanel, setSelectPanel] = useState("");
@@ -61,9 +68,10 @@ const NewRoom = () => {
     const [openModalArt, setOpenModalArt] = useState(false);
 
     useEffect(() => {
-        console.log('tourData', tourData);
-        console.log('roomno', roomNo)
-
+        // console.log('tourData', tourData);
+        console.log('roomNo', roomNo)
+        console.log("tourData.tour_room.length", tourData.tour_room.length);
+        // console.log('tourData.tour_room[(roomNo - 1)].room_artwork', tourData.tour_room[(roomNo - 1)]?.room_artwork)
     }, [tourData, roomNo]);
 
     return (
@@ -98,12 +106,12 @@ const NewRoom = () => {
             <CreateRoomTitleText />
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
                 <Panel
-                    panoramaImages={tourData.tour_room[(roomNo - 1)].room_artwork}
+                    panoramaImages={tourData.tour_room[(roomNo - 1)]?.room_artwork}
                     setSelectPanel={setSelectPanel}
                     setOpenModalArt={setOpenModalArt} />
                 <Entity
                     primitive="a-sky"
-                    src={tourData.tour_room[(roomNo - 1)].room_background} />
+                    src={tourData.tour_room[(roomNo - 1)]?.room_background} />
             </Scene>
         </>
     );

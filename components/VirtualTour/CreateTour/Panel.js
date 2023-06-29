@@ -21,7 +21,7 @@ export default function Panel({ panoramaImages, setSelectPanel, setOpenModalArt 
 
         AFRAME.registerComponent("artwork-click", {
             schema: {
-                src: { type: "string" },
+                src: { type: "asset" },
                 id: { type: "number" },
             },
             init: function () {

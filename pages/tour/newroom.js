@@ -11,22 +11,21 @@ import { useAuth } from "@/firebase/auth/AuthContext";
 import { Scene, Entity } from "aframe-react";
 import { useEffect, useState } from "react";
 import Panel from "@/components/VirtualTour/Panel";
-import GetUser from "@/firebase/users/GetUser";
 
 const NewRoom = () => {
-
     const { currentUser } = useAuth();
 
     // Room
     const [tourData, setTourData] = useState({
         tour_name: "",
-        tour_room: [{
-            room_id: 1,
-            room_background: "",
-            room_artwork: [...panoramaArtworkImages]
-        }],
+        tour_room: [
+            {
+                room_id: 1,
+                room_background: "",
+                room_artwork: [...panoramaArtworkImages],
+            },
+        ],
         user_id: currentUser.uid,
-        user_name: ''
     });
 
     // From Firebase
@@ -34,17 +33,6 @@ const NewRoom = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const data = await GetUser(currentUser.uid);;
-                setTourData(
-                    {
-                        ...tourData,
-                        user_name: data?.user_name
-                    }
-                );
-            } catch (error) {
-                console.error("Error getting user:", error);
-            }
             try {
                 const data = await GetArtwork();
                 setArtworkData(data);
@@ -64,10 +52,6 @@ const NewRoom = () => {
     // Modal
     const [openModalEnv, setOpenModalEnv] = useState(true);
     const [openModalArt, setOpenModalArt] = useState(false);
-
-    // useEffect(() => {
-    //     console.log('tourData', tourData);
-    // }, [tourData, roomNo]);
 
     return (
         <>
@@ -94,20 +78,24 @@ const NewRoom = () => {
                 setTourData={setTourData}
                 roomNo={roomNo}
                 setRoomNo={setRoomNo}
-                setOpenModalEnv={setOpenModalEnv} />
-            <RoomPublishButton />
-            <EditEnvironment
-                tourData={tourData}
-                setOpenModalEnv={setOpenModalEnv} />
+                setOpenModalEnv={setOpenModalEnv}
+            />
+            <RoomPublishButton
+                uid={currentUser.uid}
+                setTourData={setTourData}
+                tourData={tourData} />
+            <EditEnvironment tourData={tourData} setOpenModalEnv={setOpenModalEnv} />
             <CreateRoomTitleText />
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
                 <Panel
-                    panoramaImages={tourData.tour_room[(roomNo - 1)]?.room_artwork}
+                    panoramaImages={tourData.tour_room[roomNo - 1]?.room_artwork}
                     setSelectPanel={setSelectPanel}
-                    setOpenModalArt={setOpenModalArt} />
+                    setOpenModalArt={setOpenModalArt}
+                />
                 <Entity
                     primitive="a-sky"
-                    src={tourData.tour_room[(roomNo - 1)]?.room_background} />
+                    src={tourData.tour_room[roomNo - 1]?.room_background}
+                />
                 <a-entity light="type: hemisphere; color: #ffffff; intensity:1.180; distance:60.020;"></a-entity>
             </Scene>
         </>

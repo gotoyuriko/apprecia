@@ -31,8 +31,6 @@ export default function ArtworkSection({ artworkData, userData, currentUser, gal
         },
     ];
 
-    console.log(galleryData)
-
     const yourArtworks = artworkData?.filter((artwork) => artwork.user_id === userData?.user_id);
 
     const likedArtworks = currentUser ? artworkData?.filter((artwork) => artwork?.project_likedBy?.includes(currentUser.uid)) : '';

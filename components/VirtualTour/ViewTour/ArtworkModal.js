@@ -1,15 +1,10 @@
 import { BiUserCircle, BiX } from "react-icons/bi";
-import { motion, useAnimation } from "framer-motion";
-import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlinePaperClip } from "react-icons/ai";
+import { motion } from "framer-motion";
+import { AiOutlinePaperClip } from "react-icons/ai";
 import Link from "next/link";
 import Image from "next/image";
-import { IconContext } from "react-icons";
-import { useEffect, useState } from "react";
-import UpdateLike from "@/firebase/likes/UpdateLike";
 
 export default function ArtworkModal({ showDesc, setOpen, open, userData, user }) {
-
-
     return (
         open ? (
             <motion.div

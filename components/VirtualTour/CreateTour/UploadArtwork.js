@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { BiX } from "react-icons/bi";
 
 export default function UploadArtwork({
     user,
@@ -159,8 +160,14 @@ export default function UploadArtwork({
                         >
                             Select
                         </button>
+
                     </div>
+                    <BiX
+                        className="absolute top-16 right-28 w-10 h-10 text-white cursor-pointer"
+                        onClick={() => setOpenModalArt(false)}
+                    />
                 </motion.div>
+
             </motion.div>
         )
     );

@@ -7,23 +7,23 @@ import {
 } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function GetArtworkId(uid, createdAt) {
+export default async function GetTourId(uid, createdAt) {
     try {
         // Create a query to find the artProject's Document
         const q = query(
-            collection(db, "artProjects"),
+            collection(db, "virtualTours"),
             where("user_id", "==", uid),
-            where("project_createdAt", "==", createdAt)
+            where("tour_createdAt", "==", createdAt)
         );
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.docs.length > 0) {
-            const artProjectId = doc(db, "artProjects", querySnapshot.docs[0].id);
-            return artProjectId.id;
+            const artGalleryId = doc(db, "virtualTours", querySnapshot.docs[0].id);
+            return artGalleryId.id;
         } else {
-            throw new Error("Artwork not found");
+            throw new Error("Gallery not found");
         }
     } catch (error) {
-        console.error("Error getting artwork id:", error);
+        console.error("Error getting gallery id:", error);
     }
 }

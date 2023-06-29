@@ -4,8 +4,9 @@ import ArtworkCard from "../ArtworkProject/ArtworkCard";
 import { AiFillHeart } from 'react-icons/ai';
 import { BsFillPaletteFill, BsFillBoxFill } from 'react-icons/bs';
 import { useRouter } from "next/router";
+import GalleryCard from "../VirtualTour/GalleryCard";
 
-export default function ArtworkSection({ artworkData, userData, currentUser }) {
+export default function ArtworkSection({ artworkData, userData, currentUser, galleryData }) {
     const [activeTab, setActiveTab] = useState("artwork");
     const router = useRouter();
 
@@ -23,18 +24,20 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
             style: `${currentUser ? 'block' : 'hidden'}`
         },
         {
-            label: "Room",
-            value: "room",
+            label: "Gallery",
+            value: "gallery",
             icon: BsFillBoxFill,
-            style: `${currentUser ? 'block' : 'block'}`
+            style: `${currentUser ? 'block' : 'hidden'}`
         },
     ];
+
+    console.log(galleryData)
 
     const yourArtworks = artworkData?.filter((artwork) => artwork.user_id === userData?.user_id);
 
     const likedArtworks = currentUser ? artworkData?.filter((artwork) => artwork?.project_likedBy?.includes(currentUser.uid)) : '';
 
-
+    const virtualArtGalleries = currentUser ? galleryData?.filter((gallery) => gallery?.user_id === userData?.user_id) : '';
 
     const tabContent = () => {
         switch (activeTab) {
@@ -75,14 +78,10 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
                                 {currentUser ? (
                                     <div className="flex flex-col">
                                         <p className="font-bold text-lg text-center">
-                                            Artwork Section
+                                            Liked Section
                                         </p>
                                     </div>
-                                ) : (
-                                    <p className="font-bold text-lg">
-                                        Test
-                                    </p>
-                                )}
+                                ) : null}
                             </div>
                         );
                     } else {
@@ -92,28 +91,43 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
                     }
                 }
 
-            case "room":
-                // if (likedArtworks?.length === 0) {
-                return (
-                    <div className="h-[70vh] w-full flex justify-center items-center">
-                        {currentUser ? (
-                            <div className="flex flex-col">
-                                <p className="font-bold text-lg text-center">
-                                    Room Section
-                                </p>
+            case "gallery":
+                if (!virtualArtGalleries || virtualArtGalleries.length === 0) {
+                    // Render the content when virtualArtGalleries is null, undefined, or empty
+                    return (
+                        <div className="h-[70vh] w-full flex justify-center items-center">
+                            {currentUser ? (
+                                <div className="flex flex-col">
+                                    <p className="font-bold text-lg text-center">
+                                        Virtual Art Gallery Section
+                                    </p>
+                                </div>
+                            ) : null}
+                        </div>
+                    );
+                } else {
+                    // Render the gallery cards when virtualArtGalleries have items
+                    return (
+                        <div className="min-h-[70vh] flex justify-center mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {virtualArtGalleries.map((gallery, index) => (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.5 }}
+                                        key={index}>
+                                        <GalleryCard
+                                            uid={gallery.user_id}
+                                            tourRoom={gallery.tour_room}
+                                            tourName={gallery.tour_name}
+                                            createdAt={gallery.tour_createdAt}
+                                        />
+                                    </motion.div>
+                                ))}
                             </div>
-                        ) : (
-                            <p className="font-bold text-lg">
-                                Test
-                            </p>
-                        )}
-                    </div>
-                );
-            // } else {
-            // return (
-            //     <>{artworkCotent(likedArtworks)}</>
-            // )
-            // }
+                        </div>
+                    );
+                }
             default:
                 return null;
         }
@@ -121,28 +135,30 @@ export default function ArtworkSection({ artworkData, userData, currentUser }) {
 
     const artworkCotent = (filteredArtworks) => {
         return (
-            <div className="min-h-[70vh] w-screen grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 mx-auto gap-5 px-3 py-8 lg:px-20">
-                {filteredArtworks?.map((filteredArtwork, index) => (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                        key={index}>
-                        <ArtworkCard
-                            title={filteredArtwork.project_title}
-                            imageUrls={filteredArtwork.project_imageUrls}
-                            uid={filteredArtwork.user_id}
-                            description={filteredArtwork.project_description}
-                            tags={filteredArtwork.project_tags}
-                            link={filteredArtwork.project_link}
-                            skills={filteredArtwork.project_skills}
-                            createdAt={filteredArtwork.project_createdAt}
-                            likesCount={filteredArtwork.project_likesCount ?? 0}
-                            likedBy={filteredArtwork.project_likedBy ?? []}
-                            viewsCount={filteredArtwork.project_viewsCount ?? 0}
-                        />
-                    </motion.div>
-                ))}
+            <div className="min-h-[70vh] flex justify-center mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {filteredArtworks?.map((filteredArtwork, index) => (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5 }}
+                            key={index}>
+                            <ArtworkCard
+                                title={filteredArtwork.project_title}
+                                imageUrls={filteredArtwork.project_imageUrls}
+                                uid={filteredArtwork.user_id}
+                                description={filteredArtwork.project_description}
+                                tags={filteredArtwork.project_tags}
+                                link={filteredArtwork.project_link}
+                                skills={filteredArtwork.project_skills}
+                                createdAt={filteredArtwork.project_createdAt}
+                                likesCount={filteredArtwork.project_likesCount ?? 0}
+                                likedBy={filteredArtwork.project_likedBy ?? []}
+                                viewsCount={filteredArtwork.project_viewsCount ?? 0}
+                            />
+                        </motion.div>
+                    ))}
+                </div>
             </div>
         )
     }

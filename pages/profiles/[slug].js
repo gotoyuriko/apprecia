@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import ProfileSection from "@/components/Profile/ProfileSection";
 import ArtworkSection from "@/components/Profile/ArtworkSection";
+import GetTour from "@/firebase/tours/GetTour";
 
 export default function Profile() {
   const router = useRouter();
@@ -15,21 +16,29 @@ export default function Profile() {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const [artworkData, setArtworkData] = useState(null);
+  const [galleryData, setGalleryData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await GetUser(slug);
-        setUserData(userData);
+        const data = await GetUser(slug);
+        setUserData(data);
       } catch (error) {
         console.error("Error getting user:", error);
       }
 
       try {
-        const artworkData = await GetArtwork();
-        setArtworkData(artworkData);
+        const data = await GetArtwork();
+        setArtworkData(data);
       } catch (error) {
         console.error("Error getting artwork:", error);
+      }
+
+      try {
+        const data = await GetTour();
+        setGalleryData(data);
+      } catch (error) {
+        console.error("Error getting art gallery:", error);
       }
     };
 
@@ -44,7 +53,11 @@ export default function Profile() {
       <div className="container mx-auto py-8">
         {/* Profile */}
         <ProfileSection userData={userData} setUserData={setUserData} slug={slug} />
-        <ArtworkSection artworkData={artworkData} userData={userData} currentUser={currentUser} />
+        <ArtworkSection
+          artworkData={artworkData}
+          userData={userData}
+          currentUser={currentUser}
+          galleryData={galleryData} />
       </div>
       <Footer />
     </div>

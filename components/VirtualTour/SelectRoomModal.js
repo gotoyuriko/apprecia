@@ -10,7 +10,7 @@ export default function SelectRoomModal({
     tourData,
     roomNo,
 }) {
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState("");
 
     const handleOnCreateRoom = () => {
         const roomImage = roomImages.filter((room) => room.id === selectedImage);
@@ -25,7 +25,7 @@ export default function SelectRoomModal({
         setOpenModalEnv(false);
     };
 
-    const isButtonDisabled = selectedImage === "" || tourData.tourName === "";
+    const isButtonDisabled = selectedImage === "" || !tourData.tour_name;
 
     return (
         openModalEnv && (

@@ -21,46 +21,48 @@ export default function UploadArtwork({
     const handleSelectArtwork = (url) => {
         setSelectPanel((prev) => ({ ...prev, [0]: { ...prev[0], src: url } }));
         setTourData((prevTourData) => {
-            const updatedArtwork = prevTourData.tour_room[0].room_artwork.map((item) => {
-                if (item.artworkId === selectPanel[0]?.artworkId) {
-                    return { ...item, src: url };
+            const updatedRoomArtwork = prevTourData.tour_room.map((room) => {
+                if (room.room_id === roomNo) {
+                    const updatedArtwork = room.room_artwork.map((artworkItem) => {
+                        if (artworkItem.artworkId === selectPanel[0]?.artworkId) {
+                            return { ...artworkItem, src: url };
+                        }
+                        return artworkItem;
+                    });
+                    return { ...room, room_artwork: updatedArtwork };
                 }
-                return item;
+                return room;
             });
 
             return {
                 ...prevTourData,
-                tour_room: [
-                    {
-                        ...prevTourData.tour_room[0],
-                        room_artwork: updatedArtwork,
-                    },
-                ],
+                tour_room: updatedRoomArtwork,
             };
         });
+
         setSelectedImage("");
         setOpenModalArt(false);
     };
 
     const handleDeleteArtwork = () => {
         setSelectPanel((prev) => ({ ...prev, [0]: { ...prev[0], src: "" } }));
-
         setTourData((prevTourData) => {
-            const updatedArtwork = prevTourData.tour_room[0].room_artwork.map((item) => {
-                if (item.artworkId === selectPanel[0]?.artworkId) {
-                    return { ...item, src: "" };
+            const updatedRoomArtwork = prevTourData.tour_room.map((room) => {
+                if (room.room_id === roomNo) {
+                    const updatedArtwork = room.room_artwork.map((artworkItem) => {
+                        if (artworkItem.artworkId === selectPanel[0]?.artworkId) {
+                            return { ...artworkItem, src: "" };
+                        }
+                        return artworkItem;
+                    });
+                    return { ...room, room_artwork: updatedArtwork };
                 }
-                return item;
+                return room;
             });
 
             return {
                 ...prevTourData,
-                tour_room: [
-                    {
-                        ...prevTourData.tour_room[0],
-                        room_artwork: updatedArtwork,
-                    },
-                ],
+                tour_room: updatedRoomArtwork,
             };
         });
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import AddRoomButton from "@/components/VirtualTour/AddRoomButton";
 import CreateRoomTitleText from "@/components/VirtualTour/CreateRoomTitleText";
 import EditEnvironment from "@/components/VirtualTour/EditEnvironment";
@@ -40,9 +41,7 @@ const NewRoom = () => {
                         ...tourData,
                         user_name: data?.user_name
                     }
-                )
-                console.log("tourData", tourData);
-                console.log("data", data);
+                );
             } catch (error) {
                 console.error("Error getting user:", error);
             }
@@ -55,7 +54,6 @@ const NewRoom = () => {
         };
 
         fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Select Panel to showcase your artwork
@@ -67,12 +65,9 @@ const NewRoom = () => {
     const [openModalEnv, setOpenModalEnv] = useState(true);
     const [openModalArt, setOpenModalArt] = useState(false);
 
-    useEffect(() => {
-        // console.log('tourData', tourData);
-        console.log('roomNo', roomNo)
-        console.log("tourData.tour_room.length", tourData.tour_room.length);
-        // console.log('tourData.tour_room[(roomNo - 1)].room_artwork', tourData.tour_room[(roomNo - 1)]?.room_artwork)
-    }, [tourData, roomNo]);
+    // useEffect(() => {
+    //     console.log('tourData', tourData);
+    // }, [tourData, roomNo]);
 
     return (
         <>
@@ -85,6 +80,7 @@ const NewRoom = () => {
                 setSelectPanel={setSelectPanel}
                 setTourData={setTourData}
                 roomNo={roomNo}
+                tourData={tourData}
             />
             <SelectRoomModal
                 openModalEnv={openModalEnv}
@@ -112,6 +108,7 @@ const NewRoom = () => {
                 <Entity
                     primitive="a-sky"
                     src={tourData.tour_room[(roomNo - 1)]?.room_background} />
+                <a-entity light="type: hemisphere; color: #ffffff; intensity:1.180; distance:60.020;"></a-entity>
             </Scene>
         </>
     );

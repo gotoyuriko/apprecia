@@ -7,7 +7,6 @@ export default async function DeleteArtwork(imageUrls, artworkId) {
         // Delete Artwork from storage
         for (const imageUrl of imageUrls) {
             const storageFilename = decodeURIComponent(imageUrl.substring(imageUrl.lastIndexOf('/') + 1)).split('?')[0];
-            console.log(storageFilename);
             await deleteObject(ref(storage, storageFilename));
         }
         await deleteDoc(doc(db, "artProjects", artworkId));

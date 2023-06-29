@@ -14,6 +14,8 @@ export default function AddRoomButton({ tourData, setTourData, roomNo, setRoomNo
             tour_room: [...tourData.tour_room, newRoom],
         };
         setTourData(updatedTourData);
+        setRoomNo(newRoomId);
+        setOpenModalEnv(true);
     };
 
     const handleSwitchRoom = (roomNumber) => {

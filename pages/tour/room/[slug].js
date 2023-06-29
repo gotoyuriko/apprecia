@@ -1,53 +1,90 @@
-import CreateTitleText from '@/components/VirtualTour/CreateRoomTitleText';
-import GetArtwork from '@/firebase/artworks/GetArtwork';
-import GetUser from '@/firebase/users/GetUser';
-import { useEffect, useState } from 'react';
+import HomeButton from "@/components/VirtualTour/ViewTour/HomeButton";
+import SwitchRoom from "@/components/VirtualTour/ViewTour/SwitchRoom";
+import TourTitle from "@/components/VirtualTour/ViewTour/TourTitle";
+import UserInfo from "@/components/VirtualTour/ViewTour/UserInfo";
+import { useAuth } from "@/firebase/auth/AuthContext";
+import GetSingleTour from "@/firebase/tours/GetSingleTour";
+import GetUser from "@/firebase/users/GetUser";
+import { Scene, Entity } from "aframe-react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-const VirtualTour = () => {
-    const uid = 'dfqbciDedkY1YuNH0xBcXPe6iNG2';
-    const [userData, setUserData] = useState('');
-    const [artworkData, setArtworkData] = useState([]);
-    const [firstArtwork, setFirstArtwork] = useState('');
+export default function VirtualTour() {
+    const { currentUser } = useAuth();
+    const router = useRouter();
+    const { slug } = router.query;
+
+    // Tour Data and room Data
+    const [tourData, setTourData] = useState(null);
+    const [userData, setUserData] = useState(null);
+
+    // Switch Button
+    const [roomNo, setRoomNo] = useState(1);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await GetUser(uid);
-                setUserData(data);
+                const userData = await GetUser(currentUser.uid);
+                setUserData(userData);
             } catch (error) {
                 console.error("Error getting user:", error);
             }
-
             try {
-                const data = await GetArtwork();
-                setArtworkData(data);
+                const tourData = await GetSingleTour(slug);
+                setTourData(tourData);
             } catch (error) {
-                console.error("Error getting artwork:", error);
+                console.error("Error getting tour:", error);
             }
         };
 
         fetchData();
-    }, []);
-
-    useEffect(() => {
-        const filteredArtworks = artworkData?.filter(
-            (artwork) => artwork.user_id === userData?.user_id
-        );
-
-        const firstArtworkUrl = filteredArtworks?.[0]?.project_imageUrls[0] || '';
-
-        setFirstArtwork(firstArtworkUrl);
-    }, [artworkData, userData?.user_id]);
+    }, [currentUser.uid, slug]);
 
     return (
         <>
-            <CreateTitleText />
-            <a-scene>
-                <a-image src={firstArtwork} position='0 1.8 -2' ></a-image>
-                <a-sky src='/360panorama/room01.png'></a-sky>
-            </a-scene>
+            <SwitchRoom
+                tourData={tourData}
+                roomNo={roomNo}
+                setRoomNo={setRoomNo} />
+            <TourTitle tourData={tourData} roomNo={roomNo} />
+            <UserInfo userData={userData} />
+            <HomeButton />
+
+            <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+                {
+                    tourData?.tour_room[roomNo - 1]?.room_artwork
+                        ?.filter((item) => item.src)
+                        .map((artwork, index) => {
+                            return (
+                                <Entity
+                                    key={index}
+                                    geometry="primitive: plane;"
+                                    material={{
+                                        src: artwork.src,
+                                        color: "#cfcfcf",
+                                        side: "double"
+                                    }}
+                                    rotation={artwork.rotation}
+                                    position={artwork.position}
+                                    class="clickable"
+                                />
+                            );
+                        })
+                }
+
+                <Entity
+                    primitive="a-sky"
+                    src={tourData?.tour_room[roomNo - 1]?.room_background}
+                />
+                <Entity
+                    light={{
+                        type: "hemisphere",
+                        color: "#ffffff",
+                        intensity: 1.180,
+                        distance: 60.020
+                    }}
+                />
+            </Scene>
         </>
     );
-};
-
-export default VirtualTour;
+}

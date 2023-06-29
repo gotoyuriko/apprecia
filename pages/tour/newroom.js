@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import AddRoomButton from "@/components/VirtualTour/AddRoomButton";
-import CreateRoomTitleText from "@/components/VirtualTour/CreateRoomTitleText";
-import EditEnvironment from "@/components/VirtualTour/EditEnvironment";
-import RoomPublishButton from "@/components/VirtualTour/RoomPublishButton";
-import SelectRoomModal from "@/components/VirtualTour/SelectRoomModal";
-import UploadArtwork from "@/components/VirtualTour/UploadArtwork";
+import AddRoomButton from "@/components/VirtualTour/CreateTour/AddRoomButton";
+import CreateRoomTitleText from "@/components/VirtualTour/CreateTour/CreateRoomTitleText";
+import EditEnvironment from "@/components/VirtualTour/CreateTour/EditEnvironment";
+import RoomPublishButton from "@/components/VirtualTour/CreateTour/RoomPublishButton";
+import SelectRoomModal from "@/components/VirtualTour/CreateTour/SelectRoomModal";
+import UploadArtwork from "@/components/VirtualTour/CreateTour/UploadArtwork";
 import { panoramaArtworkImages } from "@/data/data";
 import GetArtwork from "@/firebase/artworks/GetArtwork";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import { Scene, Entity } from "aframe-react";
 import { useEffect, useState } from "react";
-import Panel from "@/components/VirtualTour/Panel";
+import Panel from "@/components/VirtualTour/CreateTour/Panel";
 
 const NewRoom = () => {
     const { currentUser } = useAuth();

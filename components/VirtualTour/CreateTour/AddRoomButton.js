@@ -28,7 +28,7 @@ export default function AddRoomButton({ tourData, setTourData, roomNo, setRoomNo
                 {tourData.tour_room.map((room, index) => (
                     <li key={index}
                         className={`mx-1 flex h-9 w-9 items-center justify-center rounded-full border ${roomNo === room.room_id
-                            ? "bg-gradient-to-tr from-pink-600 to-pink-400 text-white shadow-md shadow-pink-500/20"
+                            ? "bg-gradient-to-tr from-gray-800 to-gray-600 text-white shadow-md"
                             : "border-blue-gray-100 bg-transparent text-blue-gray-500"
                             } p-0 text-sm transition duration-150 ease-in-out hover:bg-light-300`}
                         onClick={() => handleSwitchRoom(room.room_id)}>

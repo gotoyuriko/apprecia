@@ -59,7 +59,7 @@ export default function SelectRoomModal({
                                 name="tour"
                                 type="text"
                                 autoComplete="tour"
-                                value={tourData.tour_name}
+                                value={tourData?.tour_name}
                                 placeholder="Name Your Art Exhibition"
                                 required
                                 className="flex-none block w-full rounded-md border-0 py-1.5 text-gray-900 placeholder:text-gray-300

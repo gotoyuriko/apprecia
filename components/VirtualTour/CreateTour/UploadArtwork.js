@@ -112,6 +112,10 @@ export default function UploadArtwork({
                             >
                                 Select
                             </button>
+                            <BiX
+                                className="w-10 h-10 text-black cursor-pointer"
+                                onClick={() => setOpenModalArt(false)}
+                            />
                         </div>
                     </div>
 
@@ -162,10 +166,7 @@ export default function UploadArtwork({
                         </button>
 
                     </div>
-                    <BiX
-                        className="absolute top-16 right-28 w-10 h-10 text-white cursor-pointer"
-                        onClick={() => setOpenModalArt(false)}
-                    />
+
                 </motion.div>
             </motion.div>
         )

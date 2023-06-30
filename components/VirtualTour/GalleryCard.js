@@ -1,11 +1,16 @@
-import { Card, CardActionArea, CardActions, CardMedia } from "@mui/material";
+import { Button, Card, CardActionArea, CardActions, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Popover, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
 import GetUser from "@/firebase/users/GetUser";
 import Link from "next/link";
 import GetTourId from "@/firebase/tours/GetTourId";
+import { FiMoreVertical } from "react-icons/fi";
+import { IconContext } from "react-icons";
+import DeleteTour from "@/firebase/tours/DeleteTour";
+import { useRouter } from "next/router";
 
 export default function GalleryCard({ uid, tourRoom, tourName, createdAt }) {
 
+    const router = useRouter();
     const [userData, setUserData] = useState(null);
     const [galleryId, setGalleryId] = useState(null);
 
@@ -28,6 +33,55 @@ export default function GalleryCard({ uid, tourRoom, tourName, createdAt }) {
         };
         fetchData();
     }, [uid, createdAt]);
+
+    // Tooltip
+    const [tooltip, setTooltip] = useState(null);
+    const handleTooltip = (event) => {
+        setTooltip(event.currentTarget);
+    };
+    const handleTooltipClose = () => {
+        setTooltip(null);
+    };
+    const tooltipOpen = Boolean(tooltip);
+    const id = tooltipOpen ? 'simple-popover' : undefined;
+
+    // Edit Project
+    const handleEdit = () => {
+        const fetchData = async () => {
+            try {
+                const tourId = await GetTourId(uid, createdAt);
+                router.push(`/tour/update/${tourId}`)
+            } catch (error) {
+                console.error("Error getting tour id:", error);
+            }
+        };
+
+        fetchData();
+    }
+
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    // Delete Project
+    const handleDeleteOpen = () => {
+        setDeleteOpen(true);
+    }
+    const handleDeleteClose = () => {
+        setDeleteOpen(false);
+    };
+
+    const handleDeleteProject = async () => {
+        const tourId = await GetTourId(uid, createdAt);
+
+        if (tourId) {
+            try {
+                await DeleteTour(tourId);
+                router.reload();
+            } catch (error) {
+                console.error("Error deleting artwork:", error);
+            }
+        } else {
+            console.error("Artwork not found");
+        }
+    };
 
     return (
         <>
@@ -55,6 +109,54 @@ export default function GalleryCard({ uid, tourRoom, tourName, createdAt }) {
                             {userData?.user_name ? `By ${userData.user_name}` : ""}
                         </Link>
                     </div>
+                    <Tooltip title="More" placement="right">
+                        <div className="flex flex-col items-center ml-10 hover:cursor-pointer"
+                            onClick={handleTooltip}>
+                            <IconContext.Provider value={{ color: "gray" }}>
+                                <FiMoreVertical className="w-8 h-8" />
+                            </IconContext.Provider>
+                            <Popover
+                                id={id}
+                                open={tooltipOpen}
+                                anchorEl={tooltip}
+                                onClose={handleTooltipClose}
+                                anchorOrigin={{
+                                    vertical: 'center',
+                                    horizontal: 'center',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                            >
+                                <ul className="py-2">
+                                    <li onClick={handleEdit} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Edit</li>
+                                    <li onClick={handleDeleteOpen} className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold">Delete</li>
+                                </ul>
+                            </Popover>
+                            <Dialog
+                                open={deleteOpen}
+                                onClose={handleDeleteClose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle id="alert-dialog-title">Delete Your Art Gallery</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        Are you sure you want to delete this art gallery? This action cannot be undone.
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleDeleteClose} color="primary">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={handleDeleteProject} variant="contained" autoFocus>
+                                        Delete
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </div>
+                    </Tooltip>
                 </CardActions>
             </Card>
         </>

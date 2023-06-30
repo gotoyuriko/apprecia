@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import AddRoomButton from "@/components/VirtualTour/CreateTour/AddRoomButton";
 import CreateRoomTitleText from "@/components/VirtualTour/CreateTour/CreateRoomTitleText";
 import EditEnvironment from "@/components/VirtualTour/CreateTour/EditEnvironment";
@@ -96,7 +95,14 @@ const NewRoom = () => {
                     primitive="a-sky"
                     src={tourData.tour_room[roomNo - 1]?.room_background}
                 />
-                <a-entity light="type: hemisphere; color: #ffffff; intensity:1.180; distance:60.020;"></a-entity>
+                <Entity
+                    light={{
+                        type: "hemisphere",
+                        color: "#ffffff",
+                        intensity: 1.180,
+                        distance: 60.020
+                    }}
+                />
             </Scene>
         </>
     );

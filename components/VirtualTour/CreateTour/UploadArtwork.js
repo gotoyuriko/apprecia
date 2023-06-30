@@ -167,7 +167,6 @@ export default function UploadArtwork({
                         onClick={() => setOpenModalArt(false)}
                     />
                 </motion.div>
-
             </motion.div>
         )
     );

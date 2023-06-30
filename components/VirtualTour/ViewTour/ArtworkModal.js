@@ -1,10 +1,44 @@
 import { BiUserCircle, BiX } from "react-icons/bi";
-import { motion } from "framer-motion";
-import { AiOutlinePaperClip } from "react-icons/ai";
+import { motion, useAnimation } from "framer-motion";
+import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlinePaperClip } from "react-icons/ai";
 import Link from "next/link";
 import Image from "next/image";
+import { IconContext } from "react-icons";
+import { useEffect, useState } from "react";
+import UpdateLike from "@/firebase/likes/UpdateLike";
 
-export default function ArtworkModal({ showDesc, setOpen, open, userData, user }) {
+export default function ArtworkModal({ showDesc, setOpen, open, userData, user, viewsNo, setViewsNo }) {
+    const [isLiked, setIsLiked] = useState(false);
+    const [likesNo, setLikesNo] = useState(0);
+
+    // Check if artwork was liked by you
+    useEffect(() => {
+        if (user) {
+            setIsLiked(showDesc?.project_likedBy?.includes(user.uid));
+        }
+    }, [showDesc?.project_likedBy, user]);
+
+    useEffect(() => {
+        setLikesNo(showDesc?.project_likesCount || 0);
+        setViewsNo(showDesc?.project_viewsCount || 0);
+    }, [showDesc?.project_likesCount, showDesc?.project_viewsCount]);
+
+    /*
+     * Like Animation https://www.framer.com/motion/use-animate/
+     */
+    const controls = useAnimation();
+    // Give / Remove Likes
+    const handleIsLike = async () => {
+        controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
+
+        if (showDesc?.user_id && showDesc?.project_createdAt) {
+            await UpdateLike(showDesc.user_id, showDesc.project_createdAt, !isLiked, user.uid);
+        }
+
+        setIsLiked((prevIsLiked) => !prevIsLiked);
+        setLikesNo((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
+    };
+
     return (
         open ? (
             <motion.div
@@ -19,17 +53,15 @@ export default function ArtworkModal({ showDesc, setOpen, open, userData, user }
                     onClick={() => setOpen(false)}
                 />
                 <div className="p-10">
-                    {showDesc?.map((artwork, index) => (
-                        <div key={index}>
-                            <h1 className="text-4xl font-bold">{artwork.project_title}</h1>
-                            <p className="text-justify mt-5">{artwork.project_description}</p>
-                        </div>
-                    ))}
+                    <div>
+                        <h1 className="text-4xl font-bold">{showDesc?.project_title}</h1>
+                        <p className="text-justify mt-5">{showDesc?.project_description}</p>
+                    </div>
                 </div>
                 <div className="px-10">
                     <p className="font-bold">Tags</p>
-                    {showDesc?.map((artwork) =>
-                        artwork?.project_tags?.map((tag, index) => (
+                    {
+                        showDesc?.project_tags?.map((tag, index) => (
                             <span
                                 key={index}
                                 className="text-sm text-white p-1.5 rounded"
@@ -40,12 +72,12 @@ export default function ArtworkModal({ showDesc, setOpen, open, userData, user }
                                 {tag.label}
                             </span>
                         ))
-                    )}
+                    }
                 </div>
                 <div className="px-10 mt-5">
                     <p className="font-bold">Skills</p>
-                    {showDesc?.map((artwork) =>
-                        artwork?.project_skills?.map((skill, index) => (
+                    {
+                        showDesc?.project_skills?.map((skill, index) => (
                             <span
                                 key={index}
                                 className="text-sm text-white p-1.5 rounded"
@@ -56,52 +88,88 @@ export default function ArtworkModal({ showDesc, setOpen, open, userData, user }
                                 {skill.label}
                             </span>
                         ))
-                    )}
+                    }
                 </div>
                 <div className="px-10 mt-5">
-                    {showDesc?.map((artwork) => {
-                        if (artwork?.project_link !== '' && artwork?.project_link !== null) {
-                            return (
-                                <div key={artwork?.project_link}>
+                    {
+                        (showDesc?.project_link !== '' && showDesc?.project_link !== null) ?
+                            (
+                                <div key={showDesc?.project_link}>
                                     <p className="font-bold">Links</p>
-                                    <Link className="flex items-center underline" href={artwork?.project_link} target="_blank">
+                                    <Link className="flex items-center underline" href={showDesc?.project_link} target="_blank">
                                         <AiOutlinePaperClip className="h-6 w-6" />
-                                        {artwork?.project_link.replace(/(^\w+:|^)\/\/(www\.)?/i, "").slice(0, 20)}...
+                                        {showDesc?.project_link.replace(/(^\w+:|^)\/\/(www\.)?/i, "").slice(0, 20)}...
                                     </Link>
                                 </div>
-                            );
-                        } else {
-                            return null;
-                        }
-                    })}
+                            )
+                            :
+                            null
+                    }
                 </div>
 
                 <hr className="my-4" />
-                <div className="flex items-center px-8 mt-4">
-                    {userData?.user_photoURL ? (
-                        <Link href={`/profiles/${userData?.user_id}`}>
-                            <Image
-                                src={userData.user_photoURL}
-                                alt="Profile"
-                                width={50}
-                                height={50}
-                                className="w-16 h-16 rounded-full drop-shadow-md border-2"
-                                priority
-                            />
-                        </Link>
-                    ) : (
-                        <BiUserCircle className="w-16 h-16" />
-                    )}
-                    <div className="flex flex-col ml-3">
-                        <p className="font-medium text-gray-700">created by</p>
-                        {userData?.user_name && (
-                            <Link
-                                href={`/profiles/${userData?.user_id}`}
-                                className="text-sm font-normal text-gray-400"
-                            >
-                                {userData.user_name}
+
+                <div className="flex items-center justify-between mt-4 px-8">
+                    <div className="flex items-center">
+                        {userData?.user_photoURL ? (
+                            <Link href={`/profiles/${userData?.user_id}`}>
+                                <Image
+                                    src={userData.user_photoURL}
+                                    alt="Profile"
+                                    width={50}
+                                    height={50}
+                                    className="w-16 h-16 rounded-full drop-shadow-md border-2"
+                                    priority
+                                />
                             </Link>
+                        ) : (
+                            <BiUserCircle className="w-16 h-16" />
                         )}
+                        <div className="flex flex-col ml-3">
+                            <p className="font-medium text-gray-700">created by</p>
+                            {userData?.user_name && (
+                                <Link
+                                    href={`/profiles/${userData?.user_id}`}
+                                    className="text-sm font-normal text-gray-400"
+                                >
+                                    {userData.user_name}
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex">
+                        <div className="flex flex-col items-center">
+                            <IconContext.Provider value={{ color: "red" }}>
+                                {isLiked && user ? (
+                                    <motion.div
+                                        onClick={user && handleIsLike}
+                                        animate={controls}
+                                    >
+                                        <AiFillHeart
+                                            className={`w-8 h-8 text-red-500 ${user && "cursor-pointer"
+                                                }`}
+                                        />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        onClick={user && handleIsLike}
+                                        animate={controls}
+                                    >
+                                        <AiOutlineHeart
+                                            className={`w-8 h-8 text-red-500 ${user && "cursor-pointer"
+                                                }`}
+                                        />
+                                    </motion.div>
+                                )}
+                            </IconContext.Provider>
+                            <p className="font-medium text-sm text-gray-400">{likesNo}</p>
+                        </div>
+                        <div className="flex flex-col items-center ml-10">
+                            <IconContext.Provider value={{ color: "gray" }}>
+                                <AiOutlineEye className="w-8 h-8" />
+                            </IconContext.Provider>
+                            <p className="font-medium text-sm text-gray-400">{viewsNo}</p>
+                        </div>
                     </div>
                 </div>
             </motion.div>

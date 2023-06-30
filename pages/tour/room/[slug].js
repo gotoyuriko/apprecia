@@ -5,6 +5,7 @@ import TourTitle from "@/components/VirtualTour/ViewTour/TourTitle";
 import UserInfo from "@/components/VirtualTour/ViewTour/UserInfo";
 import GetArtwork from "@/firebase/artworks/GetArtwork";
 import { useAuth } from "@/firebase/auth/AuthContext";
+import UpdateView from "@/firebase/projectviews/UpdateView";
 import GetSingleTour from "@/firebase/tours/GetSingleTour";
 import GetUser from "@/firebase/users/GetUser";
 import { Scene, Entity } from "aframe-react";
@@ -28,6 +29,9 @@ export default function VirtualTour() {
     //set modal
     const [open, setOpen] = useState(false);
 
+    //set views
+    const [viewsNo, setViewsNo] = useState(0);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -49,15 +53,6 @@ export default function VirtualTour() {
         if (AFRAME.components["link-control"]) {
             delete AFRAME.components["link-control"];
         }
-        if (AFRAME.components["artwork-modal"]) {
-            delete AFRAME.components["artwork-modal"];
-        }
-
-        // Click Sphere to travel to other room
-        const handleClickTravel = (data) => {
-            event.preventDefault();
-            setRoomNo(data);
-        };
 
         // Custom component registration
         AFRAME.registerComponent("link-control", {
@@ -71,6 +66,16 @@ export default function VirtualTour() {
                 this.el.addEventListener("click", () => handleClickTravel(this.data));
             },
         });
+
+        // Click Sphere to travel to other room
+        const handleClickTravel = (data) => {
+            event.preventDefault();
+            setRoomNo(data);
+        };
+
+        if (AFRAME.components["artwork-modal"]) {
+            delete AFRAME.components["artwork-modal"];
+        }
 
         // Modify the component registration section
         AFRAME.registerComponent("artwork-modal", {
@@ -90,10 +95,13 @@ export default function VirtualTour() {
         const handleClickModal = async (data) => {
             event.preventDefault();
             const selectArtwork = data.artdata?.filter(art => art.project_imageUrls.includes(data.src));
-            setShowDesc(selectArtwork);
+            setShowDesc(selectArtwork[0]);
             setOpen(true);
+            const hasViewed = await UpdateView(selectArtwork[0]?.user_id, selectArtwork[0]?.project_createdAt, currentUser);
+            hasViewed
+                ? setViewsNo((prevViewsNo) => prevViewsNo + 1)
+                : setViewsNo(selectArtwork[0]?.project_viewsCount);
         };
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -104,7 +112,9 @@ export default function VirtualTour() {
                 setOpen={setOpen}
                 open={open}
                 userData={userData}
-                user={currentUser} />
+                user={currentUser}
+                viewsNo={viewsNo}
+                setViewsNo={setViewsNo} />
             <SwitchRoom
                 tourData={tourData}
                 roomNo={roomNo}

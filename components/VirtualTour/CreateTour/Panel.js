@@ -12,9 +12,9 @@ export default function Panel({ panoramaImages, setSelectPanel, setOpenModalArt 
         const handleClickEvent = (data) => {
             event.preventDefault();
             setSelectPanel(
-                panoramaImages.filter((artwork) => {
+                panoramaImages?.filter((artwork) => {
                     return artwork.artworkId === data.id;
-                })
+                })[0]
             );
             setOpenModalArt(true);
         };
@@ -33,39 +33,44 @@ export default function Panel({ panoramaImages, setSelectPanel, setOpenModalArt 
         });
     }, [panoramaImages, setOpenModalArt, setSelectPanel]);
 
-    if (!panoramaImages) return null;
+    return (
+        <>
+            {
+                panoramaImages.map((item, index) =>
+                    item.src === "" ? (
+                        <Entity
+                            key={index}
+                            geometry="primitive: plane;"
+                            material="src: /360panorama/default.jpg; color:#2f2f2f; side: double;"
+                            rotation={item.rotation}
+                            position={item.position}
+                            artwork-click={`src:${item.src}; id:${item.artworkId}`}
+                            class="clickable"
+                        >
+                            <Entity
+                                text={{
+                                    value: "Select your Artwork",
+                                    color: "#ffffff",
+                                    align: "center",
+                                }}
+                                position="0 0 0"
+                                scale="1.5 1.5 1.5"
+                            />
+                        </Entity>
+                    ) : (
+                        <Entity
+                            key={index}
+                            geometry="primitive: plane;"
+                            material={`src: ${item.src}; color: #cccccc; side: double;`}
+                            rotation={item.rotation}
+                            position={item.position}
+                            artwork-click={`src:${item.src}; id:${item.artworkId}`}
+                            class="clickable"
+                        />
+                    )
+                )
+            }
+        </>
 
-    return panoramaImages.map((item, index) =>
-        item.src === "" ? (
-            <Entity
-                key={index}
-                geometry="primitive: plane;"
-                material="src: /360panorama/default.jpg; color:#2f2f2f; side: double;"
-                rotation={item.rotation}
-                position={item.position}
-                artwork-click={`src:${item.src}; id:${item.artworkId}`}
-                class="clickable"
-            >
-                <Entity
-                    text={{
-                        value: "Select your Artwork",
-                        color: "#ffffff",
-                        align: "center",
-                    }}
-                    position="0 0 0"
-                    scale="1.5 1.5 1.5"
-                />
-            </Entity>
-        ) : (
-            <Entity
-                key={index}
-                geometry="primitive: plane;"
-                material={`src: ${item.src}; color: #cccccc; side: double;`}
-                rotation={item.rotation}
-                position={item.position}
-                artwork-click
-                class="clickable"
-            />
-        )
-    );
+    )
 }

@@ -20,12 +20,12 @@ export default function UploadArtwork({
     );
 
     const handleSelectArtwork = (url) => {
-        setSelectPanel((prev) => ({ ...prev, [0]: { ...prev[0], src: url } }));
+        setSelectPanel((prev) => ({ ...prev, src: url }));
         setTourData((prevTourData) => {
             const updatedRoomArtwork = prevTourData.tour_room.map((room) => {
                 if (room.room_id === roomNo) {
                     const updatedArtwork = room.room_artwork.map((artworkItem) => {
-                        if (artworkItem.artworkId === selectPanel[0]?.artworkId) {
+                        if (artworkItem.artworkId === selectPanel?.artworkId) {
                             return { ...artworkItem, src: url };
                         }
                         return artworkItem;
@@ -46,12 +46,12 @@ export default function UploadArtwork({
     };
 
     const handleDeleteArtwork = () => {
-        setSelectPanel((prev) => ({ ...prev, [0]: { ...prev[0], src: "" } }));
+        setSelectPanel((prev) => ({ ...prev, src: '' }));
         setTourData((prevTourData) => {
             const updatedRoomArtwork = prevTourData.tour_room.map((room) => {
                 if (room.room_id === roomNo) {
                     const updatedArtwork = room.room_artwork.map((artworkItem) => {
-                        if (artworkItem.artworkId === selectPanel[0]?.artworkId) {
+                        if (artworkItem.artworkId === selectPanel?.artworkId) {
                             return { ...artworkItem, src: "" };
                         }
                         return artworkItem;

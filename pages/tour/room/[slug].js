@@ -40,14 +40,15 @@ export default function VirtualTour() {
                 const userData = await GetUser(tourData?.user_id);
                 setUserData(userData);
                 const artworkData = await GetArtwork();
-                setArtData(artworkData?.filter(art => art.user_id === tourData.user_id));
+                setArtData(
+                    artworkData?.filter((art) => art.user_id === tourData.user_id)
+                );
             } catch (error) {
                 console.error("Error getting tour or user or artwork:", error);
             }
         };
 
         fetchData();
-
 
         // Unregister the component if it has already been registered
         if (AFRAME.components["link-control"]) {
@@ -57,7 +58,7 @@ export default function VirtualTour() {
         // Custom component registration
         AFRAME.registerComponent("link-control", {
             schema: {
-                type: "number"
+                type: "number",
             },
             init: function () {
                 this.el.addEventListener("click", () => handleClickTravel(this.data));
@@ -81,7 +82,7 @@ export default function VirtualTour() {
         AFRAME.registerComponent("artwork-modal", {
             schema: {
                 src: { type: "asset" },
-                artdata: { type: "array" }
+                artdata: { type: "array" },
             },
             init: function () {
                 this.el.addEventListener("click", () => handleClickModal(this.data));
@@ -94,10 +95,16 @@ export default function VirtualTour() {
         // Modify the handleClickModal function to pass artData correctly
         const handleClickModal = async (data) => {
             event.preventDefault();
-            const selectArtwork = data.artdata?.filter(art => art.project_imageUrls.includes(data.src));
+            const selectArtwork = data.artdata?.filter((art) =>
+                art.project_imageUrls.includes(data.src)
+            );
             setShowDesc(selectArtwork[0]);
             setOpen(true);
-            const hasViewed = await UpdateView(selectArtwork[0]?.user_id, selectArtwork[0]?.project_createdAt, currentUser);
+            const hasViewed = await UpdateView(
+                selectArtwork[0]?.user_id,
+                selectArtwork[0]?.project_createdAt,
+                currentUser
+            );
             hasViewed
                 ? setViewsNo((prevViewsNo) => prevViewsNo + 1)
                 : setViewsNo(selectArtwork[0]?.project_viewsCount);
@@ -114,90 +121,82 @@ export default function VirtualTour() {
                 userData={userData}
                 user={currentUser}
                 viewsNo={viewsNo}
-                setViewsNo={setViewsNo} />
-            <SwitchRoom
-                tourData={tourData}
-                roomNo={roomNo}
-                setRoomNo={setRoomNo} />
+                setViewsNo={setViewsNo}
+            />
+            <SwitchRoom tourData={tourData} roomNo={roomNo} setRoomNo={setRoomNo} />
             <TourTitle tourData={tourData} roomNo={roomNo} />
             <UserInfo userData={userData} />
             <HomeButton />
 
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
-                {
-                    tourData?.tour_room[roomNo - 1]?.room_artwork
-                        ?.filter((item) => item.src)
-                        .map((artwork, index) => {
-                            return (
-                                <Entity
-                                    key={index}
-                                    geometry="primitive: plane;"
-                                    material={{
-                                        src: artwork.src,
-                                        color: "#cfcfcf",
-                                        side: "double"
-                                    }}
-                                    rotation={artwork.rotation}
-                                    position={artwork.position}
-                                    class="clickable"
-                                    artwork-modal={{
-                                        src: artwork.src,
-                                        artdata: artData
-                                    }}
-                                />
-                            );
-                        })
-                }
-
-
-                {
-                    (roomNo < tourData?.tour_room.length) ?
-                        <Entity
-                            geometry={{
-                                primitive: "sphere",
-                                radius: 0.5
-                            }}
-                            material={{
-                                src: tourData?.tour_room[roomNo]?.room_background,
-                                color: "#cfcfcf",
-                                side: "double"
-                            }}
-                            position="0 1.8 2"
-                            rotation="0 0 0"
-                            animation__rotation={{
-                                property: "rotation",
-                                dur: 10000,
-                                to: "0 360 0",
-                                loop: true
-                            }}
-                            class="clickable"
-                            link-control={roomNo + 1}
-                        /> :
-                        (roomNo === tourData?.tour_room.length) ?
+                {tourData?.tour_room[roomNo - 1]?.room_artwork
+                    ?.filter((item) => item.src)
+                    .map((artwork, index) => {
+                        return (
                             <Entity
-                                geometry={{
-                                    primitive: "sphere",
-                                    radius: 0.5
-                                }}
+                                key={index}
+                                geometry="primitive: plane;"
                                 material={{
-                                    src: tourData?.tour_room[0]?.room_background,
+                                    src: artwork.src,
                                     color: "#cfcfcf",
-                                    side: "double"
+                                    side: "double",
                                 }}
-                                position="0 1.8 2"
-                                rotation="0 0 0"
-                                animation__rotation={{
-                                    property: "rotation",
-                                    dur: 10000,
-                                    to: "0 360 0",
-                                    loop: true
-                                }}
+                                rotation={artwork.rotation}
+                                position={artwork.position}
                                 class="clickable"
-                                link-control={1}
+                                artwork-modal={{
+                                    src: artwork.src,
+                                    artdata: artData,
+                                }}
                             />
-                            :
-                            null
-                }
+                        );
+                    })}
+
+                {roomNo < tourData?.tour_room.length ? (
+                    <Entity
+                        geometry={{
+                            primitive: "sphere",
+                            radius: 0.5,
+                        }}
+                        material={{
+                            src: tourData?.tour_room[roomNo]?.room_background,
+                            color: "#cfcfcf",
+                            side: "double",
+                        }}
+                        position="0 1.8 2"
+                        rotation="0 0 0"
+                        animation__rotation={{
+                            property: "rotation",
+                            dur: 10000,
+                            to: "0 360 0",
+                            loop: true,
+                        }}
+                        class="clickable"
+                        link-control={roomNo + 1}
+                    />
+                ) : roomNo === tourData?.tour_room.length ? (
+                    <Entity
+                        geometry={{
+                            primitive: "sphere",
+                            radius: 0.5,
+                        }}
+                        material={{
+                            src: tourData?.tour_room[0]?.room_background,
+                            color: "#cfcfcf",
+                            side: "double",
+                        }}
+                        position="0 1.8 2"
+                        rotation="0 0 0"
+                        animation__rotation={{
+                            property: "rotation",
+                            dur: 10000,
+                            to: "0 360 0",
+                            loop: true,
+                        }}
+                        class="clickable"
+                        link-control={1}
+                    />
+                ) : null}
 
                 <Entity
                     primitive="a-sky"
@@ -208,8 +207,8 @@ export default function VirtualTour() {
                     light={{
                         type: "hemisphere",
                         color: "#ffffff",
-                        intensity: 1.180,
-                        distance: 60.020
+                        intensity: 1.18,
+                        distance: 60.02,
                     }}
                 />
             </Scene>

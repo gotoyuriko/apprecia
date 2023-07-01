@@ -192,7 +192,9 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 {userData?.user_photoURL ? (
-                                    <Link href={`/profiles/${userData?.user_id}`}>
+                                    <Link
+                                        passHref
+                                        href={`/profiles/${userData?.user_id}`}>
                                         <Image
                                             src={userData.user_photoURL}
                                             alt="Profile"
@@ -361,6 +363,7 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
 
                             {link && link !== "" && (
                                 <Link
+                                    passHref
                                     href={link}
                                     target="_blank"
                                     className="flex items-center underline"

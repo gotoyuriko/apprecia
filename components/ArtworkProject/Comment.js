@@ -1,14 +1,23 @@
+import GetArtworkId from "@/firebase/artworks/GetArtworkId";
+import DeleteComment from "@/firebase/comments/DeleteComment";
 import UpdateComment from "@/firebase/comments/UpdateComment";
 import Image from "next/image";
 import { useState } from "react";
 import { IconContext } from "react-icons";
 import { BiUserCircle, BiTrash, BiPencil } from "react-icons/bi";
 
-export default function Comment({ commentItem, userData }) {
+export default function Comment({ commentItem, userData, status, uid, createdAt }) {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedComment, setUpdatedComment] = useState(commentItem.comment);
+    const [hide, setHide] = useState(false);
 
-    const filteredUser = userData?.find(userItem => userItem.user_id === commentItem.user_id);
+    let filteredUser;
+
+    if (status === 'new') {
+        filteredUser = userData;
+    } else if (status === 'old') {
+        filteredUser = userData?.find(userItem => userItem.user_id === commentItem.user_id);
+    }
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -22,22 +31,25 @@ export default function Comment({ commentItem, userData }) {
     const handleUpdate = async () => {
         try {
             await UpdateComment(commentItem.user_id, commentItem.comment_createdAt, updatedComment)
-        } catch (e) {
-            console.log('Error updating comment', error);
+        } catch (error) {
+            console.error('Error updating comment', error);
         }
         setIsEditing(false);
     };
 
     const handleDelete = async () => {
         try {
-            await UpdateComment(commentItem.user_id, commentItem.comment_createdAt, updatedComment)
+            const artworkId = await GetArtworkId(uid, createdAt);
+            await DeleteComment(artworkId, commentItem);
         } catch (e) {
-            console.log('Error deleting comment', error);
+            console.error('Error deleting comment', e);
         }
+
+        setHide(true);
     };
 
     return (
-        <div className="flex items-center mt-4">
+        <div className={`${hide ? 'hidden' : 'flex'} items-center mt-4`}>
             <div className="flex items-center justify-center">
                 <IconContext.Provider
                     value={{
@@ -46,19 +58,21 @@ export default function Comment({ commentItem, userData }) {
                         title: "Profile menu",
                     }}
                 >
-                    {filteredUser?.user_photoURL ? (
-                        <Image
-                            width={50}
-                            height={50}
-                            src={filteredUser?.user_photoURL}
-                            alt="Profile"
-                            className="w-16 h-16 rounded-full object-cover"
-                            priority
-                            style={{ borderRadius: "50%", aspectRatio: "1/1" }}
-                        />
-                    ) : (
-                        <BiUserCircle />
-                    )}
+                    {
+                        filteredUser?.user_photoURL ? (
+                            <Image
+                                width={50}
+                                height={50}
+                                src={filteredUser?.user_photoURL}
+                                alt="Profile"
+                                className="w-16 h-16 rounded-full object-cover"
+                                priority
+                                style={{ borderRadius: "50%", aspectRatio: "1/1" }}
+                            />
+                        ) : (
+                            <BiUserCircle />
+                        )
+                    }
                 </IconContext.Provider>
             </div>
             <div className="flex justify-center flex-col ml-5">
@@ -71,7 +85,7 @@ export default function Comment({ commentItem, userData }) {
                 ) : (
                     <>
                         <p className="font-bold">{filteredUser?.user_name}</p>
-                        <p className="pt-2">{commentItem?.comment}</p>
+                        <p className="pt-2">{commentItem?.comment_content}</p>
                     </>
                 )}
                 {isEditing ? (

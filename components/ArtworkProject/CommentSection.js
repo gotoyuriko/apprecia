@@ -2,6 +2,7 @@
 import AddComment from "@/firebase/comments/AddComment";
 import GetComments from "@/firebase/comments/GetComments";
 import GetUser from "@/firebase/users/GetUser";
+import GetUsers from "@/firebase/users/GetUsers";
 import { useEffect, useState } from "react";
 import Comment from "./Comment";
 
@@ -12,7 +13,7 @@ export default function CommentSection({ uid, createdAt, user }) {
     // From Firebase
     const [commentData, setCommentData] = useState([]);
     // Other Users
-    const [userData, setUserData] = useState({});
+    const [userData, setUserData] = useState([]);
     // Current User
     const [currentUserData, setCurrentUserData] = useState([]);
     // Comment Form
@@ -27,14 +28,7 @@ export default function CommentSection({ uid, createdAt, user }) {
             // Fetch Comments
             try {
                 const data = await GetComments(uid, createdAt);
-                // Convert createdAt strings to Date objects
-                const convertedData = data.map(comment => ({
-                    ...comment,
-                    createdAt: new Date(comment.createdAt)
-                }));
-                // Sort the comments by createdAt date in ascending order
-                const sortedData = convertedData.sort((a, b) => a.createdAt - b.createdAt);
-                setCommentData(sortedData);
+                setCommentData(data.reverse());
             } catch (error) {
                 console.error("Error getting comments", error);
             }
@@ -55,13 +49,12 @@ export default function CommentSection({ uid, createdAt, user }) {
         };
 
         fetchData();
-    }, []);
-
+    }, [commentData]);
 
     const handleAddComment = async () => {
         const updatedFormData = {
             ...commentFormData,
-            comment: newComment,
+            comment_content: newComment,
             user_name: currentUserData.user_name
         };
 
@@ -71,7 +64,7 @@ export default function CommentSection({ uid, createdAt, user }) {
             console.error("Error adding comment", e);
         }
 
-        setLiveComments([...liveComments, updatedFormData]);
+        // setLiveComments([updatedFormData, ...liveComments]);
         setNewComment("");
     };
 
@@ -79,7 +72,7 @@ export default function CommentSection({ uid, createdAt, user }) {
         <>
             <div className="my-10">
                 <h3 className="text-lg font-bold mb-2">Comments</h3>
-                {liveComments.length === 0 && commentData.length === 0 && (
+                {commentData.length === 0 && (
                     <p className="text-gray-500">No comments yet. Be the first to comment!</p>
                 )}
                 <div className="mt-4">
@@ -96,16 +89,18 @@ export default function CommentSection({ uid, createdAt, user }) {
                         Post Comment
                     </button>
                 </div>
-                {
+                {/* {
                     liveComments.map((newcomment, index) => {
                         return (
-                            <Comment commentItem={newcomment} key={index} userData={userData} />
+                            <Comment commentItem={newcomment} key={index} userData={currentUserData} status='new' uid={uid} createdAt={createdAt} />
                         )
                     })
-                }
+                } */}
                 {
-                    commentData.map((commentItem, index) => {
-                        <Comment commentItem={commentItem} key={index} userData={currentUserData} />
+                    commentData?.map((commentItem, index) => {
+                        return (
+                            <Comment commentItem={commentItem} key={index} userData={userData} status='old' uid={uid} createdAt={createdAt} />
+                        )
                     })
                 }
             </div>

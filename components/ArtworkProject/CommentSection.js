@@ -49,7 +49,7 @@ export default function CommentSection({ uid, createdAt, user }) {
         };
 
         fetchData();
-    }, [commentData]);
+    }, []);
 
     const handleAddComment = async () => {
         const updatedFormData = {

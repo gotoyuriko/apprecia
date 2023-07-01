@@ -1,7 +1,7 @@
 import { arrayUnion, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function AddComment(uid, createdAt, commentData) {
+export default async function UpdateComment({ uid, createdAt, newcomment }) {
     try {
         // Get the current date and time
         const currentDate = new Date();
@@ -20,7 +20,8 @@ export default async function AddComment(uid, createdAt, commentData) {
 
         const updatedCommentData = {
             ...commentData,
-            comment_createdAt: timestamp,
+            comment_updatedAt: timestamp,
+            comment_content: newcomment
         };
 
         await updateDoc(artProjectRef, {

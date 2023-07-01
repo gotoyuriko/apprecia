@@ -1,10 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import AddComment from "@/firebase/comments/AddComment";
 import GetComments from "@/firebase/comments/GetComments";
 import GetUser from "@/firebase/users/GetUser";
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import { IconContext } from "react-icons";
-import { BiUserCircle } from "react-icons/bi";
+import Comment from "./Comment";
 
 export default function CommentSection({ uid, createdAt, user }) {
     // Adding comment in the client side
@@ -18,33 +17,48 @@ export default function CommentSection({ uid, createdAt, user }) {
     const [currentUserData, setCurrentUserData] = useState([]);
     // Comment Form
     const commentFormData = {
-        comment: "",
+        comment_content: "",
         user_id: user.uid,
         user_name: "",
     };
 
     useEffect(() => {
         const fetchData = async () => {
+            // Fetch Comments
             try {
                 const data = await GetComments(uid, createdAt);
-                setCommentData(data);
+                // Convert createdAt strings to Date objects
+                const convertedData = data.map(comment => ({
+                    ...comment,
+                    createdAt: new Date(comment.createdAt)
+                }));
+                // Sort the comments by createdAt date in ascending order
+                const sortedData = convertedData.sort((a, b) => a.createdAt - b.createdAt);
+                setCommentData(sortedData);
             } catch (error) {
                 console.error("Error getting comments", error);
             }
+            // Fetch Current User
             try {
                 const data = await GetUser(user.uid);
                 setCurrentUserData(data);
             } catch (error) {
                 console.error("Error getting current user", error);
             }
+            // Fetch Ohter Users
+            try {
+                const data = await GetUsers();
+                setUserData(data);
+            } catch (error) {
+                console.error("Error getting users", error);
+            }
         };
 
         fetchData();
-    }, [uid, createdAt, user.uid]);
+    }, []);
 
 
     const handleAddComment = async () => {
-        // Update the commentFormData object with the new comment text
         const updatedFormData = {
             ...commentFormData,
             comment: newComment,
@@ -53,61 +67,13 @@ export default function CommentSection({ uid, createdAt, user }) {
 
         try {
             await AddComment(uid, createdAt, updatedFormData);
-            const updatedComments = [...liveComments, updatedFormData];
-            setLiveComments(updatedComments);
-            setNewComment("");
         } catch (e) {
             console.error("Error adding comment", e);
         }
+
+        setLiveComments([...liveComments, updatedFormData]);
+        setNewComment("");
     };
-
-
-
-
-    const renderComment = (commentItem, index) => {
-        const fetchUser = async () => {
-            try {
-                const user = await GetUser(commentItem?.user_id);
-                setUserData(user);
-            } catch (error) {
-                console.error("Error getting user", error);
-            }
-        };
-
-        fetchUser();
-        return (
-            <div key={index} className="flex items-center mt-4">
-                <div className="flex items-center justify-center">
-                    <IconContext.Provider
-                        value={{
-                            size: "3.5rem",
-                            className: "text-center",
-                            title: "Profile menu",
-                        }}
-                    >
-                        {userData?.user_photoURL ? (
-                            <Image
-                                width={50}
-                                height={50}
-                                src={userData?.user_photoURL}
-                                alt="Profile"
-                                className="w-16 h-16 rounded-full object-cover"
-                                priority
-                                style={{ borderRadius: "50%", aspectRatio: "1/1" }}
-                            />
-                        ) : (
-                            <BiUserCircle />
-                        )}
-                    </IconContext.Provider>
-                </div>
-                <div className="flex justify-center flex-col ml-5">
-                    <p className="font-bold">{userData?.user_name}</p>
-                    <p className="pt-2">{commentItem?.comment}</p>
-                </div>
-            </div>
-        );
-    };
-
 
     return (
         <>
@@ -131,43 +97,15 @@ export default function CommentSection({ uid, createdAt, user }) {
                     </button>
                 </div>
                 {
-                    liveComments.map((comment, index) => {
+                    liveComments.map((newcomment, index) => {
                         return (
-                            <div key={index} className="flex items-center mt-4">
-                                <div className="flex items-center justify-center">
-                                    <IconContext.Provider
-                                        value={{
-                                            size: "3.5rem",
-                                            className: "text-center",
-                                            title: "Profile menu",
-                                        }}
-                                    >
-                                        {currentUserData?.user_photoURL ? (
-                                            <Image
-                                                width={50}
-                                                height={50}
-                                                src={currentUserData?.user_photoURL}
-                                                alt="Profile"
-                                                className="w-16 h-16 rounded-full object-cover"
-                                                priority
-                                                style={{ borderRadius: "50%", aspectRatio: "1/1" }}
-                                            />
-                                        ) : (
-                                            <BiUserCircle />
-                                        )}
-                                    </IconContext.Provider>
-                                </div>
-                                <div className="flex justify-center flex-col ml-5">
-                                    <p className="font-bold">{currentUserData?.user_name}</p>
-                                    <p className="pt-2">{comment?.comment}</p>
-                                </div>
-                            </div>
+                            <Comment commentItem={newcomment} key={index} userData={userData} />
                         )
                     })
                 }
                 {
                     commentData.map((commentItem, index) => {
-                        return renderComment(commentItem, index);
+                        <Comment commentItem={commentItem} key={index} userData={currentUserData} />
                     })
                 }
             </div>

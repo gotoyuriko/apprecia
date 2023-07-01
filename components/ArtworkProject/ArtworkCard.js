@@ -14,6 +14,7 @@ import { FiMoreVertical } from "react-icons/fi";
 import GetArtworkId from "@/firebase/artworks/GetArtworkId";
 import { useRouter } from "next/router";
 import DeleteArtwork from "@/firebase/artworks/DeleteArtwork";
+import CommentSection from "./CommentSection";
 
 export default function ArtworkCard({ title, description, imageUrls, tags, skills, link, uid, createdAt, likesCount, likedBy, viewsCount }) {
     const { currentUser } = useAuth();
@@ -179,7 +180,7 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                     animate={{ opacity: 100 }}
                     exit={{ opacity: 0 }}
                     transition={{ ease: "easeOut", duration: 0.3 }}
-                    className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-80 bg-gray-900"
+                    className="fixed inset-0 flex items-center justify-evenly z-50 bg-opacity-80 bg-gray-900"
                 >
                     <motion.div
                         initial={{ y: 100 }}
@@ -369,6 +370,9 @@ export default function ArtworkCard({ title, description, imageUrls, tags, skill
                                 </Link>
                             )}
                         </div>
+
+                        <CommentSection uid={uid} createdAt={createdAt} user={currentUser} />
+
                         <BiX
                             className="absolute top-2 lg:top-4 right-6 lg:right-72 w-8 lg:w-10 h-8 lg:h-10 lg:text-white text-black cursor-pointer"
                             onClick={() => setOpen(false)}

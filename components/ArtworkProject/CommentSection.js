@@ -1,21 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AddComment from "@/firebase/comments/AddComment";
-import GetComments from "@/firebase/comments/GetComments";
-import GetUser from "@/firebase/users/GetUser";
-import GetUsers from "@/firebase/users/GetUsers";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Comment from "./Comment";
 
-export default function CommentSection({ uid, createdAt, user }) {
+export default function CommentSection({
+    uid,
+    createdAt,
+    user,
+    commentData,
+    commentUserData,
+    commentCurrentUserData,
+}) {
     // Adding comment in the client side
     const [liveComments, setLiveComments] = useState([]);
     const [newComment, setNewComment] = useState("");
-    // From Firebase
-    const [commentData, setCommentData] = useState([]);
-    // Other Users
-    const [userData, setUserData] = useState([]);
-    // Current User
-    const [currentUserData, setCurrentUserData] = useState([]);
+
     // Comment Form
     const commentFormData = {
         comment_content: "",
@@ -23,49 +22,20 @@ export default function CommentSection({ uid, createdAt, user }) {
         user_name: "",
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            // Fetch Comments
-            try {
-                const data = await GetComments(uid, createdAt);
-                setCommentData(data.reverse());
-            } catch (error) {
-                console.error("Error getting comments", error);
-            }
-            // Fetch Current User
-            try {
-                const data = await GetUser(user.uid);
-                setCurrentUserData(data);
-            } catch (error) {
-                console.error("Error getting current user", error);
-            }
-            // Fetch Ohter Users
-            try {
-                const data = await GetUsers();
-                setUserData(data);
-            } catch (error) {
-                console.error("Error getting users", error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
     const handleAddComment = async () => {
         const updatedFormData = {
             ...commentFormData,
             comment_content: newComment,
-            user_name: currentUserData.user_name
+            user_name: commentCurrentUserData?.user_name,
         };
 
         try {
-            await AddComment(uid, createdAt, updatedFormData);
+            const { updatedCommentData } = await AddComment(uid, createdAt, updatedFormData);
+            setLiveComments([updatedCommentData, ...liveComments]);
+            setNewComment("");
         } catch (e) {
             console.error("Error adding comment", e);
         }
-
-        // setLiveComments([updatedFormData, ...liveComments]);
-        setNewComment("");
     };
 
     return (
@@ -73,7 +43,9 @@ export default function CommentSection({ uid, createdAt, user }) {
             <div className="my-10">
                 <h3 className="text-lg font-bold mb-2">Comments</h3>
                 {commentData.length === 0 && (
-                    <p className="text-gray-500">No comments yet. Be the first to comment!</p>
+                    <p className="text-gray-500">
+                        No comments yet. Be the first to comment!
+                    </p>
                 )}
                 <div className="mt-4">
                     <textarea
@@ -89,22 +61,31 @@ export default function CommentSection({ uid, createdAt, user }) {
                         Post Comment
                     </button>
                 </div>
-                {/* {
-                    liveComments.map((newcomment, index) => {
-                        return (
-                            <Comment commentItem={newcomment} key={index} userData={currentUserData} status='new' uid={uid} createdAt={createdAt} />
-                        )
-                    })
-                } */}
-                {
-                    commentData?.map((commentItem, index) => {
-                        return (
-                            <Comment commentItem={commentItem} key={index} userData={userData} status='old' uid={uid} createdAt={createdAt} />
-                        )
-                    })
-                }
+                {liveComments.map((newcomment, index) => {
+                    return (
+                        <Comment
+                            commentItem={newcomment}
+                            key={index}
+                            userData={commentCurrentUserData}
+                            status="new"
+                            uid={uid}
+                            createdAt={createdAt}
+                        />
+                    );
+                })}
+                {commentData?.map((commentItem, index) => {
+                    return (
+                        <Comment
+                            commentItem={commentItem}
+                            key={index}
+                            userData={commentUserData}
+                            status="old"
+                            uid={commentCurrentUserData.user_id}
+                            createdAt={createdAt}
+                        />
+                    );
+                })}
             </div>
         </>
     );
 }
-

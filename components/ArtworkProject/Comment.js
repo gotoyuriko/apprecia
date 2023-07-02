@@ -6,17 +6,25 @@ import { useState } from "react";
 import { IconContext } from "react-icons";
 import { BiUserCircle, BiTrash, BiPencil } from "react-icons/bi";
 
-export default function Comment({ commentItem, userData, status, uid, createdAt }) {
+export default function Comment({
+    commentItem,
+    userData,
+    status,
+    uid,
+    createdAt,
+}) {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedComment, setUpdatedComment] = useState(commentItem.comment);
     const [hide, setHide] = useState(false);
 
     let filteredUser;
 
-    if (status === 'new') {
+    if (status === "new") {
         filteredUser = userData;
-    } else if (status === 'old') {
-        filteredUser = userData?.find(userItem => userItem.user_id === commentItem.user_id);
+    } else if (status === "old") {
+        filteredUser = userData?.find(
+            (userItem) => userItem.user_id === commentItem.user_id
+        );
     }
 
     const handleEdit = () => {
@@ -30,9 +38,13 @@ export default function Comment({ commentItem, userData, status, uid, createdAt 
 
     const handleUpdate = async () => {
         try {
-            await UpdateComment(commentItem.user_id, commentItem.comment_createdAt, updatedComment)
+            await UpdateComment(
+                commentItem.user_id,
+                commentItem.comment_createdAt,
+                updatedComment
+            );
         } catch (error) {
-            console.error('Error updating comment', error);
+            console.error("Error updating comment", error);
         }
         setIsEditing(false);
     };
@@ -42,14 +54,14 @@ export default function Comment({ commentItem, userData, status, uid, createdAt 
             const artworkId = await GetArtworkId(uid, createdAt);
             await DeleteComment(artworkId, commentItem);
         } catch (e) {
-            console.error('Error deleting comment', e);
+            console.error("Error deleting comment", e);
         }
 
         setHide(true);
     };
 
     return (
-        <div className={`${hide ? 'hidden' : 'flex'} items-center mt-4`}>
+        <div className={`${hide ? "hidden" : "flex"} items-center mt-4`}>
             <div className="flex items-center justify-center">
                 <IconContext.Provider
                     value={{
@@ -58,21 +70,19 @@ export default function Comment({ commentItem, userData, status, uid, createdAt 
                         title: "Profile menu",
                     }}
                 >
-                    {
-                        filteredUser?.user_photoURL ? (
-                            <Image
-                                width={50}
-                                height={50}
-                                src={filteredUser?.user_photoURL}
-                                alt="Profile"
-                                className="w-16 h-16 rounded-full object-cover"
-                                priority
-                                style={{ borderRadius: "50%", aspectRatio: "1/1" }}
-                            />
-                        ) : (
-                            <BiUserCircle />
-                        )
-                    }
+                    {filteredUser?.user_photoURL ? (
+                        <Image
+                            width={50}
+                            height={50}
+                            src={filteredUser?.user_photoURL}
+                            alt="Profile"
+                            className="w-16 h-16 rounded-full object-cover"
+                            priority
+                            style={{ borderRadius: "50%", aspectRatio: "1/1" }}
+                        />
+                    ) : (
+                        <BiUserCircle />
+                    )}
                 </IconContext.Provider>
             </div>
             <div className="flex justify-center flex-col ml-5">

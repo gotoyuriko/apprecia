@@ -26,6 +26,8 @@ export default async function AddComment(uid, createdAt, commentData) {
         await updateDoc(artProjectRef, {
             project_comments: arrayUnion(updatedCommentData),
         });
+
+        return { updatedCommentData }
     } catch (error) {
         console.error("error adding comments", error);
     }

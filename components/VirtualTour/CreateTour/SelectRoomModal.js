@@ -49,7 +49,7 @@ export default function SelectRoomModal({
                                 htmlFor="tour"
                                 className="flex-none block text-base font-bold leading-6 text-gray-900 mr-1 md:mr-5"
                             >
-                                Tour Name
+                                Art Gallery Name
                             </label>
                             <input
                                 onChange={(e) =>

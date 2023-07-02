@@ -134,7 +134,7 @@ export default function RoomPublishButton({
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                            {status === 'new' ? 'Once published, your project will be made visible to others?' : 'Modify your room&apos;s visibility and share your project'}
+                            {status === 'new' ? 'Once published, your project will be made visible to others?' : "Modify your room's visibility and share your project"}
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>

@@ -11,6 +11,7 @@ export default function Comment({
     userData,
     status,
     uid,
+    user,
     createdAt,
 }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -96,37 +97,42 @@ export default function Comment({
                         <p className="pt-2">{updatedComment}</p>
                     </>
                 )}
-                {isEditing ? (
-                    <div className="flex mt-2">
-                        <button
-                            className="mr-2 px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-                            onClick={handleUpdate}
-                        >
-                            Save
-                        </button>
-                        <button
-                            className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
-                            onClick={handleCancelEdit}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                ) : (
-                    <div className="flex mt-2">
-                        <button
-                            className="mr-2 px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
-                            onClick={handleEdit}
-                        >
-                            <BiPencil />
-                        </button>
-                        <button
-                            className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
-                            onClick={handleDelete}
-                        >
-                            <BiTrash />
-                        </button>
-                    </div>
-                )}
+                {
+                    (user?.uid === commentItem?.user_id) && (
+                        isEditing ? (
+                            <div className="flex mt-2" >
+                                <button
+                                    className="mr-2 px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
+                                    onClick={handleUpdate}
+                                >
+                                    Save
+                                </button>
+                                <button
+                                    className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+                                    onClick={handleCancelEdit}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex mt-2">
+                                <button
+                                    className="mr-2 px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+                                    onClick={handleEdit}
+                                >
+                                    <BiPencil />
+                                </button>
+                                <button
+                                    className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
+                                    onClick={handleDelete}
+                                >
+                                    <BiTrash />
+                                </button>
+                            </div>
+                        )
+                    )
+                }
+
             </div>
         </div>
     );

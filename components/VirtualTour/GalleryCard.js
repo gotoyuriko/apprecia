@@ -21,7 +21,7 @@ import { IconContext } from "react-icons";
 import DeleteTour from "@/firebase/tours/DeleteTour";
 import { useRouter } from "next/router";
 
-export default function GalleryCard({ uid, tourRoom, tourName, createdAt }) {
+export default function GalleryCard({ uid, tourRoom, tourName, createdAt, currentUser }) {
     const router = useRouter();
     const [userData, setUserData] = useState(null);
     const [galleryId, setGalleryId] = useState(null);
@@ -121,74 +121,76 @@ export default function GalleryCard({ uid, tourRoom, tourName, createdAt }) {
                             {userData?.user_name ? `By ${userData.user_name}` : ""}
                         </Link>
                     </div>
-                    <Tooltip title="More" placement="right">
-                        <div className="flex flex-col items-center ml-10">
-                            <IconContext.Provider value={{ color: "gray" }}>
-                                <FiMoreVertical
-                                    onClick={handleTooltip}
-                                    aria-describedby={id}
-                                    className="w-8 h-8 hover:cursor-pointer"
-                                />
-                            </IconContext.Provider>
-                            <Popover
-                                id={id}
-                                open={open}
-                                anchorEl={anchorEl}
-                                onClose={handleTooltipClose}
-                                anchorOrigin={{
-                                    vertical: "center",
-                                    horizontal: "center",
-                                }}
-                                transformOrigin={{
-                                    vertical: "top",
-                                    horizontal: "left",
-                                }}
-                            >
-                                <ul className="py-2">
-                                    <li
-                                        onClick={handleEdit}
-                                        className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold"
-                                    >
-                                        Edit
-                                    </li>
-                                    <li
-                                        onClick={handleDeleteOpen}
-                                        className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold"
-                                    >
-                                        Delete
-                                    </li>
-                                </ul>
-                            </Popover>
-                            <Dialog
-                                open={deleteOpen}
-                                onClose={handleDeleteClose}
-                                aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                            >
-                                <DialogTitle id="alert-dialog-title">
-                                    Delete Your Art Gallery
-                                </DialogTitle>
-                                <DialogContent>
-                                    <DialogContentText id="alert-dialog-description">
-                                        Are you sure you want to delete this art gallery? This
-                                        action cannot be undone.
-                                    </DialogContentText>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={handleDeleteClose} color="primary">
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        onClick={handleDeleteProject}
-                                        variant="contained"
-                                        autoFocus
-                                    >
-                                        Delete
-                                    </Button>
-                                </DialogActions>
-                            </Dialog>
-                        </div>
-                    </Tooltip>
+                    {currentUser && currentUser.uid === uid ? (
+                        <Tooltip title="More" placement="right">
+                            <div className="flex flex-col items-center ml-10">
+                                <IconContext.Provider value={{ color: "gray" }}>
+                                    <FiMoreVertical
+                                        onClick={handleTooltip}
+                                        aria-describedby={id}
+                                        className="w-8 h-8 hover:cursor-pointer"
+                                    />
+                                </IconContext.Provider>
+                                <Popover
+                                    id={id}
+                                    open={open}
+                                    anchorEl={anchorEl}
+                                    onClose={handleTooltipClose}
+                                    anchorOrigin={{
+                                        vertical: "center",
+                                        horizontal: "center",
+                                    }}
+                                    transformOrigin={{
+                                        vertical: "top",
+                                        horizontal: "left",
+                                    }}
+                                >
+                                    <ul className="py-2">
+                                        <li
+                                            onClick={handleEdit}
+                                            className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold"
+                                        >
+                                            Edit
+                                        </li>
+                                        <li
+                                            onClick={handleDeleteOpen}
+                                            className="w-full h-full hover:bg-gray-200 px-4 text-lg hover:font-bold"
+                                        >
+                                            Delete
+                                        </li>
+                                    </ul>
+                                </Popover>
+                                <Dialog
+                                    open={deleteOpen}
+                                    onClose={handleDeleteClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                >
+                                    <DialogTitle id="alert-dialog-title">
+                                        Delete Your Art Gallery
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                            Are you sure you want to delete this art gallery? This
+                                            action cannot be undone.
+                                        </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleDeleteClose} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            onClick={handleDeleteProject}
+                                            variant="contained"
+                                            autoFocus
+                                        >
+                                            Delete
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </div>
+                        </Tooltip>
+                    ) : null}
                 </CardActions>
             </Card>
         </>

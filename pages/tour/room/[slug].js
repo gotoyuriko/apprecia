@@ -5,9 +5,11 @@ import TourTitle from "@/components/VirtualTour/ViewTour/TourTitle";
 import UserInfo from "@/components/VirtualTour/ViewTour/UserInfo";
 import GetArtwork from "@/firebase/artworks/GetArtwork";
 import { useAuth } from "@/firebase/auth/AuthContext";
+import GetComments from "@/firebase/comments/GetComments";
 import UpdateView from "@/firebase/projectviews/UpdateView";
 import GetSingleTour from "@/firebase/tours/GetSingleTour";
 import GetUser from "@/firebase/users/GetUser";
+import GetUsers from "@/firebase/users/GetUsers";
 import { Scene, Entity } from "aframe-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -99,6 +101,7 @@ export default function VirtualTour() {
                 art.project_imageUrls.includes(data.src)
             );
             setShowDesc(selectArtwork[0]);
+            fetchDataComments(selectArtwork[0].user_id, selectArtwork[0].project_createdAt);
             setOpen(true);
             const hasViewed = await UpdateView(
                 selectArtwork[0]?.user_id,
@@ -112,6 +115,41 @@ export default function VirtualTour() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // From Firebase
+    const [commentData, setCommentData] = useState([]);
+    // Other Users
+    const [commentUserData, setCommentUserData] = useState([]);
+    // Current User
+    const [commentCurrentUserData, setCommentCurrentUserData] = useState([]);
+    // Fetch Data of art gallery comments
+    const fetchDataComments = (uid, createdAt) => {
+        const fetchData = async () => {
+            // Fetch Comments
+            try {
+                const data = await GetComments(uid, createdAt);
+                setCommentData(data.reverse());
+            } catch (error) {
+                console.error("Error getting comments", error);
+            }
+            // Fetch Current User
+            try {
+                const data = await GetUser(currentUser.uid);
+                setCommentCurrentUserData(data);
+            } catch (error) {
+                console.error("Error getting current user", error);
+            }
+            // Fetch Ohter Users
+            try {
+                const data = await GetUsers();
+                setCommentUserData(data);
+            } catch (error) {
+                console.error("Error getting users", error);
+            }
+        };
+
+        fetchData();
+    };
+
     return (
         <>
             <ArtworkModal
@@ -122,6 +160,10 @@ export default function VirtualTour() {
                 user={currentUser}
                 viewsNo={viewsNo}
                 setViewsNo={setViewsNo}
+                currentUser={currentUser}
+                commentData={commentData}
+                commentUserData={commentUserData}
+                commentCurrentUserData={commentCurrentUserData}
             />
             <SwitchRoom tourData={tourData} roomNo={roomNo} setRoomNo={setRoomNo} />
             <TourTitle tourData={tourData} roomNo={roomNo} />

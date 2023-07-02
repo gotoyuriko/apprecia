@@ -119,6 +119,7 @@ export default function ArtworkSection({ artworkData, userData, currentUser, gal
                                             tourRoom={gallery.tour_room}
                                             tourName={gallery.tour_name}
                                             createdAt={gallery.tour_createdAt}
+                                            currentUser={currentUser}
                                         />
                                     </motion.div>
                                 ))}

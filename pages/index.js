@@ -25,7 +25,6 @@ export default function Home() {
     fetchData();
   }, []);
 
-
   return (
     <div className="w-full">
       <Navbar user={currentUser} />

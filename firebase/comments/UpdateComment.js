@@ -1,33 +1,31 @@
-import { arrayUnion, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function UpdateComment({ uid, createdAt, newcomment }) {
+export default async function UpdateComment(projectId, commentItem, updatedComment) {
     try {
-        // Get the current date and time
-        const currentDate = new Date();
-        const timestamp = currentDate.toISOString();
+        const artProjectDocRef = doc(db, "artProjects", projectId);
+        const docSnap = await getDoc(artProjectDocRef);
 
-        // Create a query to find the art project's document
-        const q = query(
-            collection(db, "artProjects"),
-            where("user_id", "==", uid),
-            where("project_createdAt", "==", createdAt)
-        );
-        const querySnapshot = await getDocs(q);
+        if (docSnap.exists()) {
+            const artProjectData = docSnap.data();
+            const commentIndex = artProjectData.project_comments.findIndex(
+                (comment) =>
+                    comment.comment_createdAt === commentItem.comment_createdAt &&
+                    comment.user_id === commentItem.user_id
+            );
 
-        // Retrieve the artProject document reference
-        const artProjectRef = doc(db, "artProjects", querySnapshot.docs[0].id);
-
-        const updatedCommentData = {
-            ...commentData,
-            comment_updatedAt: timestamp,
-            comment_content: newcomment
-        };
-
-        await updateDoc(artProjectRef, {
-            project_comments: arrayUnion(updatedCommentData),
-        });
+            if (commentIndex !== -1) {
+                artProjectData.project_comments[commentIndex].comment_content = updatedComment;
+                await setDoc(artProjectDocRef, artProjectData);
+                const newUpdatedComment = artProjectData.project_comments[commentIndex].comment_content;
+                return { newUpdatedComment }
+            } else {
+                console.error("Comment not found.");
+            }
+        } else {
+            console.error("Art project document not found.");
+        }
     } catch (error) {
-        console.error("error adding comments", error);
+        console.error("Error updating comment", error);
     }
 }

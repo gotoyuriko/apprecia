@@ -14,7 +14,7 @@ export default function Comment({
     createdAt,
 }) {
     const [isEditing, setIsEditing] = useState(false);
-    const [updatedComment, setUpdatedComment] = useState(commentItem.comment);
+    const [updatedComment, setUpdatedComment] = useState(commentItem?.comment_content);
     const [hide, setHide] = useState(false);
 
     let filteredUser;
@@ -33,16 +33,14 @@ export default function Comment({
 
     const handleCancelEdit = () => {
         setIsEditing(false);
-        setUpdatedComment(commentItem.comment);
+        setUpdatedComment(commentItem?.comment_content);
     };
 
     const handleUpdate = async () => {
         try {
-            await UpdateComment(
-                commentItem.user_id,
-                commentItem.comment_createdAt,
-                updatedComment
-            );
+            const artworkId = await GetArtworkId(uid, createdAt);
+            const { newUpdatedComment } = await UpdateComment(artworkId, commentItem, updatedComment);
+            setUpdatedComment(newUpdatedComment);
         } catch (error) {
             console.error("Error updating comment", error);
         }
@@ -95,7 +93,7 @@ export default function Comment({
                 ) : (
                     <>
                         <p className="font-bold">{filteredUser?.user_name}</p>
-                        <p className="pt-2">{commentItem?.comment_content}</p>
+                        <p className="pt-2">{updatedComment}</p>
                     </>
                 )}
                 {isEditing ? (

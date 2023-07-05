@@ -24,6 +24,12 @@ export default function TourUpdate() {
     const [artworkData, setArtworkData] = useState([]);
 
     useEffect(() => {
+        if (!currentUser) {
+            router.push('/');
+        }
+    }, [currentUser, router]);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 if (slug) {

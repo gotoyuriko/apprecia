@@ -45,7 +45,7 @@ export default function Profile() {
 
   return (
     <div className="w-full">
-      <Navbar user={currentUser} />
+      <Navbar currentUser={currentUser} />
       <div className="container mx-auto py-8">
         {/* Profile */}
         <ProfileSection userData={userData} setUserData={setUserData} slug={slug} />

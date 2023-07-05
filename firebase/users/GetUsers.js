@@ -1,13 +1,17 @@
-import { db } from "../Config";
 import { collection, getDocs } from "firebase/firestore";
+import { db } from "../Config";
 
 export default async function GetUsers() {
-    const usersCollection = collection(db, "users");
-    const querySnapshot = await getDocs(usersCollection);
-    const userData = [];
-    querySnapshot.forEach((doc) => {
-        userData.push(doc.data());
-    });
+    try {
+        const usersCollection = collection(db, "users");
+        const querySnapshot = await getDocs(usersCollection);
+        const usersData = [];
+        querySnapshot.forEach((doc) => {
+            usersData.push(doc.data());
+        });
 
-    return userData;
+        return usersData;
+    } catch (error) {
+        console.log('Error getting users', error);
+    }
 }

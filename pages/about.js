@@ -6,7 +6,7 @@ export default function About() {
     const { currentUser } = useAuth();
     return (
         <div className="w-full h-screen">
-            <Navbar user={currentUser} />
+            <Navbar currentUser={currentUser} />
             <AboutView />
         </div>
     );

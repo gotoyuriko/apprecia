@@ -1,4 +1,5 @@
 import {
+    GoogleAuthProvider,
     createUserWithEmailAndPassword,
     onAuthStateChanged,
     signInWithEmailAndPassword,
@@ -6,9 +7,8 @@ import {
     signOut,
     updateProfile
 } from "firebase/auth";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { fiauth } from "../Config";
-import { GoogleAuthProvider } from "firebase/auth";
 
 // /**
 //  * To make the user data available throughout our app, 
@@ -86,8 +86,6 @@ export function AuthProvider({ children }) {
         } catch (e) {
             if (e.code === "auth/cancelled-popup-request") {
                 error = "Google sign-in popup was cancelled by the user.";
-            } else if (e.code === "auth/account-exists-with-different-credential") {
-                error = "An account with the same email address already exists.";
             } else {
                 console.error("An error occurred during Google sign-in:", error);
             }

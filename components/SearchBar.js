@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 
-export default function SearchBar({ artworkData, setFilteredData }) {
+export default function SearchBar({ artworksData, setFilteredData, usersData }) {
     const [searchInput, setSearchInput] = useState('');
 
     useEffect(() => {
-        setFilteredData(artworkData);
-    }, [artworkData, setFilteredData])
+        setFilteredData(artworksData);
+    }, [artworksData, setFilteredData])
 
     const handleChange = (e) => {
         setSearchInput(e.target.value);
@@ -14,29 +14,26 @@ export default function SearchBar({ artworkData, setFilteredData }) {
     };
 
     const search = (searchKeyword) => {
-        const searchedPosts = artworkData.filter((artwork) =>
-            Object.values(artwork)
-                .filter(
-                    (item) =>
-                        item !== undefined &&
-                        item !== null &&
-                        item.toString().toLowerCase().includes(searchKeyword.toLowerCase())
-                )
-                .length > 0
-        );
-
         if (searchKeyword === "") {
-            setFilteredData([...artworkData]);
+            setFilteredData([...artworksData]);
         } else {
-            setFilteredData(searchedPosts);
+            const searchedArtworks = artworksData.filter((artwork) =>
+                Object.values(artwork)
+                    .filter(
+                        (item) =>
+                            item !== undefined &&
+                            item !== null &&
+                            item.toString().toLowerCase().includes(searchKeyword.toLowerCase())
+                    )
+                    .length > 0
+            );
+            setFilteredData(searchedArtworks);
         }
     };
 
     return (
         <form className="relative px-10 pt-10 mx-auto text-center">
-            <label htmlFor="search" className="hidden">
-                Search
-            </label>
+            <label htmlFor="search" className="hidden">Search</label>
             <div className="relative inline-block">
                 <AiOutlineSearch className="absolute left-5 top-1/2 transform -translate-y-1/2" />
                 <input

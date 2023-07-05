@@ -9,10 +9,18 @@ import { panoramaArtworkImages } from "@/data/data";
 import GetArtwork from "@/firebase/artworks/GetArtwork";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import { Entity, Scene } from "aframe-react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const NewRoom = () => {
     const { currentUser } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!currentUser) {
+            router.push('/');
+        }
+    }, [currentUser, router]);
 
     // Room
     const [tourData, setTourData] = useState({

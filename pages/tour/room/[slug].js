@@ -35,6 +35,12 @@ export default function VirtualTour() {
     const [viewsNo, setViewsNo] = useState(0);
 
     useEffect(() => {
+        if (!currentUser) {
+            router.push('/');
+        }
+    }, [currentUser, router]);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const tourData = await GetSingleTour(slug);

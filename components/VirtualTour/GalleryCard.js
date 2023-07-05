@@ -101,6 +101,7 @@ export default function GalleryCard({ uid, tourRoom, tourName, createdAt, curren
             <Card sx={{ maxWidth: 380 }}>
                 <CardActionArea>
                     <Link
+                        passHref
                         href={`/tour/room/${galleryId}`}
                         className="text-sm text-gray-400"
                     >
@@ -115,6 +116,7 @@ export default function GalleryCard({ uid, tourRoom, tourName, createdAt, curren
                     <div className="flex flex-col">
                         <p className="text-xl font-bold">{tourName}</p>
                         <Link
+                            passHref
                             href={`/profiles/${userData?.user_id}`}
                             className="text-sm text-gray-400"
                         >

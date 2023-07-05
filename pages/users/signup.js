@@ -34,7 +34,7 @@ export default function SignUp() {
 
                     <p className="mt-10 text-center text-sm text-gray-500">
                         Already a member?{' '}
-                        <Link href="/users/signin" className="font-semibold leading-6 text-black hover:text-gray-600">
+                        <Link passHref href="/users/signin" className="font-semibold leading-6 text-black hover:text-gray-600">
                             Sign In
                         </Link>
                     </p>

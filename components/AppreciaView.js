@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import Spline from '@splinetool/react-spline';
+import { useEffect, useState } from 'react';
 
 export default function AppreciaView() {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -8,17 +8,18 @@ export default function AppreciaView() {
         setIsLoaded(true);
     }, []);
 
-    const containerStyle = isLoaded ? {} : {
-        width: '100%',
-        height: '384px',
-        position: 'relative',
-        zIndex: 0,
-        background: 'url(/appreciabg.png) center/cover no-repeat',
-    };
+    // const containerStyle = isLoaded ? {} : {
+    //     width: '100%',
+    //     height: '384px',
+    //     position: 'relative',
+    //     zIndex: 0,
+    //     background: 'url(/appreciabg.png) center/cover no-repeat',
+    // };
 
     return (
-        <div className="h-96" style={containerStyle}>
-            {!isLoaded && (
+        <div className="h-96">
+            {/* <div className="h-96" style={containerStyle}> */}
+            {/* {!isLoaded && (
                 <div
                     style={{
                         width: '100%',
@@ -31,7 +32,7 @@ export default function AppreciaView() {
                 >
                     Loading...
                 </div>
-            )}
+            )} */}
             {isLoaded && <Spline className='h-full' scene="https://prod.spline.design/UB-SpUKi5AWALdo7/scene.splinecode" />}
         </div>
     );

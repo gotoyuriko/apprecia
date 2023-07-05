@@ -39,7 +39,7 @@ export default function ArtworkModal({
     useEffect(() => {
         setLikesNo(showDesc?.project_likesCount || 0);
         setViewsNo(showDesc?.project_viewsCount || 0);
-    }, [showDesc?.project_likesCount, showDesc?.project_viewsCount]);
+    }, [showDesc?.project_likesCount, showDesc?.project_viewsCount, setViewsNo]);
 
     /*
      * Like Animation https://www.framer.com/motion/use-animate/
@@ -113,6 +113,7 @@ export default function ArtworkModal({
                     <div key={showDesc?.project_link}>
                         <p className="font-bold">Links</p>
                         <Link
+                            passHref
                             className="flex items-center underline"
                             href={showDesc?.project_link}
                             target="_blank"
@@ -132,7 +133,7 @@ export default function ArtworkModal({
             <div className="flex items-center justify-between mt-4 px-8">
                 <div className="flex items-center">
                     {userData?.user_photoURL ? (
-                        <Link href={`/profiles/${userData?.user_id}`}>
+                        <Link passHref href={`/profiles/${userData?.user_id}`}>
                             <Image
                                 src={userData.user_photoURL}
                                 alt="Profile"
@@ -149,6 +150,7 @@ export default function ArtworkModal({
                         <p className="font-medium text-gray-700">created by</p>
                         {userData?.user_name && (
                             <Link
+                                passHref
                                 href={`/profiles/${userData?.user_id}`}
                                 className="text-sm font-normal text-gray-400"
                             >

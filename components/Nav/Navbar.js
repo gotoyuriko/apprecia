@@ -19,7 +19,7 @@ export default function Navbar({ currentUser }) {
                     {isOpen ? <BiX /> : <BiMenuAltLeft />}
                 </button>
                 {/* === Logo === */}
-                <Link href='/'>
+                <Link passHref href='/'>
                     <Logo />
                 </Link>
                 {/* ==== Menu List Desktop === */}

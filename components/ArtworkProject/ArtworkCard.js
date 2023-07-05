@@ -204,6 +204,7 @@ export default function ArtworkCard({
                     <div className="flex flex-col">
                         <p className="text-xl font-bold">{title}</p>
                         <Link
+                            passHref
                             href={`/profiles/${userData?.user_id}`}
                             className="text-sm text-gray-400"
                         >

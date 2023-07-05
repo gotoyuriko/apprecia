@@ -82,7 +82,7 @@ export default function ProfileMenu({ profileList, currentUser }) {
                 {profileList &&
                     profileList.map((item, index) => (
                         <MenuItem key={index} onClick={handleClose}>
-                            <Link href={item.link}>{item.name}</Link>
+                            <Link passHref href={item.link}>{item.name}</Link>
                         </MenuItem>
                     ))}
                 <MenuItem onClick={handleClose}>

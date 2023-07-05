@@ -15,6 +15,7 @@
     "@mui/material": "^5.13.7",
     "@react-spring/parallax": "^9.7.3",
     "@splinetool/react-spline": "^2.2.6",
+    "@splinetool/runtime": "^0.9.377",
     "@szhsin/react-accordion": "^1.2.1",
     "aframe-react": "^4.4.0",
     "autoprefixer": "^10.4.14",

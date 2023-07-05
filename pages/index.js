@@ -22,7 +22,7 @@ export default function Home() {
 
   return (
     <div className="w-full">
-      <Navbar user={currentUser} />
+      <Navbar currentUser={currentUser} />
       <AppreciaView />
 
       <SearchBar artworkData={artworkData} setFilteredData={setFilteredData} />

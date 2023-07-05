@@ -9,7 +9,7 @@ import SignOutBtn from './SignOutBtn';
 import Image from 'next/image';
 import GetUser from '../../firebase/users/GetUser';
 
-export default function ProfileMenu({ profileList, user }) {
+export default function ProfileMenu({ profileList, currentUser }) {
     // Profile Icon
     const [anchorEl, setAnchorEl] = useState(null);
     const openProfile = Boolean(anchorEl);
@@ -25,14 +25,14 @@ export default function ProfileMenu({ profileList, user }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await GetUser(user.uid);
+                const data = await GetUser(currentUser.uid);
                 setUserData(data);
             } catch (error) {
-                console.error("Error getting user:", error);
+                console.error("Error getting currentUser:", error);
             }
         };
         fetchData();
-    }, [user]);
+    }, [currentUser]);
 
     // Update Profile Link
     userData ? (profileList[0].link = `/profiles/${userData?.user_id}`) : null;

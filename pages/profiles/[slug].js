@@ -1,13 +1,13 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Nav/Navbar";
-import GetArtwork from "@/firebase/artworks/GetArtwork";
-import GetUser from "@/firebase/users/GetUser";
-import { useAuth } from "@/firebase/auth/AuthContext";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import ProfileSection from "@/components/Profile/ProfileSection";
 import ArtworkSection from "@/components/Profile/ArtworkSection";
+import ProfileSection from "@/components/Profile/ProfileSection";
+import GetArtwork from "@/firebase/artworks/GetArtwork";
+import { useAuth } from "@/firebase/auth/AuthContext";
 import GetTour from "@/firebase/tours/GetTour";
+import GetUser from "@/firebase/users/GetUser";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function Profile() {
   const router = useRouter();
@@ -27,12 +27,8 @@ export default function Profile() {
         console.error("Error getting user:", error);
       }
 
-      try {
-        const data = await GetArtwork();
-        setArtworkData(data);
-      } catch (error) {
-        console.error("Error getting artwork:", error);
-      }
+      const artworkdata = await GetArtwork();
+      setArtworkData(artworkdata);
 
       try {
         const data = await GetTour();

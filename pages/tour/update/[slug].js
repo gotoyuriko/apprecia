@@ -9,7 +9,7 @@ import GetArtwork from "@/firebase/artworks/GetArtwork";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import GetSingleTour from "@/firebase/tours/GetSingleTour";
 import GetUser from "@/firebase/users/GetUser";
-import { Scene, Entity } from "aframe-react";
+import { Entity, Scene } from "aframe-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -31,8 +31,8 @@ export default function TourUpdate() {
                     setTourData(tourData);
                     const userData = await GetUser(tourData?.user_id);
                     setUserData(userData);
-                    const artworkData = await GetArtwork();
-                    setArtworkData(artworkData?.filter((art) => art.user_id === tourData.user_id));
+                    const artworkdata = await GetArtwork();
+                    setArtworkData(artworkdata?.filter((art) => art.user_id === tourData.user_id));
                 }
             } catch (error) {
                 console.error("Error getting tour or user or artwork:", error);

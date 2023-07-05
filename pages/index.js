@@ -1,11 +1,11 @@
-import ArtworkCard from "@/components/ArtworkProject/ArtworkCard";
-import Navbar from "@/components/Nav/Navbar";
 import AppreciaView from "@/components/AppreciaView";
+import ArtworkCard from "@/components/ArtworkProject/ArtworkCard";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Nav/Navbar";
 import SearchBar from "@/components/SearchBar";
-import { useAuth } from "@/firebase/auth/AuthContext";
-import { useState, useEffect } from "react";
 import GetArtwork from "@/firebase/artworks/GetArtwork";
+import { useAuth } from "@/firebase/auth/AuthContext";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const { currentUser } = useAuth();
@@ -14,14 +14,9 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await GetArtwork();
-        setArtworkData(data);
-      } catch (error) {
-        console.error("Error getting artwork:", error);
-      }
+      const artworkdata = await GetArtwork();
+      setArtworkData(artworkdata);
     };
-
     fetchData();
   }, []);
 

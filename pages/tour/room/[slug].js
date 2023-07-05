@@ -41,10 +41,8 @@ export default function VirtualTour() {
                 setTourData(tourData);
                 const userData = await GetUser(tourData?.user_id);
                 setUserData(userData);
-                const artworkData = await GetArtwork();
-                setArtData(
-                    artworkData?.filter((art) => art.user_id === tourData.user_id)
-                );
+                const artwrokdata = await GetArtwork();
+                setArtData(artwrokdata?.filter((art) => art.user_id === tourData.user_id));
             } catch (error) {
                 console.error("Error getting tour or user or artwork:", error);
             }

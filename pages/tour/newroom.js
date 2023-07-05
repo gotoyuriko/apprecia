@@ -1,15 +1,15 @@
 import AddRoomButton from "@/components/VirtualTour/CreateTour/AddRoomButton";
 import CreateRoomTitleText from "@/components/VirtualTour/CreateTour/CreateRoomTitleText";
 import EditEnvironment from "@/components/VirtualTour/CreateTour/EditEnvironment";
+import Panel from "@/components/VirtualTour/CreateTour/Panel";
 import RoomPublishButton from "@/components/VirtualTour/CreateTour/RoomPublishButton";
 import SelectRoomModal from "@/components/VirtualTour/CreateTour/SelectRoomModal";
 import UploadArtwork from "@/components/VirtualTour/CreateTour/UploadArtwork";
 import { panoramaArtworkImages } from "@/data/data";
 import GetArtwork from "@/firebase/artworks/GetArtwork";
 import { useAuth } from "@/firebase/auth/AuthContext";
-import { Scene, Entity } from "aframe-react";
+import { Entity, Scene } from "aframe-react";
 import { useEffect, useState } from "react";
-import Panel from "@/components/VirtualTour/CreateTour/Panel";
 
 const NewRoom = () => {
     const { currentUser } = useAuth();
@@ -32,14 +32,9 @@ const NewRoom = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const data = await GetArtwork();
-                setArtworkData(data);
-            } catch (error) {
-                console.error("Error getting artwork:", error);
-            }
+            const artworkdata = await GetArtwork();
+            setArtworkData(artworkdata);
         };
-
         fetchData();
     }, []);
 

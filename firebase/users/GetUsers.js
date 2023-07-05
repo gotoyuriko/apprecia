@@ -12,6 +12,6 @@ export default async function GetUsers() {
 
         return usersData;
     } catch (error) {
-        console.log('Error getting users', error);
+        console.error('Error getting users', error);
     }
 }

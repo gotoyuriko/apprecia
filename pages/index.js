@@ -5,21 +5,17 @@ import Navbar from "@/components/Nav/Navbar";
 import SearchBar from "@/components/SearchBar";
 import GetArtwork from "@/firebase/artworks/GetArtwork";
 import { useAuth } from "@/firebase/auth/AuthContext";
-import GetUsers from "@/firebase/users/GetUsers";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const { currentUser } = useAuth();
   const [artworksData, setArtworksData] = useState([]);
   const [filteredData, setFilteredData] = useState(artworksData);
-  const [usersData, setUsersData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const artworkdata = await GetArtwork();
       setArtworksData(artworkdata);
-      const usersdata = await GetUsers();
-      setUsersData(usersdata);
     };
     fetchData();
   }, []);
@@ -28,7 +24,7 @@ export default function Home() {
     <div className="w-full">
       <Navbar currentUser={currentUser} />
       <AppreciaView />
-      <SearchBar artworksData={artworksData} setFilteredData={setFilteredData} usersData={usersData} />
+      <SearchBar artworksData={artworksData} setFilteredData={setFilteredData} />
       <div className="min-h-[35vh] flex justify-center items-center mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {filteredData?.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

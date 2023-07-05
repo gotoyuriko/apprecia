@@ -2,6 +2,7 @@ import {
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
     onAuthStateChanged,
+    sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signInWithPopup,
     signOut,
@@ -93,6 +94,20 @@ export function AuthProvider({ children }) {
         return { result, error };
     }
 
+    // Reset Password
+    async function resetPassword(email) {
+        let result = null;
+        let error = null;
+
+        try {
+            result = await sendPasswordResetEmail(fiauth, email);
+        } catch (e) {
+            error = e;
+            console.error("Error resetting password", e);
+        }
+        return { error };
+    }
+
     useEffect(() => {
         // Call onAuthStateChanged with the Firebase auth object and a callback function that updates state when user signs in or out.
         const unsubscribe = onAuthStateChanged(fiauth, async user => {
@@ -109,7 +124,8 @@ export function AuthProvider({ children }) {
         signin,
         signup,
         signout,
-        googleAuthentication
+        googleAuthentication,
+        resetPassword
     }
 
     return (

@@ -37,6 +37,15 @@ export default function SignIn() {
                             Sign Up Now
                         </Link>
                     </p>
+                    <p className="mt-2 text-center text-sm text-gray-500">
+                        <Link
+                            passHref
+                            href="/users/resetpassword"
+                            className="font-semibold leading-6 text-black hover:text-gray-600"
+                        >
+                            Forgot Password ?
+                        </Link>
+                    </p>
                 </div>
             </div>
         </div>

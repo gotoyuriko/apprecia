@@ -6,7 +6,7 @@ import { BsFillPaletteFill, BsFillBoxFill } from 'react-icons/bs';
 import { useRouter } from "next/router";
 import GalleryCard from "../VirtualTour/GalleryCard";
 
-export default function ArtworkSection({ artworkData, userData, currentUser, galleryData }) {
+export default function ArtworkSection({ artworkData, userData, currentUser, galleryData, slug }) {
     const [activeTab, setActiveTab] = useState("artwork");
     const router = useRouter();
 
@@ -31,11 +31,11 @@ export default function ArtworkSection({ artworkData, userData, currentUser, gal
         },
     ];
 
-    const yourArtworks = artworkData?.filter((artwork) => artwork.user_id === userData?.user_id);
+    const yourArtworks = artworkData?.filter((artwork) => artwork.user_id === slug);
 
     const likedArtworks = currentUser ? artworkData?.filter((artwork) => artwork?.project_likedBy?.includes(currentUser.uid)) : '';
 
-    const virtualArtGalleries = currentUser ? galleryData?.filter((gallery) => gallery?.user_id === userData?.user_id) : '';
+    const virtualArtGalleries = currentUser ? galleryData?.filter((gallery) => gallery?.user_id === slug) : '';
 
     const tabContent = () => {
         switch (activeTab) {

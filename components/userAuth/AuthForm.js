@@ -28,7 +28,7 @@ export default function AuthForm({ formStatus }) {
             setErrorMessage(error);
         } else {
             //If status is sign up, they add new users to database
-            status && await AddUser('users', result);
+            status && await AddUser(result);
             router.push('/');
         }
     };

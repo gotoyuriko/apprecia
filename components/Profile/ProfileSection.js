@@ -61,7 +61,7 @@ export default function ProfileSection({ userData, setUserData, slug }) {
 
     const handleUpdateProfile = async () => {
         try {
-            await UpdateUser(formData, profileImage, userData.user_id, userData);
+            await UpdateUser(formData, profileImage, currentUser.uid, userData);
             const updatedUserData = {
                 ...userData,
                 user_name: formData.fullname,

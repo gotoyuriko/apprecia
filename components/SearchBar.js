@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 
-export default function SearchBar({ artworksData, setFilteredData, usersData }) {
+export default function SearchBar({ artworksData, setFilteredData }) {
     const [searchInput, setSearchInput] = useState('');
 
     useEffect(() => {
@@ -18,14 +18,11 @@ export default function SearchBar({ artworksData, setFilteredData, usersData }) 
             setFilteredData([...artworksData]);
         } else {
             const searchedArtworks = artworksData.filter((artwork) =>
-                Object.values(artwork)
-                    .filter(
-                        (item) =>
-                            item !== undefined &&
-                            item !== null &&
-                            item.toString().toLowerCase().includes(searchKeyword.toLowerCase())
-                    )
-                    .length > 0
+                Object.values(artwork).filter((artworkItem) =>
+                    artworkItem !== undefined &&
+                    artworkItem !== null &&
+                    artworkItem.toString().toLowerCase().includes(searchKeyword.toLowerCase())
+                ).length > 0
             );
             setFilteredData(searchedArtworks);
         }

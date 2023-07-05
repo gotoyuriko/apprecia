@@ -37,10 +37,7 @@ export default function Profile() {
         console.error("Error getting art gallery:", error);
       }
     };
-
-    if (slug) {
-      fetchData();
-    }
+    if (slug) { fetchData(); }
   }, [slug]);
 
   return (
@@ -48,12 +45,18 @@ export default function Profile() {
       <Navbar currentUser={currentUser} />
       <div className="container mx-auto py-8">
         {/* Profile */}
-        <ProfileSection userData={userData} setUserData={setUserData} slug={slug} />
+        <ProfileSection
+          userData={userData}
+          setUserData={setUserData}
+          slug={slug}
+        />
         <ArtworkSection
           artworkData={artworkData}
           userData={userData}
+          slug={slug}
           currentUser={currentUser}
-          galleryData={galleryData} />
+          galleryData={galleryData}
+        />
       </div>
       <Footer />
     </div>

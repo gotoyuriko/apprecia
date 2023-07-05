@@ -1,29 +1,25 @@
-import { db } from "../Config";
-import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
 
-export default async function AddUser(collectionName, userData) {
+import { collection, doc, setDoc, query, where, getDocs } from "firebase/firestore";
+import { db } from "../Config";
+
+export default async function AddUser(userData) {
     let docRef = null;
-    let error = null;
 
     const user = {
         user_email: userData.email,
         user_name: userData.displayName,
         user_bio: "",
-        user_id: userData.uid
     }
 
     try {
         // Check if the user already exists with the same email
-        const usersCollection = collection(db, collectionName);
+        const usersCollection = collection(db, "users");
         const querySnapshot = await getDocs(
             query(usersCollection, where("user_email", "==", userData.email))
         );
 
-        // If querySnapshot is not empty (user already exists with the same email)
-        if (!querySnapshot.empty) {
-            // User with the same email already exists
-            error = "User with the same email already exists.";
-        } else {
+        // If querySnapshot is empty (user does not exists with the same email)
+        if (querySnapshot.empty) {
             // Use UID as the document ID
             docRef = doc(usersCollection, userData.uid);
         };
@@ -33,14 +29,13 @@ export default async function AddUser(collectionName, userData) {
         }
 
         // Set user data with the UID as the document ID
-        await setDoc(docRef, user);
+        if (docRef !== null) {
+            await setDoc(docRef, user);
+        }
     }
-    catch (e) {
-        error = e;
+    catch (error) {
         console.error("Error adding user:", error);
     }
-
-    return { docRef, error };
 }
 
 

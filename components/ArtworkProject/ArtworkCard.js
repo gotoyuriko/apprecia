@@ -1,3 +1,11 @@
+import DeleteArtwork from "@/firebase/artworks/DeleteArtwork";
+import GetArtworkId from "@/firebase/artworks/GetArtworkId";
+import { useAuth } from "@/firebase/auth/AuthContext";
+import GetComments from "@/firebase/comments/GetComments";
+import UpdateLike from "@/firebase/likes/UpdateLike";
+import UpdateView from "@/firebase/projectviews/UpdateView";
+import GetUser from "@/firebase/users/GetUser";
+import GetUsers from "@/firebase/users/GetUsers";
 import {
     Button,
     Card,
@@ -12,29 +20,21 @@ import {
     Popover,
     Tooltip,
 } from "@mui/material";
+import { motion, useAnimation } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import {
     AiFillHeart,
     AiOutlineEye,
     AiOutlineHeart,
     AiOutlinePaperClip,
 } from "react-icons/ai";
-import { useEffect, useState } from "react";
-import GetUser from "@/firebase/users/GetUser";
-import Image from "next/image";
 import { BiUserCircle, BiX } from "react-icons/bi";
-import Link from "next/link";
-import { motion, useAnimation } from "framer-motion";
-import { IconContext } from "react-icons/lib";
-import UpdateLike from "@/firebase/likes/UpdateLike";
-import { useAuth } from "@/firebase/auth/AuthContext";
-import UpdateView from "@/firebase/projectviews/UpdateView";
 import { FiMoreVertical } from "react-icons/fi";
-import GetArtworkId from "@/firebase/artworks/GetArtworkId";
-import { useRouter } from "next/router";
-import DeleteArtwork from "@/firebase/artworks/DeleteArtwork";
+import { IconContext } from "react-icons/lib";
 import CommentSection from "./CommentSection";
-import GetComments from "@/firebase/comments/GetComments";
-import GetUsers from "@/firebase/users/GetUsers";
 
 export default function ArtworkCard({
     title,
@@ -205,7 +205,7 @@ export default function ArtworkCard({
                         <p className="text-xl font-bold">{title}</p>
                         <Link
                             passHref
-                            href={`/profiles/${userData?.user_id}`}
+                            href={`/profiles/${uid}`}
                             className="text-sm text-gray-400"
                         >
                             {userData?.user_name ? `By ${userData.user_name}` : ""}
@@ -219,20 +219,14 @@ export default function ArtworkCard({
                                         onClick={currentUser && handleIsLike}
                                         animate={controls}
                                     >
-                                        <AiFillHeart
-                                            className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"
-                                                }`}
-                                        />
+                                        <AiFillHeart className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"}`} />
                                     </motion.div>
                                 ) : (
                                     <motion.div
                                         onClick={currentUser && handleIsLike}
                                         animate={controls}
                                     >
-                                        <AiOutlineHeart
-                                            className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"
-                                                }`}
-                                        />
+                                        <AiOutlineHeart className={`w-6 h-6 text-red-500 ${currentUser && "cursor-pointer"}`} />
                                     </motion.div>
                                 )}
                             </IconContext.Provider>
@@ -267,7 +261,7 @@ export default function ArtworkCard({
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 {userData?.user_photoURL ? (
-                                    <Link passHref href={`/profiles/${userData?.user_id}`}>
+                                    <Link passHref href={`/profiles/${uid}`}>
                                         <Image
                                             src={userData.user_photoURL}
                                             alt="Profile"
@@ -284,7 +278,7 @@ export default function ArtworkCard({
                                     <p className="font-medium text-gray-700">{title}</p>
                                     {userData?.user_name && (
                                         <Link
-                                            href={`/profiles/${userData?.user_id}`}
+                                            href={`/profiles/${uid}`}
                                             className="text-sm font-normal text-gray-400"
                                         >
                                             {userData.user_name}

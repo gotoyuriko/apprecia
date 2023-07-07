@@ -4,10 +4,10 @@ import { useState } from "react";
 import { BiX } from "react-icons/bi";
 
 export default function UploadArtwork({
-    user,
+    currentUser,
     openModalArt,
     setOpenModalArt,
-    artworkData,
+    artworksData,
     selectPanel,
     setSelectPanel,
     setTourData,
@@ -15,8 +15,8 @@ export default function UploadArtwork({
 }) {
     const [selectedImage, setSelectedImage] = useState(null);
 
-    const filteredCurrentUserArtwork = artworkData.filter(
-        (artwork) => artwork.user_id === user.uid
+    const filteredCurrentUserArtwork = artworksData?.filter(
+        (artwork) => artwork.project_creator === currentUser?.email
     );
 
     const handleSelectArtwork = (url) => {
@@ -122,7 +122,7 @@ export default function UploadArtwork({
                     <div
                         className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-3 mx-auto overflow-y-scroll gap-4 w-full h-4/5"
                     >
-                        {filteredCurrentUserArtwork.map((artwork, i) =>
+                        {filteredCurrentUserArtwork?.map((artwork, i) =>
                             artwork.project_imageUrls.map((imageUrl, j) => (
                                 <label className="w-64 h-64 rounded relative" key={j}>
                                     <input

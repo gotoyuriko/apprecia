@@ -1,23 +1,11 @@
 import { panoramaArtworkImages } from "@/data/data";
-import AddTour from "@/firebase/tours/AddTour";
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-} from "@mui/material";
+import AddArtGallery from "@/firebase/tours/AddArtGallery";
+import UpdateArtGallery from "@/firebase/tours/UpdateArtGallery";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export default function RoomPublishButton({
-    status,
-    uid,
-    setTourData,
-    tourData,
-    slug
-}) {
+export default function RoomPublishButton({ status, uid, setTourData, tourData, slug }) {
     const router = useRouter();
     //Publish
     const [publishMsg, setPublishMsg] = useState("");
@@ -29,7 +17,7 @@ export default function RoomPublishButton({
         setpublishOpen(false);
     };
     const handlePublsihProject = () => {
-        const { error } = AddTour(tourData);
+        const { error } = AddArtGallery(tourData);
 
         if (error) {
             console.error("Error uploading images or adding document: ", error);
@@ -71,7 +59,7 @@ export default function RoomPublishButton({
     //Update
     const [udpateMsg, setUpdateMsg] = useState("");
     const handleUpdateProject = () => {
-        const { error } = AddTour(tourData, slug);
+        const { error } = UpdateArtGallery(tourData, slug);
 
         if (error) {
             console.error("Error uploading images or adding document: ", error);

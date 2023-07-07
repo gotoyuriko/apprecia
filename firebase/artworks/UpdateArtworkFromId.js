@@ -1,8 +1,8 @@
 import { doc, updateDoc } from "firebase/firestore";
+import { deleteObject, getDownloadURL, ref } from "firebase/storage";
 import { db, storage } from "../Config";
-import { deleteObject, ref, getDownloadURL } from "firebase/storage";
 
-export default async function UpdateSingleArtwork(images, artworkData, slug) {
+export default async function UpdateArtworkFromId(images, artworkData, slug) {
     let error = null;
     try {
         // Get Artwork Reference

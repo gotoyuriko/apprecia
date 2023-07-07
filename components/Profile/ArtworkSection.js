@@ -1,12 +1,12 @@
-import { createElement, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import ArtworkCard from "../ArtworkProject/ArtworkCard";
 import { AiFillHeart } from 'react-icons/ai';
 import { BsFillPaletteFill, BsFillBoxFill } from 'react-icons/bs';
 import { useRouter } from "next/router";
 import GalleryCard from "../VirtualTour/GalleryCard";
+import ArtworkProject from "../ArtworkProject/ArtworkProject";
 
-export default function ArtworkSection({ artworkData, userData, currentUser, galleryData, slug }) {
+export default function ArtworkSection({ artworkData, currentUserData, usersData, currentUser, galleryData, slug }) {
     const [activeTab, setActiveTab] = useState("artwork");
     const router = useRouter();
 
@@ -31,11 +31,31 @@ export default function ArtworkSection({ artworkData, userData, currentUser, gal
         },
     ];
 
-    const yourArtworks = artworkData?.filter((artwork) => artwork.user_id === slug);
+    const [yourArtworks, setYourArtworks] = useState(null);
+    const [likedArtworks, setLikedArtworks] = useState(null);
+    const [virtualArtGalleries, setVirtualArtGalleries] = useState(null);
 
-    const likedArtworks = currentUser ? artworkData?.filter((artwork) => artwork?.project_likedBy?.includes(currentUser.uid)) : '';
+    useEffect(() => {
+        setYourArtworks(
+            artworkData?.filter(
+                (artwork) => artwork?.project_creator === currentUserData?.user_email
+            )
+        );
+    }, [artworkData, currentUserData]);
 
-    const virtualArtGalleries = currentUser ? galleryData?.filter((gallery) => gallery?.user_id === slug) : '';
+    useEffect(() => {
+        setLikedArtworks(
+            artworkData?.filter((artwork) =>
+                artwork?.project_likedBy?.includes(slug)
+            )
+        );
+    }, [artworkData, slug]);
+
+    useEffect(() => {
+        setVirtualArtGalleries(
+            galleryData?.filter((gallery) => gallery?.tour_user === currentUserData?.user_email)
+        );
+    }, [galleryData, currentUserData]);
 
     const tabContent = () => {
         switch (activeTab) {
@@ -115,9 +135,8 @@ export default function ArtworkSection({ artworkData, userData, currentUser, gal
                                         transition={{ duration: 0.5 }}
                                         key={index}>
                                         <GalleryCard
-                                            uid={gallery.user_id}
-                                            tourRoom={gallery.tour_room}
-                                            tourName={gallery.tour_name}
+                                            currentUserData={currentUserData}
+                                            galleryItem={gallery}
                                             createdAt={gallery.tour_createdAt}
                                             currentUser={currentUser}
                                         />
@@ -142,18 +161,10 @@ export default function ArtworkSection({ artworkData, userData, currentUser, gal
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5 }}
                             key={index}>
-                            <ArtworkCard
-                                title={filteredArtwork.project_title}
-                                imageUrls={filteredArtwork.project_imageUrls}
-                                uid={filteredArtwork.user_id}
-                                description={filteredArtwork.project_description}
-                                tags={filteredArtwork.project_tags}
-                                link={filteredArtwork.project_link}
-                                skills={filteredArtwork.project_skills}
-                                createdAt={filteredArtwork.project_createdAt}
-                                likesCount={filteredArtwork.project_likesCount ?? 0}
-                                likedBy={filteredArtwork.project_likedBy ?? []}
-                                viewsCount={filteredArtwork.project_viewsCount ?? 0}
+                            <ArtworkProject
+                                currentUser={currentUser}
+                                artProjectItem={filteredArtwork} // 1 art project
+                                usersData={usersData} // all users
                             />
                         </motion.div>
                     ))}

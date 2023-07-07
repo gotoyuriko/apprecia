@@ -5,9 +5,9 @@ import RoomPublishButton from "@/components/VirtualTour/CreateTour/RoomPublishBu
 import SelectRoomModal from "@/components/VirtualTour/CreateTour/SelectRoomModal";
 import UploadArtwork from "@/components/VirtualTour/CreateTour/UploadArtwork";
 import UserInfo from "@/components/VirtualTour/ViewTour/UserInfo";
-import GetArtwork from "@/firebase/artworks/GetArtwork";
+import GetDoc from "@/firebase/GetDoc";
+import GetArtworks from "@/firebase/artworks/GetArtworks";
 import { useAuth } from "@/firebase/auth/AuthContext";
-import GetSingleTour from "@/firebase/tours/GetSingleTour";
 import GetUser from "@/firebase/users/GetUser";
 import { Entity, Scene } from "aframe-react";
 import { useRouter } from "next/router";
@@ -21,7 +21,7 @@ export default function TourUpdate() {
     // Tour Data and room Data
     const [tourData, setTourData] = useState(null);
     const [userData, setUserData] = useState(null);
-    const [artworkData, setArtworkData] = useState([]);
+    const [artworksData, setArtworksData] = useState([]);
 
     useEffect(() => {
         if (!currentUser) {
@@ -31,17 +31,13 @@ export default function TourUpdate() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                if (slug) {
-                    const tourData = await GetSingleTour(slug);
-                    setTourData(tourData);
-                    const userData = await GetUser(tourData?.user_id);
-                    setUserData(userData);
-                    const artworkdata = await GetArtwork();
-                    setArtworkData(artworkdata?.filter((art) => art.user_id === tourData.user_id));
-                }
-            } catch (error) {
-                console.error("Error getting tour or user or artwork:", error);
+            if (slug) {
+                const tourData = await GetDoc("virtualTours", slug);
+                setTourData(tourData);
+                const { user } = await GetUser(tourData?.tour_user);
+                setUserData(user);
+                const artworksdata = await GetArtworks();
+                setArtworksData(artworksdata?.filter((art) => art.project_creator === tourData.tour_user));
             }
         };
 
@@ -64,10 +60,10 @@ export default function TourUpdate() {
     return (
         <>
             <UploadArtwork
-                user={currentUser}
+                currentUser={currentUser}
                 openModalArt={openModalArt}
                 setOpenModalArt={setOpenModalArt}
-                artworkData={artworkData}
+                artworksData={artworksData}
                 selectPanel={selectPanel}
                 setSelectPanel={setSelectPanel}
                 setTourData={setTourData}

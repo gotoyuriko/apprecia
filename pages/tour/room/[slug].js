@@ -3,14 +3,15 @@ import HomeButton from "@/components/VirtualTour/ViewTour/HomeButton";
 import SwitchRoom from "@/components/VirtualTour/ViewTour/SwitchRoom";
 import TourTitle from "@/components/VirtualTour/ViewTour/TourTitle";
 import UserInfo from "@/components/VirtualTour/ViewTour/UserInfo";
-import GetArtwork from "@/firebase/artworks/GetArtwork";
+import GetDoc from "@/firebase/GetDoc";
+import GetArtworks from "@/firebase/artworks/GetArtworks";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import GetComments from "@/firebase/comments/GetComments";
 import UpdateView from "@/firebase/projectviews/UpdateView";
-import GetSingleTour from "@/firebase/tours/GetSingleTour";
 import GetUser from "@/firebase/users/GetUser";
+
 import GetUsers from "@/firebase/users/GetUsers";
-import { Scene, Entity } from "aframe-react";
+import { Entity, Scene } from "aframe-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -27,10 +28,8 @@ export default function VirtualTour() {
 
     // Switch Button
     const [roomNo, setRoomNo] = useState(1);
-
     //set modal
     const [open, setOpen] = useState(false);
-
     //set views
     const [viewsNo, setViewsNo] = useState(0);
 
@@ -42,20 +41,19 @@ export default function VirtualTour() {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const tourData = await GetSingleTour(slug);
-                setTourData(tourData);
-                const userData = await GetUser(tourData?.user_id);
-                setUserData(userData);
-                const artwrokdata = await GetArtwork();
-                setArtData(artwrokdata?.filter((art) => art.user_id === tourData.user_id));
-            } catch (error) {
-                console.error("Error getting tour or user or artwork:", error);
-            }
+            const tourData = await GetDoc("virtualTours", slug);
+            setTourData(tourData);
+            const { user } = await GetUser(tourData?.tour_user);
+            setUserData(user);
+            const artwroksdata = await GetArtworks();
+            setArtData(artwroksdata?.filter((art) => art.project_creator === tourData.tour_user));
         };
 
         fetchData();
+    }, [slug])
 
+
+    useEffect(() => {
         // Unregister the component if it has already been registered
         if (AFRAME.components["link-control"]) {
             delete AFRAME.components["link-control"];
@@ -76,10 +74,12 @@ export default function VirtualTour() {
 
         // Click Sphere to travel to other room
         const handleClickTravel = (data) => {
-            event.preventDefault();
             setRoomNo(data);
         };
 
+    }, []);
+
+    useEffect(() => {
         if (AFRAME.components["artwork-modal"]) {
             delete AFRAME.components["artwork-modal"];
         }
@@ -100,24 +100,24 @@ export default function VirtualTour() {
 
         // Modify the handleClickModal function to pass artData correctly
         const handleClickModal = async (data) => {
-            event.preventDefault();
             const selectArtwork = data.artdata?.filter((art) =>
                 art.project_imageUrls.includes(data.src)
             );
-            setShowDesc(selectArtwork[0]);
-            fetchDataComments(selectArtwork[0].user_id, selectArtwork[0].project_createdAt);
-            setOpen(true);
-            const hasViewed = await UpdateView(
-                selectArtwork[0]?.user_id,
-                selectArtwork[0]?.project_createdAt,
-                currentUser
-            );
-            hasViewed
-                ? setViewsNo((prevViewsNo) => prevViewsNo + 1)
-                : setViewsNo(selectArtwork[0]?.project_viewsCount);
+            if (selectArtwork && selectArtwork.length > 0) {
+                setShowDesc(selectArtwork[0]);
+                fetchDataComments(selectArtwork[0].project_creator, selectArtwork[0].project_createdAt);
+                setOpen(true);
+                const hasViewed = await UpdateView(
+                    selectArtwork[0].project_creator,
+                    selectArtwork[0].project_createdAt,
+                    currentUser
+                );
+                hasViewed
+                    ? setViewsNo((prevViewsNo) => prevViewsNo + 1)
+                    : setViewsNo(selectArtwork[0].project_viewsCount);
+            }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [currentUser]);
 
     // From Firebase
     const [commentData, setCommentData] = useState([]);
@@ -137,8 +137,8 @@ export default function VirtualTour() {
             }
             // Fetch Current User
             try {
-                const data = await GetUser(currentUser.uid);
-                setCommentCurrentUserData(data);
+                const { user } = await GetUser(currentUser.email);
+                setCommentCurrentUserData(user);
             } catch (error) {
                 console.error("Error getting current user", error);
             }

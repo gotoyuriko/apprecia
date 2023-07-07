@@ -1,18 +1,16 @@
-import Footer from '@/components/Footer';
-import Navbar from '@/components/Nav/Navbar';
-import { faqList } from '@/data/data';
-import { useAuth } from '@/firebase/auth/AuthContext';
-import { Accordion, AccordionItem } from '@szhsin/react-accordion';
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Nav/Navbar";
+import { faqList } from "@/data/data";
+import { useAuth } from "@/firebase/auth/AuthContext";
+import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 
 export default function Faq() {
     const { currentUser } = useAuth();
     return (
         <div className="w-full">
             <Navbar currentUser={currentUser} />
-            <div className='px-8 lg:px-32 pt-10 pb-12 md:pb-32'>
-                <h1 className='text-4xl md:text-5xl text-center py-3'>
-                    Apprecia FAQs
-                </h1>
+            <div className="px-8 lg:px-32 pt-10 pb-12 md:pb-32">
+                <h1 className="text-4xl md:text-5xl text-center py-3">Apprecia FAQs</h1>
                 <Accordion
                     transition
                     transitionTimeout={250}
@@ -21,17 +19,15 @@ export default function Faq() {
                     {faqList.map((item, index) => (
                         <div key={index}>
                             <AccordionItem
-
                                 header={
                                     <div>
-                                        <h1 className='font-bold md:text-xl text-left'>{item.q}</h1>
+                                        <h1 className="font-bold md:text-xl text-left">{item.q}</h1>
                                     </div>
                                 }
                             >
-                                <div className='text-sm lg:text-lg text-justify'>
+                                <div className="text-sm lg:text-lg text-justify">
                                     <p>{item.a}</p>
                                 </div>
-
                             </AccordionItem>
                             <hr className="h-px my-8 bg-gray-600 border-0" />
                         </div>

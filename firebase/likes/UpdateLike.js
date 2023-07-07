@@ -1,27 +1,12 @@
-import {
-    arrayRemove,
-    arrayUnion,
-    collection,
-    doc,
-    getDocs,
-    increment,
-    query,
-    updateDoc,
-    where,
-} from "firebase/firestore";
+import { arrayRemove, arrayUnion, collection, doc, getDocs, increment, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function UpdateLike(
-    user_id,
-    createdAt,
-    isLiked,
-    currentuser_id
-) {
+export default async function UpdateLike(creator, createdAt, isLiked, currentuser_id) {
     try {
         // Create a query to find the artProject's Document
         const q = query(
             collection(db, "artProjects"),
-            where("user_id", "==", user_id),
+            where("project_creator", "==", creator),
             where("project_createdAt", "==", createdAt)
         );
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 
-export default function SearchBar({ artworksData, setFilteredData }) {
+export default function SearchBar({ artworksData, setFilteredData, usersData }) {
     const [searchInput, setSearchInput] = useState('');
 
     useEffect(() => {
@@ -17,16 +17,35 @@ export default function SearchBar({ artworksData, setFilteredData }) {
         if (searchKeyword === "") {
             setFilteredData([...artworksData]);
         } else {
-            const searchedArtworks = artworksData.filter((artwork) =>
-                Object.values(artwork).filter((artworkItem) =>
-                    artworkItem !== undefined &&
-                    artworkItem !== null &&
-                    artworkItem.toString().toLowerCase().includes(searchKeyword.toLowerCase())
-                ).length > 0
-            );
+            const keywords = searchKeyword.toString().toLowerCase();
+
+            // If search keyword is provided
+            const searchedUsers = usersData
+                .filter((user) => user.user_name.toLowerCase().includes(keywords))
+                .map((user) => user.user_email);
+
+            // If search matches with artwork
+            const searchedArtworks = artworksData.filter((artwork) => {
+                return (
+                    Object.values(artwork).some(
+                        (artworkItem) =>
+                            artworkItem !== undefined &&
+                            artworkItem !== null &&
+                            artworkItem.toString().toLowerCase().includes(keywords)
+                    ) ||
+                    searchedUsers.includes(artwork.project_creator) ||
+                    artwork.project_skills
+                        ?.map((skill) => skill.value.toLowerCase())
+                        ?.some((skill) => skill.includes(keywords)) ||
+                    artwork.project_tags
+                        ?.map((tag) => tag.value.toLowerCase())
+                        ?.some((tag) => tag.includes(keywords))
+                );
+            });
             setFilteredData(searchedArtworks);
         }
     };
+
 
     return (
         <form className="relative px-10 pt-10 mx-auto text-center">

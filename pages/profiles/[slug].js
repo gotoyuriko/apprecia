@@ -2,10 +2,11 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Nav/Navbar";
 import ArtworkSection from "@/components/Profile/ArtworkSection";
 import ProfileSection from "@/components/Profile/ProfileSection";
-import GetArtwork from "@/firebase/artworks/GetArtwork";
+import GetDoc from "@/firebase/GetDoc";
+import GetArtworks from "@/firebase/artworks/GetArtworks";
 import { useAuth } from "@/firebase/auth/AuthContext";
-import GetTour from "@/firebase/tours/GetTour";
-import GetUser from "@/firebase/users/GetUser";
+import GetArtGalleries from "@/firebase/tours/GetArtGalleries";
+import GetUsers from "@/firebase/users/GetUsers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -14,31 +15,33 @@ export default function Profile() {
   const { slug } = router.query;
 
   const { currentUser } = useAuth();
-  const [userData, setUserData] = useState(null);
+  const [currentUserData, setUserData] = useState(null);
+  const [usersData, setUsersData] = useState(null);
   const [artworkData, setArtworkData] = useState(null);
   const [galleryData, setGalleryData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await GetUser(slug);
-        setUserData(data);
-      } catch (error) {
-        console.error("Error getting user:", error);
-      }
-
-      const artworkdata = await GetArtwork();
-      setArtworkData(artworkdata);
-
-      try {
-        const data = await GetTour();
-        setGalleryData(data);
-      } catch (error) {
-        console.error("Error getting art gallery:", error);
-      }
+      const userdata = await GetDoc("users", slug);
+      setUserData(userdata);
     };
-    if (slug) { fetchData(); }
+
+    if (slug) {
+      fetchData();
+    }
   }, [slug]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const artworksdata = await GetArtworks();
+      setArtworkData(artworksdata);
+      const usersdata = await GetUsers();
+      setUsersData(usersdata);
+      const artgalleriesdata = await GetArtGalleries();
+      setGalleryData(artgalleriesdata);
+    };
+    fetchData();
+  }, [])
 
   return (
     <div className="w-full">
@@ -46,16 +49,17 @@ export default function Profile() {
       <div className="container mx-auto py-8">
         {/* Profile */}
         <ProfileSection
-          userData={userData}
+          currentUserData={currentUserData}
           setUserData={setUserData}
           slug={slug}
         />
         <ArtworkSection
+          currentUserData={currentUserData}
           artworkData={artworkData}
-          userData={userData}
-          slug={slug}
+          usersData={usersData}
           currentUser={currentUser}
           galleryData={galleryData}
+          slug={slug}
         />
       </div>
       <Footer />

@@ -190,8 +190,8 @@ export default function ArtworkModal({
             </div>
             <div className="px-5">
                 <CommentSection
-                    uid={showDesc.user_id}
-                    createdAt={showDesc.project_createdAt}
+                    uid={showDesc?.user_id}
+                    createdAt={showDesc?.project_createdAt}
                     user={currentUser}
                     commentData={commentData}
                     commentUserData={commentUserData}

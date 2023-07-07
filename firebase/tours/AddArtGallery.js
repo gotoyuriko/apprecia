@@ -1,7 +1,7 @@
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function AddTour(tourData) {
+export default async function AddArtGallery(tourData) {
     let docRef = null;
     let error = null;
     try {

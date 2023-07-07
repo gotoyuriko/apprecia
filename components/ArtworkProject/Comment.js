@@ -1,18 +1,18 @@
-import GetArtworkId from "@/firebase/artworks/GetArtworkId";
+import GetArtwork from "@/firebase/artworks/GetArtwork";
 import DeleteComment from "@/firebase/comments/DeleteComment";
 import UpdateComment from "@/firebase/comments/UpdateComment";
 import Image from "next/image";
 import { useState } from "react";
 import { IconContext } from "react-icons";
-import { BiUserCircle, BiTrash, BiPencil } from "react-icons/bi";
+import { BiPencil, BiTrash, BiUserCircle } from "react-icons/bi";
 
 export default function Comment({
-    commentItem,
-    userData,
+    commentItem, //Single Comment Data
+    commentUserData, // Users who has commented
     status,
-    uid,
-    user,
-    createdAt,
+    currentUser,
+    artProjectItem, // Art Project 
+    updateComment
 }) {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedComment, setUpdatedComment] = useState(commentItem?.comment_content);
@@ -21,10 +21,10 @@ export default function Comment({
     let filteredUser;
 
     if (status === "new") {
-        filteredUser = userData;
+        filteredUser = commentUserData;
     } else if (status === "old") {
-        filteredUser = userData?.find(
-            (userItem) => userItem.user_id === commentItem.user_id
+        filteredUser = commentUserData?.find(
+            (userItem) => userItem.user_email === commentItem.comment_user
         );
     }
 
@@ -38,24 +38,16 @@ export default function Comment({
     };
 
     const handleUpdate = async () => {
-        try {
-            const artworkId = await GetArtworkId(uid, createdAt);
-            const { newUpdatedComment } = await UpdateComment(artworkId, commentItem, updatedComment);
-            setUpdatedComment(newUpdatedComment);
-        } catch (error) {
-            console.error("Error updating comment", error);
-        }
+        const { id } = await GetArtwork(artProjectItem.project_creator, artProjectItem.project_createdAt);
+        const { newUpdatedComment } = await UpdateComment(id, commentItem, updatedComment);
+        setUpdatedComment(newUpdatedComment);
+        updateComment(commentItem.comment_user, newUpdatedComment);
         setIsEditing(false);
     };
 
     const handleDelete = async () => {
-        try {
-            const artworkId = await GetArtworkId(uid, createdAt);
-            await DeleteComment(artworkId, commentItem);
-        } catch (e) {
-            console.error("Error deleting comment", e);
-        }
-
+        const { id } = await GetArtwork(artProjectItem.project_creator, artProjectItem.project_createdAt);
+        await DeleteComment(id, commentItem);
         setHide(true);
     };
 
@@ -98,34 +90,22 @@ export default function Comment({
                     </>
                 )}
                 {
-                    (user?.uid === commentItem?.user_id) && (
+                    (currentUser && currentUser?.email === commentItem.comment_user) && (
                         isEditing ? (
                             <div className="flex mt-2" >
-                                <button
-                                    className="mr-2 px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none"
-                                    onClick={handleUpdate}
-                                >
+                                <button className="mr-2 px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none" onClick={handleUpdate}>
                                     Save
                                 </button>
-                                <button
-                                    className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
-                                    onClick={handleCancelEdit}
-                                >
+                                <button className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none" onClick={handleCancelEdit}>
                                     Cancel
                                 </button>
                             </div>
                         ) : (
                             <div className="flex mt-2">
-                                <button
-                                    className="mr-2 px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
-                                    onClick={handleEdit}
-                                >
+                                <button className="mr-2 px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none" onClick={handleEdit}>
                                     <BiPencil />
                                 </button>
-                                <button
-                                    className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none"
-                                    onClick={handleDelete}
-                                >
+                                <button className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none" onClick={handleDelete}>
                                     <BiTrash />
                                 </button>
                             </div>

@@ -20,7 +20,7 @@ const NewProject = () => {
     return (
         <div className="w-full">
             <Navbar currentUser={currentUser} />
-            <Project user={currentUser} status={projectStatus} />
+            <Project currentUser={currentUser} status={projectStatus} />
             <Footer />
         </div>
     );

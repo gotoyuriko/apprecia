@@ -1,7 +1,7 @@
 import { arrayUnion, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function AddComment(uid, createdAt, commentData) {
+export default async function AddComment(creator, createdAt, commentData) {
     try {
         // Get the current date and time
         const currentDate = new Date();
@@ -10,7 +10,7 @@ export default async function AddComment(uid, createdAt, commentData) {
         // Create a query to find the art project's document
         const q = query(
             collection(db, "artProjects"),
-            where("user_id", "==", uid),
+            where("project_creator", "==", creator),
             where("project_createdAt", "==", createdAt)
         );
         const querySnapshot = await getDocs(q);

@@ -11,7 +11,7 @@ export default async function UpdateComment(projectId, commentItem, updatedComme
             const commentIndex = artProjectData.project_comments.findIndex(
                 (comment) =>
                     comment.comment_createdAt === commentItem.comment_createdAt &&
-                    comment.user_id === commentItem.user_id
+                    comment.comment_user === commentItem.comment_user
             );
 
             if (commentIndex !== -1) {

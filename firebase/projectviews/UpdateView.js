@@ -1,16 +1,15 @@
-import { collection, doc, getDocs, updateDoc, arrayUnion, increment, query, where } from "firebase/firestore";
+import { arrayUnion, collection, doc, getDocs, increment, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function UpdateView(uid, createdAt, currentUser) {
+export default async function UpdateView(userId, createdAt, currentUser) {
     try {
         // Create a query to find the artProject's Document
-        const q = query(collection(db, 'artProjects'), where('user_id', '==', uid), where('project_createdAt', '==', createdAt));
+        const q = query(collection(db, 'artProjects'), where('project_creator', '==', userId), where('project_createdAt', '==', createdAt));
         const querySnapshot = await getDocs(q);
         const artProjectRef = doc(db, 'artProjects', querySnapshot.docs[0].id);
 
         // Retrieve the artProject data
         const artProjectData = querySnapshot.docs[0].data();
-
         // Initialize as an empty array if not present
         const viewedBy = artProjectData.project_viewedBy || [];
 

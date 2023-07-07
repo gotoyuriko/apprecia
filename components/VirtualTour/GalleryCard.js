@@ -1,50 +1,30 @@
-import {
-    Button,
-    Card,
-    CardActionArea,
-    CardActions,
-    CardMedia,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Popover,
-    Tooltip,
-} from "@mui/material";
-import { useEffect, useState } from "react";
+import DeleteArtGallery from "@/firebase/tours/DeleteTour";
+import GetArtGallery from "@/firebase/tours/GetArtGallery";
 import GetUser from "@/firebase/users/GetUser";
+import { Button, Card, CardActionArea, CardActions, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Popover, Tooltip } from "@mui/material";
 import Link from "next/link";
-import GetTourId from "@/firebase/tours/GetTourId";
-import { FiMoreVertical } from "react-icons/fi";
-import { IconContext } from "react-icons";
-import DeleteTour from "@/firebase/tours/DeleteTour";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { IconContext } from "react-icons";
+import { FiMoreVertical } from "react-icons/fi";
 
-export default function GalleryCard({ uid, tourRoom, tourName, createdAt, currentUser }) {
+export default function GalleryCard({ currentUserData, currentUser, galleryItem }) {
     const router = useRouter();
-    const [userData, setUserData] = useState(null);
     const [galleryId, setGalleryId] = useState(null);
+    const [galleryUserData, setGalleryUserData] = useState(null);
+    const [galleryUserId, setGalleryUserId] = useState(null)
 
     // Fetch Data
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const data = await GetUser(uid);
-                setUserData(data);
-            } catch (error) {
-                console.error("Error getting user:", error);
-            }
-
-            try {
-                const id = await GetTourId(uid, createdAt);
-                setGalleryId(id);
-            } catch (error) {
-                console.error("Error getting gallery id:", error);
-            }
+            const { galleryId } = await GetArtGallery(galleryItem.tour_user, galleryItem.tour_createdAt);
+            setGalleryId(galleryId);
+            const { user, userid } = await GetUser(galleryItem.tour_user);
+            setGalleryUserData(user);
+            setGalleryUserId(userid);
         };
         fetchData();
-    }, [uid, createdAt]);
+    }, [galleryItem]);
 
     // Tooltip
     const [anchorEl, setAnchorEl] = useState(null);
@@ -60,14 +40,9 @@ export default function GalleryCard({ uid, tourRoom, tourName, createdAt, curren
     // Edit Project
     const handleEdit = () => {
         const fetchData = async () => {
-            try {
-                const tourId = await GetTourId(uid, createdAt);
-                router.push(`/tour/update/${tourId}`);
-            } catch (error) {
-                console.error("Error getting tour id:", error);
-            }
+            const { galleryId } = await GetArtGallery(galleryItem.tour_user, galleryItem.tour_createdAt);
+            router.push(`/tour/update/${galleryId}`);
         };
-
         fetchData();
     };
 
@@ -81,15 +56,10 @@ export default function GalleryCard({ uid, tourRoom, tourName, createdAt, curren
     };
 
     const handleDeleteProject = async () => {
-        const tourId = await GetTourId(uid, createdAt);
-
-        if (tourId) {
-            try {
-                await DeleteTour(tourId);
-                router.reload();
-            } catch (error) {
-                console.error("Error deleting artwork:", error);
-            }
+        const { galleryId } = await GetArtGallery(galleryItem.tour_user, galleryItem.tour_createdAt);
+        if (galleryId) {
+            await DeleteArtGallery(galleryId);
+            router.reload();
         } else {
             console.error("Artwork not found");
         }
@@ -108,22 +78,22 @@ export default function GalleryCard({ uid, tourRoom, tourName, createdAt, curren
                         <CardMedia
                             component="img"
                             sx={{ height: "200px", width: "100%", objectFit: "cover" }}
-                            image={tourRoom[0]?.room_background}
+                            image={galleryItem.tour_room[0]?.room_background}
                         />
                     </Link>
                 </CardActionArea>
                 <CardActions className="flex justify-between items-center">
                     <div className="flex flex-col">
-                        <p className="text-xl font-bold">{tourName}</p>
+                        <p className="text-xl font-bold">{galleryItem.tour_name}</p>
                         <Link
                             passHref
-                            href={`/profiles/${userData?.user_id}`}
+                            href={`/profiles/${galleryUserId}`}
                             className="text-sm text-gray-400"
                         >
-                            {userData?.user_name ? `By ${userData.user_name}` : ""}
+                            {galleryUserData?.user_name ? `By ${galleryUserData.user_name}` : ""}
                         </Link>
                     </div>
-                    {currentUser && currentUser.uid === uid ? (
+                    {currentUser && currentUser.email === galleryItem.tour_user ? (
                         <Tooltip title="More" placement="right">
                             <div className="flex flex-col items-center ml-10">
                                 <IconContext.Provider value={{ color: "gray" }}>

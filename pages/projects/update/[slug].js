@@ -21,7 +21,7 @@ const UpdateProject = () => {
     return (
         <div className="w-full">
             <Navbar currentUser={currentUser} />
-            <Project user={currentUser} status={projectStatus} slug={slug} />
+            <Project currentUser={currentUser} status={projectStatus} slug={slug} />
             <Footer />
         </div>
     );

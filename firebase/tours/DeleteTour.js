@@ -1,7 +1,7 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../Config";
 
-export default async function DeleteTour(tourId) {
+export default async function DeleteArtGallery(tourId) {
     try {
         await deleteDoc(doc(db, "virtualTours", tourId));
     } catch (error) {

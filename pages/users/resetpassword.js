@@ -21,9 +21,11 @@ export default function ResetPassword() {
             setErrorMessage(error);
             setSuccessmessage('');
         } else {
-            setErrorMessage('');
-            setSuccessmessage('Please check your email to reset your password');
-            router.push('/users/signin');
+            setTimeout(() => {
+                setErrorMessage('');
+                setSuccessmessage('Please check your email to reset your password. Go Back to Log In...');
+                router.push('/users/signin');
+            }, 300);
         }
     };
 
@@ -77,7 +79,6 @@ export default function ResetPassword() {
                             Go Back to Log In
                         </Link>
                     </p>
-
                 </form>
             </div>
         </div>

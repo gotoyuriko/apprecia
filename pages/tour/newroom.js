@@ -6,7 +6,7 @@ import RoomPublishButton from "@/components/VirtualTour/CreateTour/RoomPublishBu
 import SelectRoomModal from "@/components/VirtualTour/CreateTour/SelectRoomModal";
 import UploadArtwork from "@/components/VirtualTour/CreateTour/UploadArtwork";
 import { panoramaArtworkImages } from "@/data/data";
-import GetArtwork from "@/firebase/artworks/GetArtwork";
+import GetArtworks from "@/firebase/artworks/GetArtworks";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import { Entity, Scene } from "aframe-react";
 import { useRouter } from "next/router";
@@ -32,16 +32,16 @@ const NewRoom = () => {
                 room_artwork: [...panoramaArtworkImages],
             },
         ],
-        user_id: currentUser.uid,
+        tour_user: currentUser.email,
     });
 
     // From Firebase
-    const [artworkData, setArtworkData] = useState([]);
+    const [artworksData, setArtworkData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const artworkdata = await GetArtwork();
-            setArtworkData(artworkdata);
+            const artworksdata = await GetArtworks();
+            setArtworkData(artworksdata);
         };
         fetchData();
     }, []);
@@ -58,10 +58,10 @@ const NewRoom = () => {
     return (
         <>
             <UploadArtwork
-                user={currentUser}
+                currentUser={currentUser}
                 openModalArt={openModalArt}
                 setOpenModalArt={setOpenModalArt}
-                artworkData={artworkData}
+                artworksData={artworksData}
                 selectPanel={selectPanel}
                 setSelectPanel={setSelectPanel}
                 setTourData={setTourData}

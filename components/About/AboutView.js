@@ -1,9 +1,9 @@
 import { aboutFeatures } from "@/data/data";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
-import AboutCard from "./AboutCard";
-import Footer from "../Footer";
 import { motion } from "framer-motion";
 import { useRef } from "react";
+import Footer from "../Footer";
+import AboutCard from "./AboutCard";
 
 const AboutView = () => {
     const scrollRef = useRef(null);
@@ -11,8 +11,10 @@ const AboutView = () => {
         <>
             <Parallax pages={3} className="w-full h-full relative top-0 left-0">
                 <ParallaxLayer offset={0} speed={-0.25}>
-                    <div className="fixed -top-[20vh] md:-top-[10vh] lg:top-0 bg-center bg-contain bg-no-repeat w-full h-full opacity-60"
-                        id="artworks"></div>
+                    <div
+                        className="fixed -top-[20vh] md:-top-[10vh] lg:top-0 bg-center bg-contain bg-no-repeat w-full h-full opacity-60"
+                        id="artworks"
+                    ></div>
                 </ParallaxLayer>
                 <ParallaxLayer offset={0} speed={-0.1}>
                     <div

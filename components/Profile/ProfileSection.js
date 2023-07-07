@@ -1,15 +1,16 @@
+import { useAuth } from "@/firebase/auth/AuthContext";
+import UpdateUser from "@/firebase/users/UpdateUser";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { IconContext } from "react-icons";
 import { BiUserCircle } from "react-icons/bi";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import UpdateUser from "@/firebase/users/UpdateUser";
-import { useAuth } from "@/firebase/auth/AuthContext";
 
-export default function ProfileSection({ userData, setUserData, slug }) {
+export default function ProfileSection({ currentUserData, setUserData, slug }) {
     const { currentUser } = useAuth();
     const router = useRouter();
     const fileInputRef = useRef(null);
+    const [fullnameEmptyMsg, setFullnameEmptyMsg] = useState('');
     const [editMode, setEditMode] = useState(false);
     const [profileImage, setProfileImage] = useState(null);
     const [formData, setFormData] = useState({
@@ -19,15 +20,15 @@ export default function ProfileSection({ userData, setUserData, slug }) {
     });
 
     useEffect(() => {
-        if (userData) {
+        if (currentUserData) {
             setFormData({
-                fullname: userData?.user_name || "",
-                bio: userData?.user_bio || "",
-                photoURL: userData?.user_photoURL || "",
+                fullname: currentUserData?.user_name || "",
+                bio: currentUserData?.user_bio || "",
+                photoURL: currentUserData?.user_photoURL || "",
             });
-            setProfileImage(userData?.user_photoURL || "");
+            setProfileImage(currentUserData?.user_photoURL || "");
         }
-    }, [userData]);
+    }, [currentUserData]);
 
     const handleProfilePhotoUpload = (event) => {
         const file = event.target.files[0];
@@ -61,9 +62,14 @@ export default function ProfileSection({ userData, setUserData, slug }) {
 
     const handleUpdateProfile = async () => {
         try {
-            await UpdateUser(formData, profileImage, currentUser.uid, userData);
+            if (formData.fullname === '') {
+                setFullnameEmptyMsg('Full name is required');
+                return;
+            }
+            setFullnameEmptyMsg('');
+            await UpdateUser(formData, profileImage, currentUser.uid, currentUserData);
             const updatedUserData = {
-                ...userData,
+                ...currentUserData,
                 user_name: formData.fullname,
                 user_bio: formData.bio,
                 user_photoURL: formData.photoURL,
@@ -126,9 +132,7 @@ export default function ProfileSection({ userData, setUserData, slug }) {
                     </div>
                 </div>
                 <input
-                    onChange={(e) =>
-                        setFormData({ ...formData, fullname: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, fullname: e.target.value })}
                     value={formData.fullname}
                     placeholder="Full Name"
                     required
@@ -156,6 +160,7 @@ export default function ProfileSection({ userData, setUserData, slug }) {
                         Save Profile
                     </button>
                 </div>
+                <p className="font-bold text-center py-2 text-red-600">{fullnameEmptyMsg}</p>
             </div>
         );
     } else {
@@ -170,11 +175,11 @@ export default function ProfileSection({ userData, setUserData, slug }) {
                                 title: "Profile menu",
                             }}
                         >
-                            {userData?.user_photoURL ? (
+                            {currentUserData?.user_photoURL ? (
                                 <Image
                                     width={50}
                                     height={50}
-                                    src={userData.user_photoURL}
+                                    src={currentUserData.user_photoURL}
                                     alt="Profile"
                                     className="w-16 h-16 rounded-full object-cover"
                                     priority
@@ -187,7 +192,7 @@ export default function ProfileSection({ userData, setUserData, slug }) {
                     </div>
                     <div className="flex flex-col justify-start ml-5">
                         <div className="flex flex-row items-center">
-                            <h1 className="text-2xl font-bold mr-3">{userData?.user_name}</h1>
+                            <h1 className="text-2xl font-bold mr-3">{currentUserData?.user_name}</h1>
                             {currentUser && currentUser.uid === slug &&
                                 < button
                                     onClick={() => setEditMode(!editMode)}
@@ -197,8 +202,8 @@ export default function ProfileSection({ userData, setUserData, slug }) {
                                 </button>
                             }
                         </div>
-                        <p className={`text-gray-600 text-justify max-w-lg break-words ${userData?.user_bio !== "" ? "ml-1 mt-1 block pr-5 md:pr-0" : "ml-0 mt-0 hidden"}`}>
-                            {userData?.user_bio}
+                        <p className={`text-gray-600 text-justify max-w-lg break-words ${currentUserData?.user_bio !== "" ? "ml-1 mt-1 block pr-5 md:pr-0" : "ml-0 mt-0 hidden"}`}>
+                            {currentUserData?.user_bio}
                         </p>
                     </div>
                 </div>

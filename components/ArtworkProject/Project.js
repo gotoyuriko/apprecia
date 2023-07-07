@@ -1,14 +1,14 @@
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
-import CreatableSelect from "react-select/creatable";
-import { tagOptions, skillOptions } from "@/data/data";
-import { useRouter } from "next/router";
-import { useDropzone } from "react-dropzone";
+import { skillOptions, tagOptions } from "@/data/data";
+import GetDoc from "@/firebase/GetDoc";
 import AddArtwork from "@/firebase/artworks/AddArtwork";
-import GetSingleArtwork from "@/firebase/artworks/GetSingleArtwork";
-import UpdateSingleArtwork from "@/firebase/artworks/UpdateSignleArtwork";
+import UpdateArtworkFromId from "@/firebase/artworks/UpdateArtworkFromId";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import CreatableSelect from "react-select/creatable";
 
-const Project = ({ user, status, slug }) => {
+const Project = ({ currentUser, status, slug }) => {
     const router = useRouter();
     const [projectData, setProjectData] = useState({
         project_title: "",
@@ -16,8 +16,7 @@ const Project = ({ user, status, slug }) => {
         project_tags: [],
         project_skills: [],
         project_link: "",
-        user_id: user.uid,
-        user_name: user.displayName,
+        project_creator: currentUser?.email,
         project_createdAt: "",
         project_imageUrls: [],
     });
@@ -33,7 +32,7 @@ const Project = ({ user, status, slug }) => {
         if (status === "update") {
             const fetchData = async () => {
                 try {
-                    const data = await GetSingleArtwork(slug);
+                    const data = await GetDoc("artProjects", slug);
                     setImages(data.project_imageUrls);
                     setArtworkData(data);
                 } catch (error) {
@@ -118,9 +117,7 @@ const Project = ({ user, status, slug }) => {
     // Drag and Drop props
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: onFileSelect,
-        accept: {
-            "image/*": [".png", ".gif", ".jpeg", ".jpg"],
-        },
+        accept: { "image/*": [".png", ".gif", ".jpeg", ".jpg"] },
         maxSize: 10 * 1024 * 1024,
     });
 
@@ -151,8 +148,8 @@ const Project = ({ user, status, slug }) => {
             // Upload Images and Add Project Data
             const { error } =
                 status === 'new' ?
-                    AddArtwork(images, projectData)
-                    : UpdateSingleArtwork(images, artworkData, slug);
+                    await AddArtwork(images, projectData)
+                    : await UpdateArtworkFromId(images, artworkData, slug);
 
             if (error) {
                 console.error("Error uploading images or adding document: ", error);
@@ -161,7 +158,7 @@ const Project = ({ user, status, slug }) => {
                 setSuccessMsg("Project Data Saved! Redirecting...");
                 setTimeout(() => {
                     setSuccessMsg("");
-                    router.push(`/profiles/${user.uid}`);
+                    router.push(`/profiles/${currentUser?.uid}`);
                 }, 300);
             }
         };

@@ -7,7 +7,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SignOutBtn from './SignOutBtn';
 import Image from 'next/image';
-import GetUser from '../../firebase/users/GetUser';
+import GetUser from '@/firebase/users/GetUser';
+
 
 export default function ProfileMenu({ profileList, currentUser }) {
     // Profile Icon
@@ -20,33 +21,23 @@ export default function ProfileMenu({ profileList, currentUser }) {
         setAnchorEl(null);
     };
 
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const data = await GetUser(currentUser.uid);
-                setUserData(data);
-            } catch (error) {
-                console.error("Error getting currentUser:", error);
-            }
+            const { user } = await GetUser(currentUser.email);
+            setUserData(user);
         };
         fetchData();
     }, [currentUser]);
 
     // Update Profile Link
-    userData ? (profileList[0].link = `/profiles/${currentUser.uid}`) : null;
+    userData ? (profileList[0].link = `/profiles/${currentUser?.uid}`) : null;
 
     return (
         <>
             {/* Profile */}
-            <IconContext.Provider
-                value={{
-                    size: '2.5rem',
-                    className: 'text-center cursor-pointer',
-                    title: 'Profile menu',
-                }}
-            >
+            <IconContext.Provider value={{ size: '2.5rem', className: 'text-center cursor-pointer', title: 'Profile menu' }}>
                 {userData?.user_photoURL ? (
                     <Image
                         width={50}

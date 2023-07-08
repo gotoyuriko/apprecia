@@ -2,33 +2,36 @@ import GetArtwork from "@/firebase/artworks/GetArtwork";
 import DeleteComment from "@/firebase/comments/DeleteComment";
 import UpdateComment from "@/firebase/comments/UpdateComment";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { BiPencil, BiTrash, BiUserCircle } from "react-icons/bi";
 
 export default function Comment({
-    commentItem, //Single Comment Data
-    commentUserData, // Users who has commented
+    commentItem, // Single Comment Data
+    commentUserData, // Users who have commented
     status,
     currentUser,
     artProjectItem, // Art Project 
-    updateComment
 }) {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedComment, setUpdatedComment] = useState(commentItem?.comment_content);
+    const [displayComment, setDisplayComment] = useState('');
+    useEffect(() => {
+        setDisplayComment(commentItem?.comment_content);
+    }, [commentItem?.comment_content])
+
     const [hide, setHide] = useState(false);
 
-    let filteredUser;
-
-    if (status === "new") {
-        filteredUser = commentUserData;
-    } else if (status === "old") {
-        filteredUser = commentUserData?.find(
-            (userItem) => userItem.user_email === commentItem.comment_user
-        );
-    }
+    const filteredUser = useMemo(() => {
+        if (status === "new") {
+            return commentUserData;
+        } else if (status === "old") {
+            return commentUserData?.find((userItem) => userItem.user_email === commentItem.comment_user);
+        }
+    }, [status, commentUserData, commentItem.comment_user]);
 
     const handleEdit = () => {
+        setUpdatedComment(displayComment);
         setIsEditing(true);
     };
 
@@ -41,7 +44,8 @@ export default function Comment({
         const { id } = await GetArtwork(artProjectItem.project_creator, artProjectItem.project_createdAt);
         const { newUpdatedComment } = await UpdateComment(id, commentItem, updatedComment);
         setUpdatedComment(newUpdatedComment);
-        updateComment(commentItem.comment_user, newUpdatedComment);
+        setDisplayComment(newUpdatedComment);
+        // updateComment(commentItem.comment_user, commentItem.comment_createdAt, newUpdatedComment);
         setIsEditing(false);
     };
 
@@ -86,33 +90,32 @@ export default function Comment({
                 ) : (
                     <>
                         <p className="font-bold">{filteredUser?.user_name}</p>
-                        <p className="pt-2">{updatedComment}</p>
+                        <p className="pt-2">{displayComment}</p>
                     </>
                 )}
-                {
-                    (currentUser && currentUser?.email === commentItem.comment_user) && (
-                        isEditing ? (
-                            <div className="flex mt-2" >
+                {currentUser?.email === commentItem.comment_user && (
+                    <div className="flex mt-2">
+                        {isEditing ? (
+                            <>
                                 <button className="mr-2 px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none" onClick={handleUpdate}>
                                     Save
                                 </button>
                                 <button className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none" onClick={handleCancelEdit}>
                                     Cancel
                                 </button>
-                            </div>
+                            </>
                         ) : (
-                            <div className="flex mt-2">
+                            <>
                                 <button className="mr-2 px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none" onClick={handleEdit}>
                                     <BiPencil />
                                 </button>
                                 <button className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none" onClick={handleDelete}>
                                     <BiTrash />
                                 </button>
-                            </div>
-                        )
-                    )
-                }
-
+                            </>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

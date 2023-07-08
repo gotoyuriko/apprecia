@@ -50,8 +50,9 @@ export default function ProjectModal({
         const { id } = await GetArtwork(artProjectItem.project_creator, artProjectItem.project_createdAt);
         if (id) {
             try {
-                await DeleteArtwork(artProjectItem.project_imageUrls, id);
-                router.reload();
+                await DeleteArtwork(artProjectItem.project_imageUrls, id, artProjectItem.project_creator);
+                setOpen(false);
+                // router.reload();
             } catch (error) {
                 console.error("Error deleting artwork:", error);
             }
@@ -111,7 +112,7 @@ export default function ProjectModal({
                                 <p className="font-medium text-sm text-gray-400">{viewsNo}</p>
                             </div>
 
-                            {currentUser && currentUser.email === commentCurrentUserData.user_email ? (
+                            {currentUser && currentUser.email === creatorData.user_email ? (
                                 <>
                                     <Tooltip title="More" placement="right">
                                         <div

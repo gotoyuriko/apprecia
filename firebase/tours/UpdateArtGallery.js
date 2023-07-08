@@ -5,7 +5,7 @@ export default async function UpdateArtGallery(tourData, slug) {
     let error = null;
     try {
         // Get Tour Reference
-        const tourRef = doc(db, "virtualTours", slug);
+        const tourRef = doc(db, "virtualArtGalleries", slug);
 
         // Get the current date and time
         const currentDate = new Date();

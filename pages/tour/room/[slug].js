@@ -9,7 +9,6 @@ import { useAuth } from "@/firebase/auth/AuthContext";
 import GetComments from "@/firebase/comments/GetComments";
 import UpdateView from "@/firebase/projectviews/UpdateView";
 import GetUser from "@/firebase/users/GetUser";
-
 import GetUsers from "@/firebase/users/GetUsers";
 import { Entity, Scene } from "aframe-react";
 import { useRouter } from "next/router";
@@ -20,38 +19,55 @@ export default function VirtualTour() {
     const router = useRouter();
     const { slug } = router.query;
 
-    // Tour Data and room Data
-    const [tourData, setTourData] = useState(null);
-    const [userData, setUserData] = useState(null);
-    const [artData, setArtData] = useState(null);
-    const [showDesc, setShowDesc] = useState(null);
-
-    // Switch Button
-    const [roomNo, setRoomNo] = useState(1);
-    //set modal
-    const [open, setOpen] = useState(false);
-    //set views
-    const [viewsNo, setViewsNo] = useState(0);
-
     useEffect(() => {
         if (!currentUser) {
-            router.push('/');
+            router.push("/");
         }
     }, [currentUser, router]);
 
+    // Tour Data and room Data
+    const [tourData, setTourData] = useState(null); // Tour Data
+    const [tourUser, setTourUser] = useState(null); // Tour User Data
+    const [artworksData, setArtworksData] = useState(null); // Art Data
+    const [usersData, setUsersData] = useState(null);
+    const [showDesc, setShowDesc] = useState(null); // Show Description
+    const [roomNo, setRoomNo] = useState(1); // Switch Button
+    const [open, setOpen] = useState(false); //set modal
+    const [viewsNo, setViewsNo] = useState(0); //set views
+
     useEffect(() => {
         const fetchData = async () => {
-            const tourData = await GetDoc("virtualTours", slug);
+            const tourData = await GetDoc("virtualArtGalleries", slug);
             setTourData(tourData);
             const { user } = await GetUser(tourData?.tour_user);
-            setUserData(user);
+            setTourUser(user);
             const artwroksdata = await GetArtworks();
-            setArtData(artwroksdata?.filter((art) => art.project_creator === tourData.tour_user));
+            setArtworksData(
+                artwroksdata?.filter(
+                    (art) => art.project_creator === tourData.tour_user
+                )
+            );
+            const usersdata = await GetUsers();
+            setUsersData(usersdata);
         };
-
         fetchData();
-    }, [slug])
+    }, [slug]);
 
+    // Comment Features
+    const [commentData, setCommentData] = useState([]);
+    const [commentCurrentUserData, setCommentCurrentUserData] = useState([]);
+    // Fetch Data of art gallery comments
+    const fetchDataComments = (creatorDocId, createdAt) => {
+        const fetchData = async () => {
+            // Fetch Comments
+            const commentData = await GetComments(creatorDocId, createdAt);
+            setCommentData(commentData.reverse());
+            // Fetch Current User
+            const { user } = await GetUser(currentUser.email);
+            setCommentCurrentUserData(user);
+        };
+        fetchData();
+    };
 
     useEffect(() => {
         // Unregister the component if it has already been registered
@@ -76,7 +92,6 @@ export default function VirtualTour() {
         const handleClickTravel = (data) => {
             setRoomNo(data);
         };
-
     }, []);
 
     useEffect(() => {
@@ -100,12 +115,15 @@ export default function VirtualTour() {
 
         // Modify the handleClickModal function to pass artData correctly
         const handleClickModal = async (data) => {
-            const selectArtwork = data.artdata?.filter((art) =>
+            const selectArtwork = data.artworksData?.filter((art) =>
                 art.project_imageUrls.includes(data.src)
             );
             if (selectArtwork && selectArtwork.length > 0) {
                 setShowDesc(selectArtwork[0]);
-                fetchDataComments(selectArtwork[0].project_creator, selectArtwork[0].project_createdAt);
+                fetchDataComments(
+                    selectArtwork[0].project_creator,
+                    selectArtwork[0].project_createdAt
+                );
                 setOpen(true);
                 const hasViewed = await UpdateView(
                     selectArtwork[0].project_creator,
@@ -119,59 +137,24 @@ export default function VirtualTour() {
         };
     }, [currentUser]);
 
-    // From Firebase
-    const [commentData, setCommentData] = useState([]);
-    // Other Users
-    const [commentUserData, setCommentUserData] = useState([]);
-    // Current User
-    const [commentCurrentUserData, setCommentCurrentUserData] = useState([]);
-    // Fetch Data of art gallery comments
-    const fetchDataComments = (uid, createdAt) => {
-        const fetchData = async () => {
-            // Fetch Comments
-            try {
-                const data = await GetComments(uid, createdAt);
-                setCommentData(data.reverse());
-            } catch (error) {
-                console.error("Error getting comments", error);
-            }
-            // Fetch Current User
-            try {
-                const { user } = await GetUser(currentUser.email);
-                setCommentCurrentUserData(user);
-            } catch (error) {
-                console.error("Error getting current user", error);
-            }
-            // Fetch Ohter Users
-            try {
-                const data = await GetUsers();
-                setCommentUserData(data);
-            } catch (error) {
-                console.error("Error getting users", error);
-            }
-        };
-
-        fetchData();
-    };
-
     return (
         <>
             <ArtworkModal
-                showDesc={showDesc}
                 setOpen={setOpen}
                 open={open}
-                userData={userData}
-                user={currentUser}
+                tourUser={tourUser}
+                showDesc={showDesc}
                 viewsNo={viewsNo}
                 setViewsNo={setViewsNo}
                 currentUser={currentUser}
                 commentData={commentData}
-                commentUserData={commentUserData}
+                usersData={usersData}
+                setCommentData={setCommentData}
                 commentCurrentUserData={commentCurrentUserData}
             />
             <SwitchRoom tourData={tourData} roomNo={roomNo} setRoomNo={setRoomNo} />
             <TourTitle tourData={tourData} roomNo={roomNo} />
-            <UserInfo userData={userData} />
+            <UserInfo tourUser={tourUser} />
             <HomeButton />
 
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
@@ -192,7 +175,7 @@ export default function VirtualTour() {
                                 class="clickable"
                                 artwork-modal={{
                                     src: artwork.src,
-                                    artdata: artData,
+                                    artworksData: artworksData,
                                 }}
                             />
                         );

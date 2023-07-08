@@ -1,6 +1,7 @@
 import { doc, updateDoc } from "firebase/firestore";
-import { deleteObject, getDownloadURL, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../Config";
+import { v4 as uuid } from "uuid";
 
 export default async function UpdateArtworkFromId(images, artworkData, slug) {
     let error = null;

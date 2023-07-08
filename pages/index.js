@@ -35,7 +35,7 @@ export default function Home() {
       />
       <div className="min-h-[35vh] flex justify-center items-center mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {filteredData?.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
             {filteredData.map((item, index) => (
               <div key={index}>
                 <ArtworkProject

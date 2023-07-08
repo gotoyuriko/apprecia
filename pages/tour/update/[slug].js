@@ -32,7 +32,7 @@ export default function TourUpdate() {
     useEffect(() => {
         const fetchData = async () => {
             if (slug) {
-                const tourData = await GetDoc("virtualTours", slug);
+                const tourData = await GetDoc("virtualArtGalleries", slug);
                 setTourData(tourData);
                 const { user } = await GetUser(tourData?.tour_user);
                 setUserData(user);

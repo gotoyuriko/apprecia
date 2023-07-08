@@ -1,40 +1,35 @@
-import { BiUserCircle, BiX } from "react-icons/bi";
-import { motion, useAnimation } from "framer-motion";
-import {
-    AiFillHeart,
-    AiOutlineEye,
-    AiOutlineHeart,
-    AiOutlinePaperClip,
-} from "react-icons/ai";
-import Link from "next/link";
-import Image from "next/image";
-import { IconContext } from "react-icons";
-import { useEffect, useState } from "react";
-import UpdateLike from "@/firebase/likes/UpdateLike";
 import CommentSection from "@/components/ArtworkProject/CommentSection";
+import UpdateLike from "@/firebase/likes/UpdateLike";
+import { motion, useAnimation } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { IconContext } from "react-icons";
+import { AiFillHeart, AiOutlineEye, AiOutlineHeart, AiOutlinePaperClip } from "react-icons/ai";
+import { BiUserCircle, BiX } from "react-icons/bi";
 
 export default function ArtworkModal({
-    showDesc,
     setOpen,
     open,
-    userData,
-    user,
+    tourUser,
+    showDesc,
     viewsNo,
     setViewsNo,
     currentUser,
     commentData,
-    commentUserData,
-    commentCurrentUserData,
+    usersData,
+    setCommentData,
+    commentCurrentUserData
 }) {
     const [isLiked, setIsLiked] = useState(false);
     const [likesNo, setLikesNo] = useState(0);
 
     // Check if artwork was liked by you
     useEffect(() => {
-        if (user) {
-            setIsLiked(showDesc?.project_likedBy?.includes(user.uid));
+        if (currentUser) {
+            setIsLiked(showDesc?.project_likedBy?.includes(currentUser.uid));
         }
-    }, [showDesc?.project_likedBy, user]);
+    }, [showDesc?.project_likedBy, currentUser]);
 
     useEffect(() => {
         setLikesNo(showDesc?.project_likesCount || 0);
@@ -54,7 +49,7 @@ export default function ArtworkModal({
                 showDesc.user_id,
                 showDesc.project_createdAt,
                 !isLiked,
-                user.uid
+                currentUser.uid
             );
         }
 
@@ -132,10 +127,10 @@ export default function ArtworkModal({
 
             <div className="flex items-center justify-between mt-4 px-8">
                 <div className="flex items-center">
-                    {userData?.user_photoURL ? (
-                        <Link passHref href={`/profiles/${userData?.user_id}`}>
+                    {tourUser?.user_photoURL ? (
+                        <Link passHref href={`/profiles/${tourUser?.user_id}`}>
                             <Image
-                                src={userData.user_photoURL}
+                                src={tourUser.user_photoURL}
                                 alt="Profile"
                                 width={50}
                                 height={50}
@@ -148,13 +143,13 @@ export default function ArtworkModal({
                     )}
                     <div className="flex flex-col ml-3">
                         <p className="font-medium text-gray-700">created by</p>
-                        {userData?.user_name && (
+                        {tourUser?.user_name && (
                             <Link
                                 passHref
-                                href={`/profiles/${userData?.user_id}`}
+                                href={`/profiles/${tourUser?.user_id}`}
                                 className="text-sm font-normal text-gray-400"
                             >
-                                {userData.user_name}
+                                {tourUser.user_name}
                             </Link>
                         )}
                     </div>
@@ -162,17 +157,17 @@ export default function ArtworkModal({
                 <div className="flex">
                     <div className="flex flex-col items-center">
                         <IconContext.Provider value={{ color: "red" }}>
-                            {isLiked && user ? (
-                                <motion.div onClick={user && handleIsLike} animate={controls}>
+                            {isLiked && currentUser ? (
+                                <motion.div onClick={currentUser && handleIsLike} animate={controls}>
                                     <AiFillHeart
-                                        className={`w-8 h-8 text-red-500 ${user && "cursor-pointer"
+                                        className={`w-8 h-8 text-red-500 ${currentUser && "cursor-pointer"
                                             }`}
                                     />
                                 </motion.div>
                             ) : (
-                                <motion.div onClick={user && handleIsLike} animate={controls}>
+                                <motion.div onClick={currentUser && handleIsLike} animate={controls}>
                                     <AiOutlineHeart
-                                        className={`w-8 h-8 text-red-500 ${user && "cursor-pointer"
+                                        className={`w-8 h-8 text-red-500 ${currentUser && "cursor-pointer"
                                             }`}
                                     />
                                 </motion.div>
@@ -190,12 +185,12 @@ export default function ArtworkModal({
             </div>
             <div className="px-5">
                 <CommentSection
-                    uid={showDesc?.user_id}
-                    createdAt={showDesc?.project_createdAt}
-                    user={currentUser}
+                    artProjectItem={showDesc}
+                    currentUser={currentUser}
                     commentData={commentData}
-                    commentUserData={commentUserData}
+                    usersData={usersData}
                     commentCurrentUserData={commentCurrentUserData}
+                    setCommentData={setCommentData}
                 />
             </div>
         </motion.div>

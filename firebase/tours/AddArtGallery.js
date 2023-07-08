@@ -13,7 +13,7 @@ export default async function AddArtGallery(tourData) {
             ...tourData,
             tour_createdAt: timestamp
         }
-        docRef = await addDoc(collection(db, "virtualTours"), updatedTourData);
+        docRef = await addDoc(collection(db, "virtualArtGalleries"), updatedTourData);
     } catch (e) {
         error = e;
         console.error("Error adding tour:", error);

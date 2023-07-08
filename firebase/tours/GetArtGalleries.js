@@ -3,7 +3,7 @@ import { db } from "../Config";
 
 export default async function GetArtGalleries() {
     try {
-        const galleryProjects = collection(db, "virtualTours");
+        const galleryProjects = collection(db, "virtualArtGalleries");
         const q = query(galleryProjects, orderBy("tour_createdAt", "desc"));
         const querySnapshot = await getDocs(q);
         const galleryData = [];

@@ -27,20 +27,27 @@ export default function CommentSection({
             return;
         }
         setNewCommentEmptyMsg('');
+
         const updatedFormData = {
             ...commentFormData,
             comment_content: newComment,
         };
-        const { updatedCommentData } = await AddComment(artProjectItem.project_creator, artProjectItem.project_createdAt, updatedFormData);
+
+        const { updatedCommentData } = await AddComment(
+            artProjectItem.project_creator,
+            artProjectItem.project_createdAt,
+            updatedFormData
+        );
+
         setLiveComments([updatedCommentData, ...liveComments]);
-        setNewComment("");
+        setNewComment('');
     };
 
     // Callback function to update the commentItem
-    const updateComment = (commentUser, newComment) => {
+    const updateComment = (commentUser, createdAt, newComment) => {
         setCommentData((prevCommentData) => {
             return prevCommentData.map((comment) => {
-                if (comment.comment_user === commentUser) {
+                if (comment.comment_user === commentUser && comment.comment_createdAt === createdAt) {
                     return { ...comment, comment_content: newComment };
                 }
                 return comment;
@@ -80,23 +87,24 @@ export default function CommentSection({
                     )
                 }
 
-                {liveComments.map((newcomment, index) => {
+                {liveComments
+                    .map((newcomment, i) => {
+                        return (
+                            <Comment
+                                key={i}
+                                commentItem={newcomment} //Single Comment Data
+                                commentUserData={commentCurrentUserData} // Current User's Info
+                                status="new"
+                                currentUser={currentUser}
+                                artProjectItem={artProjectItem}
+                                updateComment={updateComment}
+                            />
+                        );
+                    })}
+                {commentData?.map((commentItem, j) => {
                     return (
                         <Comment
-                            key={index}
-                            commentItem={newcomment} //Single Comment Data
-                            commentUserData={commentCurrentUserData} // Current User's Info
-                            status="new"
-                            currentUser={currentUser}
-                            artProjectItem={artProjectItem}
-                            updateComment={updateComment}
-                        />
-                    );
-                })}
-                {commentData?.map((commentItem, index) => {
-                    return (
-                        <Comment
-                            key={index}
+                            key={j}
                             commentItem={commentItem} //Single Comment Data
                             commentUserData={usersData} // Users who has commented
                             status="old"

@@ -1,13 +1,18 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export default function HomeButton() {
+export default function HomeButton({ setMuted, muted, audioRef }) {
     const router = useRouter();
 
     const [exitMsg, setExitMsg] = useState("");
     const [visible, setVisible] = useState(false);
 
     const handleGoBack = () => {
+        if (audioRef && !muted) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            setMuted(false);
+        }
         setVisible(true);
         setExitMsg("Redirecting...")
         router.back();

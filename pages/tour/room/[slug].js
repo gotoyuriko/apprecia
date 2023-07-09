@@ -12,7 +12,7 @@ import GetUser from "@/firebase/users/GetUser";
 import GetUsers from "@/firebase/users/GetUsers";
 import { Entity, Scene } from "aframe-react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function VirtualTour() {
     const { currentUser } = useAuth();
@@ -142,6 +142,11 @@ export default function VirtualTour() {
         };
     }, [currentUser]);
 
+
+    const [muted, setMuted] = useState(true);
+    const audioRef = useRef(null);
+    const [currentTime, setCurrentTime] = useState(0);
+
     return (
         <>
             <ArtworkModal
@@ -158,10 +163,20 @@ export default function VirtualTour() {
                 commentCurrentUserData={commentCurrentUserData}
             />
             <SwitchRoom tourData={tourData} roomNo={roomNo} setRoomNo={setRoomNo} />
-            <TourTitle tourData={tourData} roomNo={roomNo} />
+            <TourTitle
+                tourData={tourData}
+                roomNo={roomNo}
+                setMuted={setMuted}
+                muted={muted}
+                audioRef={audioRef}
+                setCurrentTime={setCurrentTime}
+                currentTime={currentTime} />
             <UserInfo tourUser={tourUser} />
-            <HomeButton />
-
+            <HomeButton
+                setMuted={setMuted}
+                muted={muted}
+                audioRef={audioRef}
+            />
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
                 {tourData?.tour_room[roomNo - 1]?.room_artwork
                     ?.filter((item) => item.src)
@@ -236,7 +251,6 @@ export default function VirtualTour() {
                     primitive="a-sky"
                     src={tourData?.tour_room[roomNo - 1]?.room_background}
                 />
-
                 <Entity
                     light={{
                         type: "hemisphere",

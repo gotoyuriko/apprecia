@@ -141,6 +141,36 @@ export const roomImages = [
     }
 ];
 
+// Audio used in 360 panorama
+export const audioList = [
+    {
+        src: "",
+        id: 1,
+        title: 'No Audio'
+    },
+    {
+        src: "/audio/Music_1.mp3",
+        id: 2,
+        title: 'Audio 01'
+    },
+    {
+        src: "/audio/Music_2.mp3",
+        id: 3,
+        title: 'Audio 02'
+    },
+    {
+        src: "/audio/Music_3.mp3",
+        alt: "Room 3",
+        id: 4,
+        title: 'Audio 03'
+    },
+    {
+        src: "/audio/Music_4.mp3",
+        id: 5,
+        title: 'Audio 04'
+    }
+];
+
 // 360 panorama Artwork Image List
 export const panoramaArtworkImages = [
     {

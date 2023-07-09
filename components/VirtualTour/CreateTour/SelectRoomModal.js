@@ -1,7 +1,9 @@
-import { roomImages } from "@/data/data";
+import { audioList, roomImages } from "@/data/data";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { GiSoundWaves } from "react-icons/gi";
+import { MdAudiotrack } from "react-icons/md";
 
 export default function SelectRoomModal({
     openModalEnv,
@@ -9,23 +11,59 @@ export default function SelectRoomModal({
     setTourData,
     tourData,
     roomNo,
+    setAudioPlay
 }) {
     const [selectedImage, setSelectedImage] = useState("");
+    const [selectedAudio, setSelectedAudio] = useState("");
+    const audioRef = useRef(null);
 
     const handleOnCreateRoom = () => {
         const roomImage = roomImages.filter((room) => room.id === selectedImage);
+        const galleryAudio = audioList.filter((audio) => audio.id === selectedAudio);
         setTourData({
             ...tourData,
             tour_room: tourData.tour_room.map((room, index) =>
-                index === (roomNo - 1)
-                    ? { ...room, room_background: roomImage[0]?.src }
-                    : room
+                index === roomNo - 1 ? { ...room, room_background: roomImage[0]?.src } : room
             ),
+            tour_audio: galleryAudio[0].src
         });
+
+        if (audioRef.current) {
+            audioRef.current.pause();
+            setAudioPlay(false);
+        }
+
         setOpenModalEnv(false);
     };
 
-    const isButtonDisabled = selectedImage === "" || !tourData.tour_name;
+    const isButtonDisabled = selectedImage === "" || !tourData.tour_name || selectedAudio === '';
+
+    const handleAudioSelection = (audioId) => {
+        if (audioId !== 1) {
+            if (audioId === selectedAudio) {
+                // Stop playback if the same audio is selected again
+                audioRef.current.pause();
+                setAudioPlay(false);
+                setSelectedAudio("");
+            } else {
+                // Play selected audio and stop the previous audio if any
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                    setAudioPlay(false);
+                }
+                setSelectedAudio(audioId);
+                audioRef.current = new Audio(audioList.find((audio) => audio.id === audioId).src);
+                audioRef.current.play();
+                setAudioPlay(true);
+            }
+        } else {
+            if (audioRef.current) {
+                audioRef.current.pause();
+                setAudioPlay(false);
+            }
+            setSelectedAudio(audioId);
+        }
+    };
 
     return (
         openModalEnv && (
@@ -80,36 +118,62 @@ export default function SelectRoomModal({
                         </button>
                     </div>
                     <hr className="my-4" />
-                    <div>
-                        <h1 className="font-bold">Select Your Room</h1>
-                        <div className="grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4 my-3">
-                            {roomImages.map((image) => (
-                                <label
-                                    key={image.id}
-                                    className="flex items-center w-64 h-32 md:w-96 md:h-48 relative left-0 right-0 m-auto"
-                                >
-                                    <input
-                                        type="radio"
-                                        name="image"
-                                        value={image.id}
-                                        checked={selectedImage === image.id}
-                                        onChange={() => setSelectedImage(image.id)}
-                                        className="hidden"
-                                    />
-                                    <Image
-                                        fill
-                                        src={image.src}
-                                        alt={image.alt}
-                                        priority
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        className={`cursor-pointer ${selectedImage === image.id ? "ring-4 ring-blue-500" : ""
-                                            }`}
-                                    />
-                                </label>
-                            ))}
+                    <div className="flex flex-col lg:flex-row">
+                        <div>
+                            <h1 className="font-bold">Select Room</h1>
+                            <div className="grid grid-cols-1 lg:grid-cols-2  gap-4 my-3">
+                                {roomImages.map((image) => (
+                                    <label
+                                        key={image.id}
+                                        className="flex items-center w-64 h-32 md:w-96 md:h-48 relative left-0 right-0 m-auto"
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="image"
+                                            value={image.id}
+                                            checked={selectedImage === image.id}
+                                            onChange={() => setSelectedImage(image.id)}
+                                            className="hidden"
+                                        />
+                                        <Image
+                                            fill
+                                            src={image.src}
+                                            alt={image.alt}
+                                            priority
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            className={`cursor-pointer ${selectedImage === image.id ? "ring-4 ring-blue-500" : ""}`}
+                                        />
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="mx-10">
+                            <h1 className="font-bold">Select Audio</h1>
+                            <div className="grid grid-cols-2 gap-4 my-1">
+                                {audioList.map((audio) => (
+                                    <label
+                                        key={audio.id}
+                                        className={`flex items-center relative cursor-pointer rounded py-2 pl-3 pr-1 ${selectedAudio === audio.id ? "bg-black ring-4 ring-blue-500 " : "bg-gray-200"}`}
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="audio"
+                                            value={audio.id}
+                                            checked={selectedAudio === audio.id}
+                                            onChange={() => handleAudioSelection(audio.id)}
+                                            className="hidden"
+                                        />
+                                        <span className={`${selectedAudio === audio.id ? 'text-white' : 'text-black'}`}>{audio.title}</span>
+                                        {
+                                            audio.id === 1 ? null :
+                                                audio.id > 1 && selectedAudio === audio.id ? <GiSoundWaves className='w-5 h-5 ml-1 text-white' /> :
+                                                    <MdAudiotrack className='w-5 h-5 ml-1 text-black' />
+                                        }
+                                    </label>
+                                ))}
+                            </div>
                         </div>
                     </div>
-
                     <button
                         className={
                             isButtonDisabled

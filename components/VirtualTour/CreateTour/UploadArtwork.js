@@ -120,7 +120,7 @@ export default function UploadArtwork({
                     </div>
 
                     <div
-                        className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-3 mx-auto overflow-y-scroll gap-4 w-full h-4/5"
+                        className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-3 mx-auto overflow-y-scroll gap-4 w-full h-4/5"
                     >
                         {filteredCurrentUserArtwork?.map((artwork, i) =>
                             artwork.project_imageUrls.map((imageUrl, j) => (

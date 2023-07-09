@@ -90,7 +90,13 @@ export default function TourUpdate() {
                 setTourData={setTourData}
                 tourData={tourData}
                 slug={slug} />
-            <EditEnvironment tourData={tourData} setOpenModalEnv={setOpenModalEnv} />
+            <EditEnvironment
+                tourData={tourData}
+                setOpenModalEnv={setOpenModalEnv}
+                setTourData={setTourData}
+                roomNo={roomNo}
+                setRoomNo={setRoomNo}
+            />
             <UserInfo userData={userData} />
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
                 {panoramaImages && (

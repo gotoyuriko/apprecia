@@ -34,6 +34,7 @@ export default function VirtualTour() {
     const [roomNo, setRoomNo] = useState(1); // Switch Button
     const [open, setOpen] = useState(false); //set modal
     const [viewsNo, setViewsNo] = useState(0); //set views
+    const [zoomIn, setZoomIn] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -90,7 +91,11 @@ export default function VirtualTour() {
 
         // Click Sphere to travel to other room
         const handleClickTravel = (data) => {
-            setRoomNo(data);
+            setZoomIn(true);
+            setTimeout(() => {
+                setRoomNo(data);
+                setZoomIn(false);
+            }, 1500);
         };
     }, []);
 
@@ -103,7 +108,7 @@ export default function VirtualTour() {
         AFRAME.registerComponent("artwork-modal", {
             schema: {
                 src: { type: "asset" },
-                artdata: { type: "array" },
+                artworksData: { type: "array" },
             },
             init: function () {
                 this.el.addEventListener("click", () => handleClickModal(this.data));
@@ -203,7 +208,7 @@ export default function VirtualTour() {
                         class="clickable"
                         link-control={roomNo + 1}
                     />
-                ) : roomNo === tourData?.tour_room.length ? (
+                ) : roomNo !== 1 && roomNo === tourData?.tour_room.length ? (
                     <Entity
                         geometry={{
                             primitive: "sphere",
@@ -240,6 +245,11 @@ export default function VirtualTour() {
                         distance: 60.02,
                     }}
                 />
+                <Entity
+                    primitive='a-camera'
+                    animation={zoomIn ? "property: camera.zoom; from: 1; to: 1.2; easing: easeInQuad; dur: 1300" : "property: camera.zoom; from: 1.2 ; to: 1 ; dur: 1000"}
+                    look-controls="pointerLockEnabled: false"
+                    position="0 1.6 0" />
             </Scene>
         </>
     );

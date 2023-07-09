@@ -88,7 +88,13 @@ const NewRoom = () => {
                 setTourData={setTourData}
                 tourData={tourData}
             />
-            <EditEnvironment tourData={tourData} setOpenModalEnv={setOpenModalEnv} />
+            <EditEnvironment
+                tourData={tourData}
+                setTourData={setTourData}
+                roomNo={roomNo}
+                setRoomNo={setRoomNo}
+                setOpenModalEnv={setOpenModalEnv}
+            />
             <CreateRoomTitleText />
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
                 <Panel

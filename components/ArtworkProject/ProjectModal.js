@@ -146,8 +146,8 @@ export default function ProjectModal({
                                         </DialogTitle>
                                         <DialogContent>
                                             <DialogContentText id="alert-dialog-description">
-                                                Are you sure you want to delete this project? This
-                                                action cannot be undone.
+                                                <span className="font-bold text-lg">Are you sure you want to delete this project?</span> <br /><br />
+                                                <span className="text-gray-400 text-[14px]">This will also delete this content within the Virtual Art Gallery.</span>
                                             </DialogContentText>
                                         </DialogContent>
                                         <DialogActions>

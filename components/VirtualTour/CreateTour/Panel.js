@@ -36,7 +36,7 @@ export default function Panel({ panoramaImages, setSelectPanel, setOpenModalArt 
     return (
         <>
             {
-                panoramaImages.map((item, index) =>
+                panoramaImages?.map((item, index) =>
                     item.src === "" ? (
                         <Entity
                             key={index}

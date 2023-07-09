@@ -17,7 +17,7 @@ export default function RoomPublishButton({ status, uid, setTourData, tourData, 
         setpublishOpen(false);
     };
     const handlePublsihProject = () => {
-        const { error } = AddArtGallery(tourData);
+        const { error } = status ? AddArtGallery(tourData) : UpdateArtGallery(tourData, slug);
 
         if (error) {
             console.error("Error uploading images or adding document: ", error);

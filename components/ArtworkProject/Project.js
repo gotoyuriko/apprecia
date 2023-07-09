@@ -159,7 +159,7 @@ const Project = ({ currentUser, status, slug }) => {
                 setTimeout(() => {
                     setSuccessMsg("");
                     router.push(`/profiles/${currentUser?.uid}`);
-                }, 300);
+                }, 100);
             }
         };
     };

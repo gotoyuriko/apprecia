@@ -10,11 +10,18 @@ export default function SelectRoomModal({
     setOpenModalEnv,
     setTourData,
     tourData,
-    roomNo,
-    setAudioPlay
+    roomNo
 }) {
-    const [selectedImage, setSelectedImage] = useState("");
-    const [selectedAudio, setSelectedAudio] = useState("");
+    const [selectedImage, setSelectedImage] = useState(() => {
+        const roomBackground = tourData?.tour_room[roomNo - 1]?.room_background;
+        const matchingImage = roomImages.find(image => image.src === roomBackground);
+        return matchingImage ? matchingImage.id : 1;
+    });
+    const [selectedAudio, setSelectedAudio] = useState(() => {
+        const bgm = tourData?.tour_audio;
+        const matchAudio = audioList.find(audio => audio.src === bgm);
+        return matchAudio ? matchAudio.id : 1;
+    });
     const audioRef = useRef(null);
 
     const handleOnCreateRoom = () => {
@@ -30,36 +37,32 @@ export default function SelectRoomModal({
 
         if (audioRef.current) {
             audioRef.current.pause();
-            setAudioPlay(false);
         }
 
         setOpenModalEnv(false);
     };
 
-    const isButtonDisabled = selectedImage === "" || !tourData.tour_name || selectedAudio === '';
+    const isButtonDisabled = selectedImage === "" || !tourData?.tour_name || selectedAudio === '';
 
     const handleAudioSelection = (audioId) => {
         if (audioId !== 1) {
             if (audioId === selectedAudio) {
                 // Stop playback if the same audio is selected again
                 audioRef.current.pause();
-                setAudioPlay(false);
                 setSelectedAudio("");
             } else {
                 // Play selected audio and stop the previous audio if any
                 if (audioRef.current) {
                     audioRef.current.pause();
-                    setAudioPlay(false);
                 }
                 setSelectedAudio(audioId);
                 audioRef.current = new Audio(audioList.find((audio) => audio.id === audioId).src);
+                audioRef.current.volume = 0.3;
                 audioRef.current.play();
-                setAudioPlay(true);
             }
         } else {
             if (audioRef.current) {
                 audioRef.current.pause();
-                setAudioPlay(false);
             }
             setSelectedAudio(audioId);
         }

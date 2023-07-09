@@ -97,7 +97,7 @@ export default function TourUpdate() {
                 roomNo={roomNo}
                 setRoomNo={setRoomNo}
             />
-            <UserInfo userData={userData} />
+            <UserInfo tourUser={userData} />
             <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
                 {panoramaImages && (
                     <Panel

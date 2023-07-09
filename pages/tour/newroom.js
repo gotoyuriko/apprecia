@@ -51,8 +51,6 @@ const NewRoom = () => {
     const [selectPanel, setSelectPanel] = useState([]);
     // Switch Button
     const [roomNo, setRoomNo] = useState(1);
-    // Audio
-    const [audioPlay, setAudioPlay] = useState(false);
 
     // Modal
     const [openModalEnv, setOpenModalEnv] = useState(true);
@@ -77,7 +75,6 @@ const NewRoom = () => {
                 setTourData={setTourData}
                 tourData={tourData}
                 roomNo={roomNo}
-                setAudioPlay={setAudioPlay}
             />
             <AddRoomButton
                 tourData={tourData}

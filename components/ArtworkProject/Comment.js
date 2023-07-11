@@ -60,6 +60,10 @@ export default function Comment({
                 return updatedLiveComments;
             });
         }
+
+        if (status === 'old') {
+            setHide(true);
+        }
     };
 
     return (

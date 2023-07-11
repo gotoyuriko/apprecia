@@ -47,7 +47,6 @@ export default function ArtworkModal({
         controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
         if (showDesc?.project_creator && showDesc?.project_createdAt) {
             await UpdateLike(showDesc.project_creator, showDesc.project_createdAt, !isLiked, currentUser.uid);
-            console.log('asdf')
         }
         setLikesNo((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
     };

@@ -24,9 +24,9 @@ export default function ArtworkModal({
 }) {
     const [isLiked, setIsLiked] = useState(false);
     const [likesNo, setLikesNo] = useState(0);
-
     // Check if artwork was liked by you
     useEffect(() => {
+
         if (currentUser) {
             setIsLiked(showDesc?.project_likedBy?.includes(currentUser.uid));
         }
@@ -147,7 +147,7 @@ export default function ArtworkModal({
                         {tourUser?.user_name && (
                             <Link
                                 passHref
-                                href={`/profiles/${tourUser?.user_id}`}
+                                href={`/profiles/${tourUserId}`}
                                 className="text-sm font-normal text-gray-400"
                             >
                                 {tourUser.user_name}

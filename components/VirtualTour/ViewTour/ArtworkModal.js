@@ -19,7 +19,8 @@ export default function ArtworkModal({
     commentData,
     usersData,
     setCommentData,
-    commentCurrentUserData
+    commentCurrentUserData,
+    tourUserId
 }) {
     const [isLiked, setIsLiked] = useState(false);
     const [likesNo, setLikesNo] = useState(0);
@@ -128,7 +129,7 @@ export default function ArtworkModal({
             <div className="flex items-center justify-between mt-4 px-8">
                 <div className="flex items-center">
                     {tourUser?.user_photoURL ? (
-                        <Link passHref href={`/profiles/${tourUser?.user_id}`}>
+                        <Link passHref href={`/profiles/${tourUserId}`}>
                             <Image
                                 src={tourUser.user_photoURL}
                                 alt="Profile"

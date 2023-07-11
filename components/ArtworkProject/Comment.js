@@ -54,7 +54,6 @@ export default function Comment({
     const handleDelete = async () => {
         const { id } = await GetArtwork(artProjectItem.project_creator, artProjectItem.project_createdAt);
         await DeleteComment(id, commentItem);
-
         if (setLiveComments !== null) {
             setLiveComments((prevLiveComments) => {
                 const updatedLiveComments = prevLiveComments.filter((comment) => comment !== commentItem);

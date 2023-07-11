@@ -28,6 +28,7 @@ export default function VirtualTour() {
     // Tour Data and room Data
     const [tourData, setTourData] = useState(null); // Tour Data
     const [tourUser, setTourUser] = useState(null); // Tour User Data
+    const [tourUserId, setTourUserId] = useState(null); // Tour User's data
     const [artworksData, setArtworksData] = useState(null); // Art Data
     const [usersData, setUsersData] = useState(null);
     const [showDesc, setShowDesc] = useState(null); // Show Description
@@ -40,7 +41,8 @@ export default function VirtualTour() {
         const fetchData = async () => {
             const tourData = await GetDoc("virtualArtGalleries", slug);
             setTourData(tourData);
-            const { user } = await GetUser(tourData?.tour_user);
+            const { user, userid } = await GetUser(tourData?.tour_user);
+            setTourUserId(userid);
             setTourUser(user);
             const artwroksdata = await GetArtworks();
             setArtworksData(
@@ -161,6 +163,7 @@ export default function VirtualTour() {
                 usersData={usersData}
                 setCommentData={setCommentData}
                 commentCurrentUserData={commentCurrentUserData}
+                tourUserId={tourUserId}
             />
             <SwitchRoom tourData={tourData} roomNo={roomNo} setRoomNo={setRoomNo} />
             <TourTitle

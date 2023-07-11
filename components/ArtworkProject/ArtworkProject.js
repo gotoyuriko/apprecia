@@ -42,10 +42,12 @@ export default function ArtworkProject({ currentUser, artProjectItem, usersData 
     const controls = useAnimation();
     // Like Animation https://www.framer.com/motion/use-animate/
     const handleIsLike = async () => {
+        console.log('does it triggered?')
         setIsLiked((prevIsLiked) => !prevIsLiked);
         controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
         await UpdateLike(artProjectItem.project_creator, artProjectItem.project_createdAt, !isLiked, currentUser.uid);
         setLikesNo((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
+        console.log((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
     };
 
     // Comment Features

@@ -43,18 +43,12 @@ export default function ArtworkModal({
     const controls = useAnimation();
     // Give / Remove Likes
     const handleIsLike = async () => {
-        controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
-
-        if (showDesc?.user_id && showDesc?.project_createdAt) {
-            await UpdateLike(
-                showDesc.user_id,
-                showDesc.project_createdAt,
-                !isLiked,
-                currentUser.uid
-            );
-        }
-
         setIsLiked((prevIsLiked) => !prevIsLiked);
+        controls.start({ scale: [1, 1.2, 1], transition: { duration: 0.3 } });
+        if (showDesc?.project_creator && showDesc?.project_createdAt) {
+            await UpdateLike(showDesc.project_creator, showDesc.project_createdAt, !isLiked, currentUser.uid);
+            console.log('asdf')
+        }
         setLikesNo((prevLikesNo) => (isLiked ? prevLikesNo - 1 : prevLikesNo + 1));
     };
 

@@ -36,7 +36,6 @@ export default function Navbar({ currentUser }) {
                         // Sign In and Sign Up && Desktop Style : False
                         <SignInUpBtn device={false} />
                     }
-
                 </div>
             </nav >
 

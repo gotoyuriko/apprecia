@@ -120,12 +120,12 @@ export const faqList = [
 // 360 panorama Room Image List
 export const roomImages = [
     {
-        src: "/360panorama/room01.png",
+        src: "/360panorama/room1.png",
         alt: "Room 1",
         id: 1
     },
     {
-        src: "/360panorama/room02.jpg",
+        src: "/360panorama/room2.png",
         alt: "Room 2",
         id: 2
     },

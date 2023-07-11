@@ -18,7 +18,7 @@ export default function CommentSection({
     // Comment Form
     const commentFormData = {
         comment_content: "",
-        comment_user: commentCurrentUserData?.user_email,
+        comment_user: commentCurrentUserData?.user_email
     };
 
     const handleAddComment = async () => {
@@ -98,6 +98,7 @@ export default function CommentSection({
                                 currentUser={currentUser}
                                 artProjectItem={artProjectItem}
                                 updateComment={updateComment}
+                                setLiveComments={setLiveComments}
                             />
                         );
                     })}
@@ -111,6 +112,7 @@ export default function CommentSection({
                             currentUser={currentUser}
                             artProjectItem={artProjectItem} // Art Project 
                             updateComment={updateComment}
+                            setLiveComments={setLiveComments}
                         />
                     );
                 })}

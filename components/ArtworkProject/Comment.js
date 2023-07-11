@@ -2,6 +2,7 @@ import GetArtwork from "@/firebase/artworks/GetArtwork";
 import DeleteComment from "@/firebase/comments/DeleteComment";
 import UpdateComment from "@/firebase/comments/UpdateComment";
 import Image from "next/image";
+// import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { IconContext } from "react-icons";
 import { BiPencil, BiTrash, BiUserCircle } from "react-icons/bi";
@@ -12,10 +13,12 @@ export default function Comment({
     status,
     currentUser,
     artProjectItem, // Art Project 
+    setLiveComments
 }) {
     const [isEditing, setIsEditing] = useState(false);
     const [updatedComment, setUpdatedComment] = useState(commentItem?.comment_content);
     const [displayComment, setDisplayComment] = useState('');
+    // const router = useRouter();
     useEffect(() => {
         setDisplayComment(commentItem?.comment_content);
     }, [commentItem?.comment_content])
@@ -45,14 +48,19 @@ export default function Comment({
         const { newUpdatedComment } = await UpdateComment(id, commentItem, updatedComment);
         setUpdatedComment(newUpdatedComment);
         setDisplayComment(newUpdatedComment);
-        // updateComment(commentItem.comment_user, commentItem.comment_createdAt, newUpdatedComment);
         setIsEditing(false);
     };
 
     const handleDelete = async () => {
         const { id } = await GetArtwork(artProjectItem.project_creator, artProjectItem.project_createdAt);
         await DeleteComment(id, commentItem);
-        setHide(true);
+
+        if (setLiveComments !== null) {
+            setLiveComments((prevLiveComments) => {
+                const updatedLiveComments = prevLiveComments.filter((comment) => comment !== commentItem);
+                return updatedLiveComments;
+            });
+        }
     };
 
     return (

@@ -25,7 +25,7 @@ export default function ProfileMenu({ profileList, currentUser }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const { user } = await GetUser(currentUser.email);
+            const { user } = await GetUser(currentUser?.email);
             setUserData(user);
         };
         fetchData();

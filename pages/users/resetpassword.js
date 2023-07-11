@@ -33,9 +33,9 @@ export default function ResetPassword() {
         <div className="flex flex-col h-screen bg-white">
             <Navbar />
             <div className="flex flex-grow">
-                <div className="hidden lg:inline-block lg:relative lg:basis-2/4 lg:bg-[#d7dde6]">
+                <div className="hidden lg:inline-block lg:relative lg:basis-2/4 lg:bg-[#C6E4FF]">
                     <Image
-                        src="/signin.png"
+                        src="/forgotpassword.png"
                         alt="Sign In Illustration"
                         className="object-contain"
                         fill

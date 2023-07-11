@@ -32,7 +32,7 @@ const NewRoom = () => {
                 room_artwork: [...panoramaArtworkImages],
             },
         ],
-        tour_user: currentUser.email,
+        tour_user: currentUser?.email,
         tour_audio: ''
     });
 

@@ -36,6 +36,7 @@ export const skillOptions = [
     { value: 'Illustrator', label: 'Illustrator', color: '#ff9a00' },
     { value: 'Premiere Pro', label: 'Premiere Pro', color: '#ea77c0' },
     { value: 'Blender', label: 'Blender', color: '#f5792a' },
+    { value: 'Adobe Lightroom', label: 'Adobe Lightroom', color: '#b4d6e0' },
     { value: 'Animate CC', label: 'Animate CC', color: '#ff0000' },
     { value: 'After Effect', label: 'After Effect', color: '#b536ff' },
     { value: 'Adobe XD', label: 'Adobe XD', color: '#ff61f6' },

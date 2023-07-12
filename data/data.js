@@ -130,12 +130,12 @@ export const roomImages = [
         id: 2
     },
     {
-        src: "/360panorama/room03.jpg",
+        src: "/360panorama/room3.png",
         alt: "Room 3",
         id: 3
     },
     {
-        src: "/360panorama/room04.jpg",
+        src: "/360panorama/room4.png",
         alt: "Room 4",
         id: 4
     }

@@ -18,7 +18,7 @@ const Project = ({ currentUser, status, slug }) => {
         project_link: "",
         project_creator: currentUser?.email,
         project_createdAt: "",
-        project_imageUrls: [],
+        project_imageUrls: []
     });
 
     const [images, setImages] = useState([]);
@@ -92,13 +92,19 @@ const Project = ({ currentUser, status, slug }) => {
                     "image/jpeg",
                     "image/jpg",
                     "image/png",
-                    "image/gif",
+                    "image/gif"
                 ];
                 const isValidType = acceptedTypes.includes(file.type);
 
                 // Validate file size
                 const maxSize = 10 * 1024 * 1024; // 10MB
                 const isValidSize = file.size <= maxSize;
+
+                if (!isValidType) {
+                    setErrImgMsg("Invalid file type.");
+                } else if (!isValidSize) {
+                    setErrImgMsg("File size must be less than 10MB.");
+                }
 
                 return isValidType && isValidSize;
             });
@@ -110,7 +116,7 @@ const Project = ({ currentUser, status, slug }) => {
                 setErrImgMsg("Invalid file(s) selected.");
             }
         } else {
-            setErrImgMsg("Invalid file(s) selected.");
+            console.error("Files are not array");
         }
     };
 

@@ -52,7 +52,7 @@ export default function ProjectModal({
             try {
                 await DeleteArtwork(artProjectItem.project_imageUrls, id, artProjectItem.project_creator);
                 setOpen(false);
-                // router.reload();
+                router.reload();
             } catch (error) {
                 console.error("Error deleting artwork:", error);
             }

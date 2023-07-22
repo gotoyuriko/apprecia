@@ -153,8 +153,8 @@ export default function ArtworkSection({ artworkData, currentUserData, usersData
 
     const artworkCotent = (filteredArtworks) => {
         return (
-            <div className="min-h-[70vh] flex justify-center mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+            <div className="min-h-[70vh] flex justify-center px-4 sm:px-6 lg:px-8 py-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 w-full">
                     {filteredArtworks?.map((filteredArtwork, index) => (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}

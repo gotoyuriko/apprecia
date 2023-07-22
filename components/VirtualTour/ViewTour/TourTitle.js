@@ -23,8 +23,8 @@ export default function TourTitle({ tourData, roomNo, muted, setMuted, audioRef,
 
     return (
         <div className="absolute top-10 right-5 z-10 flex flex-col items-end">
-            <h1 className="text-2xl font-bold text-white">
-                <span>{tourData?.tour_name}</span> - Room <span>{roomNo}</span>
+            <h1 className="md:text-2xl w-1/2 md:w-full text-justify font-bold text-white">
+                <span>{tourData?.tour_name}</span> <br /> - Room <span>{roomNo}</span>
             </h1>
             {tourData?.tour_audio !== "" && (
                 muted ? (

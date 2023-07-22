@@ -4,7 +4,7 @@ import { BiUserCircle } from "react-icons/bi";
 
 export default function UserInfo({ tourUser }) {
     return (
-        <div className="absolute z-10 top-5 left-5 flex flex-row items-center">
+        <div className="absolute z-10 top-5 left-5 flex flex-col md:flex-row md:items-center">
             <div className="flex items-center justify-center">
                 <IconContext.Provider
                     value={{
@@ -29,7 +29,7 @@ export default function UserInfo({ tourUser }) {
                     )}
                 </IconContext.Provider>
             </div>
-            <h1 className="text-2xl font-bold text-white ml-3">{tourUser?.user_name}</h1>
+            <h1 className="text-sm md:text-2xl font-bold text-white ml-3">{tourUser?.user_name}</h1>
         </div>
     )
 }

@@ -23,7 +23,7 @@ export default function AddRoomButton({ tourData, setTourData, roomNo, setRoomNo
     };
 
     return (
-        <div className="absolute bottom-5 left-5 z-10 flex flex-row items-center">
+        <div className="absolute bottom-5 left-5 z-10 flex flex-col lg:flex-row items-start lg:items-center">
             <ul className="flex">
                 {tourData?.tour_room.map((room, index) => (
                     <li key={index}
@@ -37,7 +37,7 @@ export default function AddRoomButton({ tourData, setTourData, roomNo, setRoomNo
                 ))}
             </ul>
             <button
-                className={`flex-none px-3 py-2 text-white rounded shadow mr-4 ${(tourData?.tour_room.length >= 4) ? 'bg-gray-300' : 'bg-black hover:bg-gray-800 focus:shadow-outline'}`}
+                className={`flex-none px-3 py-2 text-white rounded shadow mr-4 mt-2 ${(tourData?.tour_room.length >= 4) ? 'bg-gray-300' : 'bg-black hover:bg-gray-800 focus:shadow-outline'}`}
                 onClick={handleAddRoom}
                 disabled={tourData?.tour_room.length >= 4}
             >

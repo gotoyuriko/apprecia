@@ -23,13 +23,13 @@ export default function EditEnvironment({
 
     return (
         <>
-            <div className='absolute top-5 right-5 z-10 flex flex-row items-center'>
-                <h1 className="flex-none font-bold text-white text-xl mr-3">{tourData?.tour_name}</h1>
-                <button className="flex-none bg-black px-3 py-2 text-white rounded shadow focus:shadow-outline hover:bg-gray-800"
+            <div className='absolute top-5 right-5 z-10 flex flex-col items-end'>
+                <h1 className="md:text-2xl max-w-[50%] md:max-w-[100%] break-words font-bold text-white">{tourData?.tour_name}</h1>
+                <button className="bg-black px-3 py-2 mb-2 text-white rounded shadow focus:shadow-outline hover:bg-gray-800"
                     onClick={() => setOpenModalEnv(true)}>
                     Edit Environment
                 </button>
-                <button className={`flex-none px-3 py-2 ml-3 text-white rounded shadow 
+                <button className={`px-3 py-2 ml-3 text-white rounded shadow 
                     ${tourData?.tour_room.length !== 1 ? 'bg-red-500 focus:shadow-outline hover:bg-red-600' : 'bg-gray-300 focus:shadow-none'}`}
                     onClick={() => deleteRoomHandle(roomNo)}
                     disabled={tourData?.tour_room.length === 1}>

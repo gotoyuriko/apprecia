@@ -10,14 +10,17 @@ export default function ProjectCard({
     creatorDocId, creatorData, currentUser,
     isLiked, controls, handleIsLike,
     likesNo, viewsNo }) {
+
+    const replacedTitle = title.trim().length > 20 ? title.trim().substring(0, 20).concat('', '...') : title.trim();
+
     return (
-        < Card sx={{ maxWidth: 380 }}>
+        <Card sx={{ maxWidth: 380 }} className="mx-auto h-full" >
             <CardActionArea onClick={() => handleIsModal()}>
                 <CardMedia component="img" sx={{ height: "200px", width: "100%", objectFit: "cover" }} image={imageUrls[0]} />
             </CardActionArea>
             <CardActions className="flex justify-between items-center">
                 <div className="flex flex-col">
-                    <p className="text-xl font-bold">{title}</p>
+                    <p className="text-md md:text-lg  font-bold">{replacedTitle}</p>
                     <Link passHref href={`/profiles/${creatorDocId}`} className="text-sm text-gray-400">
                         {creatorData?.user_name ? `By ${creatorData.user_name}` : ''}
                     </Link>

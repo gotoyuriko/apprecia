@@ -84,8 +84,8 @@ export default function SelectRoomModal({
                     transition={{ ease: "easeOut", duration: 0.3 }}
                     className="bg-white w-full lg:w-5/6 h-full lg:h-5/6 rounded-lg p-6 overflow-y-scroll md:overflow-y-hidden"
                 >
-                    <div className="flex justify-between items-center">
-                        <div className="flex-none flex flex-row items-center">
+                    <div className="flex flex-col justify-start md:flex-row md:justify-between md:items-center">
+                        <div className="flex-none flex flex-col items-start md:flex-row md:items-center">
                             <label
                                 htmlFor="tour"
                                 className="flex-none block text-base font-bold leading-6 text-gray-900 mr-1 md:mr-5"
@@ -101,8 +101,9 @@ export default function SelectRoomModal({
                                 type="text"
                                 autoComplete="tour"
                                 value={tourData?.tour_name}
-                                placeholder="Name Your Art Exhibition"
+                                placeholder="Name Your Art Exhibition (Max 20 characters)"
                                 required
+                                maxLength="20"
                                 className="flex-none block w-full rounded-md border-0 py-1.5 text-gray-900 placeholder:text-gray-300
                                         shadow-sm ring-1 ring-offset-transparent ring-inset ring-gray-300 
                                         indent-2.5 placeholder:text-gray-400 sm:text-sm sm:leading-6"

@@ -64,7 +64,7 @@ export default function AuthForm({ formStatus }) {
                     <input
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         defaultValue={formData.email}
-                        placeholder='exmaple@mail.com'
+                        placeholder='example@mail.com'
                         id="email"
                         name="email"
                         type="email"

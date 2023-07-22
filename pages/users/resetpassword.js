@@ -48,7 +48,7 @@ export default function ResetPassword() {
                     <input
                         onChange={(e) => setEmail(e.target.value)}
                         defaultValue={email}
-                        placeholder='exmaple@mail.com'
+                        placeholder='example@mail.com'
                         id="email"
                         name="email"
                         type="email"

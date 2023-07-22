@@ -16,6 +16,7 @@
     "@react-spring/parallax": "^9.7.3",
     "@splinetool/react-spline": "^2.2.6",
     "@szhsin/react-accordion": "^1.2.3",
+    "@types/parse-json": "^4.0.0",
     "aframe-react": "^4.4.0",
     "autoprefixer": "^10.4.14",
     "cypress": "^12.17.2",
@@ -30,6 +31,7 @@
     "react-dropzone": "^14.2.3",
     "react-icons": "^4.10.1",
     "react-select": "^5.7.4",
+    "react-spinners": "^0.13.8",
     "tailwindcss": "^3.3.3",
     "uuid": "^9.0.0"
   }

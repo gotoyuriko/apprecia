@@ -160,11 +160,13 @@ export default function ArtworkSection({ artworkData, currentUserData, usersData
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5 }}
+                            className='max-h-[300px]'
                             key={index}>
                             <ArtworkProject
                                 currentUser={currentUser}
                                 artProjectItem={filteredArtwork} // 1 art project
                                 usersData={usersData} // all users
+
                             />
                         </motion.div>
                     ))}

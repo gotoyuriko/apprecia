@@ -86,7 +86,7 @@ export const aboutFeatures = [
 export const faqList = [
     {
         "q": "What is Apprecia?",
-        "a": "Apprecia is a web application designed for artists to showcase their project work, including art, design, film, 3D models, and more. It also allows artists to create virtual art galleries where users can explore 360 VR panoramas to interact with and appreciate the artworks."
+        "a": "Apprecia is a web application designed for artists to showcase their project work. It also allows artists to create virtual art galleries where users can explore 360 VR panoramas to interact with and appreciate the artworks."
     }, {
         "q": "How can I create an account on Apprecia?",
         "a": "To create an account on Apprecia, simply visit our website and click on the 'Sign Up' button. You will be prompted to provide some basic information and choose a username and password. Once you complete the registration process, your account will be created."

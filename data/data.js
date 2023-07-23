@@ -68,7 +68,7 @@ export const aboutFeatures = [
     },
     {
         featureTitle: "Virtual Art Galleries",
-        featureDescription: "Create virtual galleries and curate exhibitions with 360 VR panorama technology.",
+        featureDescription: "Create virtual galleries and curate exhibitions with 360° VR panorama technology.",
         src: "/about/feature2.png",
         alt: "Virtual Art Galleries"
     },
@@ -113,7 +113,7 @@ export const faqList = [
         "a": "Apprecia offers basic features and functionality for free. However, there may be premium or advanced features in the future that require a paid subscription or one-time fee. Any such fees will be clearly communicated to users, and you can choose whether or not to opt for those additional features."
     }, {
         "q": "How can I contact the Apprecia support team?",
-        "a": "If you have any questions, feedback, or need assistance with Apprecia, you can reach out to our support team by visiting the 'Contact Us' page on our website. Fill out the provided form with your query, and our team will respond to you as soon as possible."
+        "a": "If you have any questions, feedback, or need assistance with Apprecia, you can reach out 'gotoyuriko95@gmail.com'. Our team will respond to you as soon as possible."
     }
 ]
 

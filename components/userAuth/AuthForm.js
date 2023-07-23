@@ -109,7 +109,7 @@ export default function AuthForm({ formStatus }) {
                     {status ? 'Create Account' : 'Sign in'}
                 </button>
                 <div>
-                    {errormessage && <p className='pt-5 text-red-600 text-center'>{errormessage}</p>}
+                    {errormessage && <p className='pt-3 text-red-600 text-center'>{errormessage}</p>}
                 </div>
             </div>
         </form>

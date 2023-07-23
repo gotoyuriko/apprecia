@@ -20,7 +20,7 @@ export default function SignUp() {
                         priority
                     />
                 </div>
-                <div className="p-8 md:px-0 md:py-12 mx-auto w-full max-w-sm h-full">
+                <div className="p-8 md:px-0 md:py-12 mx-auto w-full max-w-sm h-full overflow-hidden">
                     <h1 className="text-2xl font-bold">Sign up to Apprecia</h1>
 
                     <GoogleAuthBtn formStatus='signup' />

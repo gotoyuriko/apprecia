@@ -1,3 +1,4 @@
+import AppreciaView from "@/components/AppreciaView";
 import ArtworkProject from "@/components/ArtworkProject/ArtworkProject";
 import Footer from "@/components/Footer";
 import Loader from "@/components/Loader";
@@ -32,9 +33,7 @@ export default function Home() {
         loading ? (<Loader />) : (
           <>
             <Navbar currentUser={currentUser} />
-            <div className="h-96 bg-gray-200 flex items-center justify-center">
-              <h2 className="text-2xl font-bold">Apprecia - Art Gallery Platform</h2>
-            </div>
+            <AppreciaView />
             <SearchBar
               artworksData={artworksData}
               setFilteredData={setFilteredData}

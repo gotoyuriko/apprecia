@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.1",
     "@react-spring/parallax": "^9.7.3",
-    "@splinetool/react-spline": "^2.2.6",
+    "@splinetool/react-spline": "^4.1.0",
     "@szhsin/react-accordion": "^1.2.3",
     "@types/parse-json": "^4.0.0",
     "aframe-react": "^4.4.0",

@@ -1,52 +1,36 @@
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Text, Float, Stars } from '@react-three/drei';
-
-function FloatingCube({ position }) {
-  return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <mesh position={position}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial color="#8b5cf6" />
-      </mesh>
-    </Float>
-  );
-}
-
 export default function AppreciaView() {
   return (
-    <div className="h-96 w-full">
-      <Canvas camera={{ position: [0, 0, 8], fov: 60 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
-        
-        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />
-        
-        <Text
-          position={[0, 1, 0]}
-          fontSize={1.5}
-          color="#ffffff"
-          anchorX="center"
-          anchorY="middle"
-        >
-          Apprecia
-        </Text>
-        
-        <Text
-          position={[0, -0.5, 0]}
-          fontSize={0.5}
-          color="#a855f7"
-          anchorX="center"
-          anchorY="middle"
-        >
-          Virtual Art Gallery
-        </Text>
-        
-        <FloatingCube position={[-3, 0, 0]} />
-        <FloatingCube position={[3, 0, 0]} />
-        <FloatingCube position={[0, 2, -2]} />
-        
-        <OrbitControls enableZoom={false} enablePan={false} />
-      </Canvas>
+    <div className="h-96 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden flex items-center justify-center">
+      {/* Animated background particles */}
+      <div className="absolute inset-0">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full opacity-70 animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 3}s`
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Floating cubes */}
+      <div className="absolute left-1/4 top-1/3 w-12 h-12 bg-purple-500 opacity-80 animate-bounce" 
+           style={{ animationDelay: '0s', animationDuration: '3s' }} />
+      <div className="absolute right-1/4 top-1/2 w-8 h-8 bg-blue-400 opacity-70 animate-bounce" 
+           style={{ animationDelay: '1s', animationDuration: '4s' }} />
+      <div className="absolute left-1/3 bottom-1/3 w-10 h-10 bg-indigo-400 opacity-60 animate-bounce" 
+           style={{ animationDelay: '2s', animationDuration: '5s' }} />
+      
+      {/* Main content */}
+      <div className="text-center z-10 text-white">
+        <h1 className="text-5xl font-bold mb-4 animate-pulse">Apprecia</h1>
+        <p className="text-xl opacity-90">Virtual Art Gallery Platform</p>
+        <div className="mt-4 w-24 h-1 bg-gradient-to-r from-purple-400 to-blue-400 mx-auto rounded-full animate-pulse" />
+      </div>
     </div>
   );
 }

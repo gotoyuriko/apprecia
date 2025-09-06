@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { GetUsers } from '../users/GetUsers';
-import { GetUser as GetUserByEmail } from '../users/GetUser';
-import { AddUser as CreateUser } from '../users/AddUser';
-import { UpdateUser } from '../users/UpdateUser';
+import GetUsers from '../users/GetUsers';
+import GetUser from '../users/GetUser';
+import AddUser from '../users/AddUser';
+import UpdateUser from '../users/UpdateUser';
 
 const UserContext = createContext();
 
@@ -34,7 +34,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchUserByEmail = async (email) => {
     try {
-      const user = await GetUserByEmail(email);
+      const user = await GetUser(email);
       return user;
     } catch (err) {
       setError(err.message);
@@ -44,7 +44,7 @@ export const UserProvider = ({ children }) => {
 
   const createUser = async (userData) => {
     try {
-      const newUser = await CreateUser(userData);
+      const newUser = await AddUser(userData);
       setUsers(prev => [...prev, newUser]);
       return newUser;
     } catch (err) {

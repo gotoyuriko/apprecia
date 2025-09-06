@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { GetArtGalleries as GetTours } from '../tours/GetArtGalleries';
-import { AddArtGallery as CreateTour } from '../tours/AddArtGallery';
-import { UpdateArtGallery as UpdateTour } from '../tours/UpdateArtGallery';
-import { DeleteTour } from '../tours/DeleteTour';
+import GetArtGalleries from '../tours/GetArtGalleries';
+import AddArtGallery from '../tours/AddArtGallery';
+import UpdateArtGallery from '../tours/UpdateArtGallery';
+import DeleteTour from '../tours/DeleteTour';
 
 const TourContext = createContext();
 
@@ -23,7 +23,7 @@ export const TourProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await GetTours();
+      const data = await GetArtGalleries();
       setTours(data);
     } catch (err) {
       setError(err.message);
@@ -34,7 +34,7 @@ export const TourProvider = ({ children }) => {
 
   const createTour = async (tourData) => {
     try {
-      const newTour = await CreateTour(tourData);
+      const newTour = await AddArtGallery(tourData);
       setTours(prev => [...prev, newTour]);
       return newTour;
     } catch (err) {
@@ -45,7 +45,7 @@ export const TourProvider = ({ children }) => {
 
   const updateTour = async (tourId, updates) => {
     try {
-      const updatedTour = await UpdateTour(tourId, updates);
+      const updatedTour = await UpdateArtGallery(tourId, updates);
       setTours(prev => prev.map(tour => tour.id === tourId ? updatedTour : tour));
       return updatedTour;
     } catch (err) {

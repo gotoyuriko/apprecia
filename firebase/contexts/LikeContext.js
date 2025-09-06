@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { UpdateLike } from '../likes/UpdateLike';
+import UpdateLike from '../likes/UpdateLike';
 
 const LikeContext = createContext();
 

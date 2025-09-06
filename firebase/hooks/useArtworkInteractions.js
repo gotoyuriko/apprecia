@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useLike } from '../contexts/LikeContext';
 import { useComment } from '../contexts/CommentContext';
 import { useAuth } from '../contexts/AuthContext';
-import { UpdateView as UpdateViews } from '../projectviews/UpdateView';
+import UpdateView from '../projectviews/UpdateView';
 
 export const useArtworkInteractions = (artwork) => {
   const { toggleLike, hasUserLiked, getLikeCount } = useLike();
@@ -47,7 +47,7 @@ export const useArtworkInteractions = (artwork) => {
     if (viewUpdated || !currentUser) return;
 
     try {
-      await UpdateViews(artwork.creator, artwork.createdAt, currentUser);
+      await UpdateView(artwork.creator, artwork.createdAt, currentUser);
       setViewUpdated(true);
     } catch (error) {
       console.error('Error updating views:', error);

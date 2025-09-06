@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
-import { AddComment } from '../comments/AddComment';
-import { UpdateComment } from '../comments/UpdateComment';
-import { DeleteComment } from '../comments/DeleteComment';
-import { GetComments } from '../comments/GetComments';
+import AddComment from '../comments/AddComment';
+import UpdateComment from '../comments/UpdateComment';
+import DeleteComment from '../comments/DeleteComment';
+import GetComments from '../comments/GetComments';
 
 const CommentContext = createContext();
 

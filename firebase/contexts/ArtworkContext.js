@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import GetArtworks from '@/firebase/artworks/GetArtworks';
-import GetUsers from '@/firebase/users/GetUsers';
+import GetArtworks from '../artworks/GetArtworks';
+import GetUsers from '../users/GetUsers';
 
 // Create the context
 const ArtworkContext = createContext();

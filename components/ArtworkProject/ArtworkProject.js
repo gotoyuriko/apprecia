@@ -29,8 +29,10 @@ export default function ArtworkProject({ currentUser, artProjectItem, usersData 
     const handleIsModal = async () => {
         setOpen(!open);
         fetchDataComments(creatorData.user_email, artProjectItem.project_createdAt);
-        const hasViewed = await UpdateView(creatorData.user_email, artProjectItem.project_createdAt, currentUser);
-        hasViewed ? setViewsNo((prevViewsNo) => prevViewsNo + 1) : setViewsNo(viewsNo);
+        if (currentUser) {
+            const hasViewed = await UpdateView(creatorData.user_email, artProjectItem.project_createdAt, currentUser);
+            hasViewed ? setViewsNo((prevViewsNo) => prevViewsNo + 1) : setViewsNo(viewsNo);
+        }
     };
 
     // LIKE FEATURE
@@ -58,8 +60,10 @@ export default function ArtworkProject({ currentUser, artProjectItem, usersData 
             const commentData = await GetComments(creatorDocId, createdAt);
             setCommentData(commentData.reverse());
             // Fetch Current User
-            const { user } = await GetUser(currentUser.email);
-            setCommentCurrentUserData(user);
+            if (currentUser?.email) {
+                const { user } = await GetUser(currentUser.email);
+                setCommentCurrentUserData(user);
+            }
         };
         fetchData();
     };

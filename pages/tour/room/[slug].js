@@ -12,7 +12,7 @@ import GetUser from "@/firebase/users/GetUser";
 import GetUsers from "@/firebase/users/GetUsers";
 import { Entity, Scene } from "aframe-react";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function VirtualTour() {
     const { currentUser } = useAuth();
@@ -60,7 +60,7 @@ export default function VirtualTour() {
     const [commentData, setCommentData] = useState([]);
     const [commentCurrentUserData, setCommentCurrentUserData] = useState([]);
     // Fetch Data of art gallery comments
-    const fetchDataComments = (creatorDocId, createdAt) => {
+    const fetchDataComments = useCallback((creatorDocId, createdAt) => {
         const fetchData = async () => {
             // Fetch Comments
             const commentData = await GetComments(creatorDocId, createdAt);
@@ -70,7 +70,7 @@ export default function VirtualTour() {
             setCommentCurrentUserData(user);
         };
         fetchData();
-    };
+    }, [currentUser]);
 
     useEffect(() => {
         // Unregister the component if it has already been registered
@@ -142,7 +142,7 @@ export default function VirtualTour() {
                     : setViewsNo(selectArtwork[0].project_viewsCount);
             }
         };
-    }, [currentUser]);
+    }, [currentUser, fetchDataComments]);
 
 
     const [muted, setMuted] = useState(true);

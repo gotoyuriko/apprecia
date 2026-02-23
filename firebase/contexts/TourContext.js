@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import GetArtGalleries from '../tours/GetArtGalleries';
 import AddArtGallery from '../tours/AddArtGallery';
 import UpdateArtGallery from '../tours/UpdateArtGallery';
 import DeleteTour from '../tours/DeleteTour';
+import { useFetchData } from '../hooks/useFetchData';
 
 const TourContext = createContext();
 
@@ -15,28 +16,15 @@ export const useTour = () => {
 };
 
 export const TourProvider = ({ children }) => {
-  const [tours, setTours] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchTours = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await GetArtGalleries();
-      setTours(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // useFetchData handles the initial load, loading flag, and error state.
+  const fetchFn = useCallback(GetArtGalleries, []);
+  const { data: tours, loading, error: fetchError, refresh: fetchTours } = useFetchData(fetchFn, []);
 
   const createTour = async (tourData) => {
     try {
-      const newTour = await AddArtGallery(tourData);
-      setTours(prev => [...prev, newTour]);
-      return newTour;
+      return await AddArtGallery(tourData);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -45,9 +33,7 @@ export const TourProvider = ({ children }) => {
 
   const updateTour = async (tourId, updates) => {
     try {
-      const updatedTour = await UpdateArtGallery(tourId, updates);
-      setTours(prev => prev.map(tour => tour.id === tourId ? updatedTour : tour));
-      return updatedTour;
+      return await UpdateArtGallery(tourId, updates);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -57,7 +43,6 @@ export const TourProvider = ({ children }) => {
   const deleteTour = async (tourId) => {
     try {
       await DeleteTour(tourId);
-      setTours(prev => prev.filter(tour => tour.id !== tourId));
     } catch (err) {
       setError(err.message);
       throw err;
@@ -65,22 +50,18 @@ export const TourProvider = ({ children }) => {
   };
 
   const getToursByUser = (userId) => {
-    return tours.filter(tour => tour.createdBy === userId);
+    return (tours || []).filter(tour => tour.createdBy === userId);
   };
 
-  useEffect(() => {
-    fetchTours();
-  }, []);
-
   const value = {
-    tours,
+    tours: tours || [],
     loading,
-    error,
+    error: error || fetchError,
     fetchTours,
     createTour,
     updateTour,
     deleteTour,
-    getToursByUser
+    getToursByUser,
   };
 
   return (

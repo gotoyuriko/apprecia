@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
+import { filterArtworksByKeyword } from "../utils/searchUtils";
 
 export default function SearchBar({ artworksData, setFilteredData, usersData }) {
     const [searchInput, setSearchInput] = useState('');
@@ -9,41 +10,9 @@ export default function SearchBar({ artworksData, setFilteredData, usersData }) 
     }, [artworksData, setFilteredData])
 
     const handleChange = (e) => {
-        setSearchInput(e.target.value);
-        search(e.target.value);
-    };
-
-    const search = (searchKeyword) => {
-        if (searchKeyword === "") {
-            setFilteredData([...artworksData]);
-        } else {
-            const keywords = searchKeyword.toString().toLowerCase();
-
-            // If search keyword is provided
-            const searchedUsers = usersData
-                .filter((user) => user.user_name.toLowerCase().includes(keywords))
-                .map((user) => user.user_email);
-
-            // If search matches with artwork
-            const searchedArtworks = artworksData.filter((artwork) => {
-                return (
-                    Object.values(artwork).some(
-                        (artworkItem) =>
-                            artworkItem !== undefined &&
-                            artworkItem !== null &&
-                            artworkItem.toString().toLowerCase().includes(keywords)
-                    ) ||
-                    searchedUsers.includes(artwork.project_creator) ||
-                    artwork.project_skills
-                        ?.map((skill) => skill.value.toLowerCase())
-                        ?.some((skill) => skill.includes(keywords)) ||
-                    artwork.project_tags
-                        ?.map((tag) => tag.value.toLowerCase())
-                        ?.some((tag) => tag.includes(keywords))
-                );
-            });
-            setFilteredData(searchedArtworks);
-        }
+        const value = e.target.value;
+        setSearchInput(value);
+        setFilteredData(filterArtworksByKeyword(artworksData, usersData, value));
     };
 
 

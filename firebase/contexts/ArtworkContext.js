@@ -1,6 +1,11 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import GetArtworks from '../artworks/GetArtworks';
 import GetUsers from '../users/GetUsers';
+import {
+    filterArtworksByKeyword,
+    filterArtworksByCategory,
+    filterArtworksByCreator,
+} from '../../utils/searchUtils';
 
 // Create the context
 const ArtworkContext = createContext();
@@ -51,72 +56,17 @@ export const ArtworkProvider = ({ children }) => {
 
     // Search and filter functionality
     const searchArtworks = (searchKeyword) => {
-        if (!searchKeyword || searchKeyword.trim() === '') {
-            setFilteredData(artworksData);
-            return;
-        }
-
-        const keywords = searchKeyword.toString().toLowerCase();
-        
-        // Search through users to find matching creators
-        const searchedUsers = usersData
-            .filter((user) => user.user_name?.toLowerCase().includes(keywords))
-            .map((user) => user.user_email);
-
-        // Search through artworks
-        const searchedArtworks = artworksData.filter((artwork) => {
-            return (
-                // Search in artwork values
-                Object.values(artwork).some(
-                    (value) =>
-                        value !== undefined &&
-                        value !== null &&
-                        value.toString().toLowerCase().includes(keywords)
-                ) ||
-                // Search by creator
-                searchedUsers.includes(artwork.project_creator) ||
-                // Search in skills
-                artwork.project_skills
-                    ?.map((skill) => skill.value.toLowerCase())
-                    ?.some((skill) => skill.includes(keywords)) ||
-                // Search in tags
-                artwork.project_tags
-                    ?.map((tag) => tag.value.toLowerCase())
-                    ?.some((tag) => tag.includes(keywords))
-            );
-        });
-
-        setFilteredData(searchedArtworks);
+        setFilteredData(filterArtworksByKeyword(artworksData, usersData, searchKeyword));
     };
 
     // Filter by category/type
     const filterByCategory = (category) => {
-        if (!category || category === 'all') {
-            setFilteredData(artworksData);
-            return;
-        }
-
-        const filtered = artworksData.filter((artwork) => 
-            artwork.project_category === category ||
-            artwork.project_skills?.some(skill => skill.value === category) ||
-            artwork.project_tags?.some(tag => tag.value === category)
-        );
-        
-        setFilteredData(filtered);
+        setFilteredData(filterArtworksByCategory(artworksData, category));
     };
 
     // Filter by creator
     const filterByCreator = (creatorEmail) => {
-        if (!creatorEmail) {
-            setFilteredData(artworksData);
-            return;
-        }
-
-        const filtered = artworksData.filter((artwork) => 
-            artwork.project_creator === creatorEmail
-        );
-        
-        setFilteredData(filtered);
+        setFilteredData(filterArtworksByCreator(artworksData, creatorEmail));
     };
 
     // Get artwork by ID

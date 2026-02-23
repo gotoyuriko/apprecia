@@ -1,33 +1,21 @@
-import { arrayUnion, collection, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { db } from "../Config";
+import { arrayUnion, updateDoc } from "firebase/firestore";
+import { getArtworkDocRef } from "../../utils/firebaseUtils";
+import { getCurrentTimestamp } from "../../utils/dateUtils";
 
 export default async function AddComment(creator, createdAt, commentData) {
     try {
-        // Get the current date and time
-        const currentDate = new Date();
-        const timestamp = currentDate.toISOString();
-
-        // Create a query to find the art project's document
-        const q = query(
-            collection(db, "artProjects"),
-            where("project_creator", "==", creator),
-            where("project_createdAt", "==", createdAt)
-        );
-        const querySnapshot = await getDocs(q);
-
-        // Retrieve the artProject document reference
-        const artProjectRef = doc(db, "artProjects", querySnapshot.docs[0].id);
+        const { docRef } = await getArtworkDocRef(creator, createdAt);
 
         const updatedCommentData = {
             ...commentData,
-            comment_createdAt: timestamp,
+            comment_createdAt: getCurrentTimestamp(),
         };
 
-        await updateDoc(artProjectRef, {
+        await updateDoc(docRef, {
             project_comments: arrayUnion(updatedCommentData),
         });
 
-        return { updatedCommentData }
+        return { updatedCommentData };
     } catch (error) {
         console.error("error adding comments", error);
     }

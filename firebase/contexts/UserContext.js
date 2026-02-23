@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import GetUsers from '../users/GetUsers';
 import GetUser from '../users/GetUser';
 import AddUser from '../users/AddUser';
 import UpdateUser from '../users/UpdateUser';
+import { useFetchData } from '../hooks/useFetchData';
 
 const UserContext = createContext();
 
@@ -15,27 +16,15 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }) => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await GetUsers();
-      setUsers(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // useFetchData handles the initial load, loading flag, and error state.
+  const fetchFn = useCallback(GetUsers, []);
+  const { data: users, loading, error: fetchError, refresh: fetchUsers } = useFetchData(fetchFn, []);
 
   const fetchUserByEmail = async (email) => {
     try {
-      const user = await GetUser(email);
-      return user;
+      return await GetUser(email);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -44,9 +33,7 @@ export const UserProvider = ({ children }) => {
 
   const createUser = async (userData) => {
     try {
-      const newUser = await AddUser(userData);
-      setUsers(prev => [...prev, newUser]);
-      return newUser;
+      return await AddUser(userData);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -55,9 +42,7 @@ export const UserProvider = ({ children }) => {
 
   const updateUser = async (userId, updates) => {
     try {
-      const updatedUser = await UpdateUser(userId, updates);
-      setUsers(prev => prev.map(user => user.id === userId ? updatedUser : user));
-      return updatedUser;
+      return await UpdateUser(userId, updates);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -66,7 +51,7 @@ export const UserProvider = ({ children }) => {
 
   const searchUsers = (query) => {
     if (!query) return users;
-    return users.filter(user => 
+    return users.filter(user =>
       user.name?.toLowerCase().includes(query.toLowerCase()) ||
       user.email?.toLowerCase().includes(query.toLowerCase())
     );
@@ -76,20 +61,16 @@ export const UserProvider = ({ children }) => {
     return users.find(user => user.id === userId);
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   const value = {
-    users,
+    users: users || [],
     loading,
-    error,
+    error: error || fetchError,
     fetchUsers,
     fetchUserByEmail,
     createUser,
     updateUser,
     searchUsers,
-    getUserById
+    getUserById,
   };
 
   return (

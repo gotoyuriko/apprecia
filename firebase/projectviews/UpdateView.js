@@ -1,24 +1,18 @@
-import { arrayUnion, collection, doc, getDocs, increment, query, updateDoc, where } from "firebase/firestore";
-import { db } from "../Config";
+import { arrayUnion, increment, updateDoc } from "firebase/firestore";
+import { getArtworkDocRef } from "../../utils/firebaseUtils";
 
 export default async function UpdateView(userId, createdAt, currentUser) {
     try {
-        // Create a query to find the artProject's Document
-        const q = query(collection(db, 'artProjects'), where('project_creator', '==', userId), where('project_createdAt', '==', createdAt));
-        const querySnapshot = await getDocs(q);
-        const artProjectRef = doc(db, 'artProjects', querySnapshot.docs[0].id);
+        const { docRef, snapshot } = await getArtworkDocRef(userId, createdAt);
 
-        // Retrieve the artProject data
-        const artProjectData = querySnapshot.docs[0].data();
         // Initialize as an empty array if not present
-        const viewedBy = artProjectData.project_viewedBy || [];
+        const viewedBy = snapshot.docs[0].data().project_viewedBy || [];
 
-        // Check if the project has been viewed by the user
+        // Only increment if this user hasn't viewed before
         if (!viewedBy.includes(currentUser.uid)) {
-            // Update artProject's Document
-            await updateDoc(artProjectRef, {
+            await updateDoc(docRef, {
                 project_viewsCount: increment(1),
-                project_viewedBy: arrayUnion(currentUser.uid)
+                project_viewedBy: arrayUnion(currentUser.uid),
             });
             return true;
         }

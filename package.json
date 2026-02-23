@@ -18,13 +18,10 @@
     "@types/parse-json": "^4.0.0",
     "aframe-react": "^4.4.0",
     "autoprefixer": "^10.4.14",
-    "cypress": "^12.17.2",
-    "eslint": "^8.45.0",
-    "eslint-config-next": "^13.4.12",
     "firebase": "^10.1.0",
     "framer-motion": "^10.13.0",
     "gsap": "^3.13.0",
-    "next": "^13.4.12",
+    "next": "^15.5.12",
     "raw-loader": "^4.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -35,5 +32,10 @@
     "tailwindcss": "^3.3.3",
     "three": "^0.180.0",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "cypress": "^15.10.0",
+    "eslint": "^9.39.3",
+    "eslint-config-next": "^15.5.12"
   }
 }

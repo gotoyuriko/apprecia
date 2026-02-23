@@ -37,5 +37,10 @@
     "cypress": "^15.10.0",
     "eslint": "^9.39.3",
     "eslint-config-next": "^15.5.12"
+  },
+  "overrides": {
+    "minimatch": "10.2.2",
+    "glob": "13.0.6",
+    "undici": "6.23.0"
   }
 }

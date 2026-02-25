@@ -1,0 +1,83 @@
+import { Entity } from "aframe-react";
+import { useEffect } from "react";
+import type { RoomArtwork } from "@/types";
+import type { Dispatch, SetStateAction } from "react";
+
+interface PanelProps {
+    panoramaImages: RoomArtwork[];
+    setSelectPanel: Dispatch<SetStateAction<RoomArtwork | null>>;
+    setOpenModalArt: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function Panel({ panoramaImages, setSelectPanel, setOpenModalArt }: PanelProps) {
+
+    useEffect(() => {
+        // Unregister the component if it has already been registered
+        if (AFRAME.components["artwork-click"]) {
+            delete AFRAME.components["artwork-click"];
+        }
+
+        const handleClickEvent = (data: { src: string; id: number }) => {
+            event?.preventDefault();
+            setSelectPanel(
+                panoramaImages?.filter((artwork) => {
+                    return artwork.artworkId === data.id;
+                })[0] ?? null
+            );
+            setOpenModalArt(true);
+        };
+
+        AFRAME.registerComponent("artwork-click", {
+            schema: {
+                src: { type: "asset" },
+                id: { type: "number" },
+            },
+            init: function (this: any) {
+                this.el.addEventListener("click", () => handleClickEvent(this.data));
+            },
+            remove: function (this: any) {
+                this.el.removeEventListener("click", () => handleClickEvent(this.data));
+            },
+        });
+    }, [panoramaImages, setOpenModalArt, setSelectPanel]);
+
+    return (
+        <>
+            {
+                panoramaImages?.map((item, index) =>
+                    item.src === "" ? (
+                        <Entity
+                            key={index}
+                            geometry="primitive: plane;"
+                            material="src: /360panorama/default.jpg; color:#2f2f2f; side: double;"
+                            rotation={item.rotation}
+                            position={item.position}
+                            artwork-click={`src:${item.src}; id:${item.artworkId}`}
+                            class="clickable"
+                        >
+                            <Entity
+                                text={{
+                                    value: "Select your Artwork",
+                                    color: "#ffffff",
+                                    align: "center",
+                                }}
+                                position="0 0 0"
+                                scale="1.5 1.5 1.5"
+                            />
+                        </Entity>
+                    ) : (
+                        <Entity
+                            key={index}
+                            geometry="primitive: plane;"
+                            material={`src: ${item.src}; color: #cccccc; side: double;`}
+                            rotation={item.rotation}
+                            position={item.position}
+                            artwork-click={`src:${item.src}; id:${item.artworkId}`}
+                            class="clickable"
+                        />
+                    )
+                )
+            }
+        </>
+    );
+}

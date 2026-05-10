@@ -7,8 +7,7 @@ import {
     setDoc,
     where,
 } from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import { db, storage } from "../Config";
+import { db } from "../Config";
 
 export default async function DeleteArtwork(
     imageUrls: string[],
@@ -16,13 +15,6 @@ export default async function DeleteArtwork(
     creatorId: string
 ): Promise<void> {
     try {
-        for (const imageUrl of imageUrls) {
-            const storageFilename = decodeURIComponent(
-                imageUrl.substring(imageUrl.lastIndexOf("/") + 1)
-            ).split("?")[0];
-            await deleteObject(ref(storage, storageFilename));
-        }
-
         const virtualArtGalleriesCollection = collection(db, "virtualArtGalleries");
 
         for (const imageUrl of imageUrls) {

@@ -1,9 +1,8 @@
-import { db, storage } from "../Config";
+import { db } from "../Config";
 import { addDoc, collection } from "firebase/firestore";
-import { v4 as uuid } from "uuid";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getCurrentTimestamp } from "../../utils/dateUtils";
 import { COLLECTIONS } from "../../utils/firebaseUtils";
+import { uploadToCloudinary } from "../../utils/cloudinaryUtils";
 import type { ArtProject, SelectOption } from "@/types";
 
 export default async function AddArtwork(
@@ -16,9 +15,7 @@ export default async function AddArtwork(
         const imageUrls: string[] = [];
 
         for (const image of images) {
-            const imageRef = ref(storage, `projectArtwork/${image.name + uuid()}`);
-            await uploadBytes(imageRef, image);
-            const downloadURL = await getDownloadURL(imageRef);
+            const downloadURL = await uploadToCloudinary(image);
             imageUrls.push(downloadURL);
         }
 

@@ -1,7 +1,6 @@
 import { doc, updateDoc } from "firebase/firestore";
-import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { db, storage } from "../Config";
-import { v4 as uuid } from "uuid";
+import { db } from "../Config";
+import { uploadToCloudinary } from "../../utils/cloudinaryUtils";
 import type { ArtProject, SelectOption } from "@/types";
 
 export default async function UpdateArtworkFromId(
@@ -15,7 +14,6 @@ export default async function UpdateArtworkFromId(
 
         const timestamp = new Date().toISOString();
 
-        const existingImageUrls: string[] = artworkData.project_imageUrls || [];
         const imageUrls: string[] = [];
 
         if (images.length > 0) {
@@ -23,20 +21,10 @@ export default async function UpdateArtworkFromId(
                 if (typeof image === "string") {
                     imageUrls.push(image);
                 } else {
-                    const imageRef = ref(storage, `projectArtwork/${image.name + uuid()}`);
-                    await uploadBytes(imageRef, image);
-                    const downloadURL = await getDownloadURL(imageRef);
+                    const downloadURL = await uploadToCloudinary(image);
                     imageUrls.push(downloadURL);
                 }
             }
-        }
-
-        const deletedImageUrls = existingImageUrls.filter(
-            (existingImageUrl) => !imageUrls.includes(existingImageUrl)
-        );
-        for (const imageUrl of deletedImageUrls) {
-            const imageFilename = imageUrl.split("%2F").pop()!.split("?")[0];
-            await deleteObject(ref(storage, `projectArtwork/${imageFilename}`));
         }
 
         const updatedProjectData: ArtProject & { project_updatedAt: string } = {

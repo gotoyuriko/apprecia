@@ -1,9 +1,7 @@
 import { initializeApp, getApps, FirebaseApp } from "firebase/app";
 import { getAuth, Auth } from "firebase/auth";
 import { getFirestore, Firestore } from "firebase/firestore";
-import { getStorage, FirebaseStorage } from "firebase/storage";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -13,13 +11,10 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
 const firebase_app: FirebaseApp =
     getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// This object auth is used to monitor the authentication state of the user.
 const fiauth: Auth = getAuth(firebase_app);
 const db: Firestore = getFirestore(firebase_app);
-const storage: FirebaseStorage = getStorage(firebase_app);
 
-export { firebase_app, fiauth, db, storage };
+export { firebase_app, fiauth, db };

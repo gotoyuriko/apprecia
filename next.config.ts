@@ -17,18 +17,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.(png|jpe?g|gif)$/i,
-      use: [
-        {
-          loader: 'raw-loader',
-        },
-      ],
-    });
-
-    return config;
-  },
 };
 
 export default nextConfig;

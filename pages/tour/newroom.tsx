@@ -9,6 +9,7 @@ import { panoramaArtworkImages } from "@/data/data";
 import GetArtworks from "@/firebase/artworks/GetArtworks";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import type { ArtProject, ArtGallery, RoomArtwork } from "@/types";
+import useAframe from "@/components/VirtualTour/useAframe";
 import { Entity, Scene as AFrameScene } from "aframe-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ const Scene = AFrameScene as React.ComponentType<any>;
 const NewRoom = () => {
     const { currentUser } = useAuth();
     const router = useRouter();
+    const aframeReady = useAframe();
 
     useEffect(() => {
         if (!currentUser) {
@@ -95,25 +97,27 @@ const NewRoom = () => {
                 setOpenModalEnv={setOpenModalEnv}
             />
             <CreateRoomTitleText />
-            <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
-                <Panel
-                    panoramaImages={tourData.tour_room[roomNo - 1]?.room_artwork}
-                    setSelectPanel={setSelectPanel}
-                    setOpenModalArt={setOpenModalArt}
-                />
-                <Entity
-                    primitive="a-sky"
-                    src={tourData.tour_room[roomNo - 1]?.room_background}
-                />
-                <Entity
-                    light={{
-                        type: "hemisphere",
-                        color: "#ffffff",
-                        intensity: 1.18,
-                        distance: 60.02,
-                    }}
-                />
-            </Scene>
+            {aframeReady && (
+                <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+                    <Panel
+                        panoramaImages={tourData.tour_room[roomNo - 1]?.room_artwork}
+                        setSelectPanel={setSelectPanel}
+                        setOpenModalArt={setOpenModalArt}
+                    />
+                    <Entity
+                        primitive="a-sky"
+                        src={tourData.tour_room[roomNo - 1]?.room_background}
+                    />
+                    <Entity
+                        light={{
+                            type: "hemisphere",
+                            color: "#ffffff",
+                            intensity: 1.18,
+                            distance: 60.02,
+                        }}
+                    />
+                </Scene>
+            )}
         </>
     );
 };

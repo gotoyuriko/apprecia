@@ -1,4 +1,4 @@
-// Global AFRAME object (loaded via script tag in _document)
+// Global AFRAME object (loaded on demand by components/VirtualTour/useAframe)
 declare const AFRAME: {
     registerComponent: (name: string, definition: Record<string, unknown>) => void;
     components: Record<string, unknown>;

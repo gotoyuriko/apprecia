@@ -10,6 +10,7 @@ import GetArtworks from "@/firebase/artworks/GetArtworks";
 import { useAuth } from "@/firebase/auth/AuthContext";
 import GetUser from "@/firebase/users/GetUser";
 import type { ArtProject, AppUser, ArtGallery, RoomArtwork } from "@/types";
+import useAframe from "@/components/VirtualTour/useAframe";
 import { Entity, Scene as AFrameScene } from "aframe-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -20,6 +21,7 @@ const Scene = AFrameScene as React.ComponentType<any>;
 export default function TourUpdate() {
     const { currentUser } = useAuth();
     const router = useRouter();
+    const aframeReady = useAframe();
     const { slug } = router.query;
     const slugStr = typeof slug === 'string' ? slug : '';
 
@@ -100,19 +102,21 @@ export default function TourUpdate() {
                 setRoomNo={setRoomNo}
             />
             <UserInfo tourUser={userData} />
-            <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
-                {panoramaImages && (
-                    <Panel
-                        panoramaImages={panoramaImages}
-                        setSelectPanel={setSelectPanel}
-                        setOpenModalArt={setOpenModalArt}
+            {aframeReady && (
+                <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+                    {panoramaImages && (
+                        <Panel
+                            panoramaImages={panoramaImages}
+                            setSelectPanel={setSelectPanel}
+                            setOpenModalArt={setOpenModalArt}
+                        />
+                    )}
+                    <Entity primitive="a-sky" src={roomBackground} />
+                    <Entity
+                        light={{ type: "hemisphere", color: "#ffffff", intensity: 1.18, distance: 60.02 }}
                     />
-                )}
-                <Entity primitive="a-sky" src={roomBackground} />
-                <Entity
-                    light={{ type: "hemisphere", color: "#ffffff", intensity: 1.18, distance: 60.02 }}
-                />
-            </Scene>
+                </Scene>
+            )}
         </>
     );
 }

@@ -11,6 +11,7 @@ import UpdateView from "@/firebase/projectviews/UpdateView";
 import GetUser from "@/firebase/users/GetUser";
 import GetUsers from "@/firebase/users/GetUsers";
 import type { ArtProject, AppUser, ArtGallery, Comment } from "@/types";
+import useAframe from "@/components/VirtualTour/useAframe";
 import { Entity as AFrameEntity, Scene as AFrameScene } from "aframe-react";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -24,6 +25,7 @@ export default function VirtualTour() {
     const router = useRouter();
     const { slug } = router.query;
     const slugStr = typeof slug === 'string' ? slug : '';
+    const aframeReady = useAframe();
 
     useEffect(() => {
         if (!currentUser) {
@@ -79,6 +81,7 @@ export default function VirtualTour() {
     }, [currentUser]);
 
     useEffect(() => {
+        if (!aframeReady) return;
         if (AFRAME.components["link-control"]) {
             delete AFRAME.components["link-control"];
         }
@@ -98,9 +101,10 @@ export default function VirtualTour() {
                 setZoomIn(false);
             }, 1500);
         };
-    }, []);
+    }, [aframeReady]);
 
     useEffect(() => {
+        if (!aframeReady) return;
         if (AFRAME.components["artwork-modal"]) {
             delete AFRAME.components["artwork-modal"];
         }
@@ -139,7 +143,7 @@ export default function VirtualTour() {
                 }
             }
         };
-    }, [currentUser, fetchDataComments]);
+    }, [aframeReady, currentUser, fetchDataComments]);
 
     const [muted, setMuted] = useState(true);
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -173,74 +177,76 @@ export default function VirtualTour() {
             />
             <UserInfo tourUser={tourUser} />
             <HomeButton setMuted={setMuted} muted={muted} audioRef={audioRef} />
-            <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
-                {tourData?.tour_room[roomNo - 1]?.room_artwork
-                    ?.filter((item) => item.src)
-                    .map((artwork, index) => (
+            {aframeReady && (
+                <Scene cursor="rayOrigin: mouse" raycaster="objects: .clickable">
+                    {tourData?.tour_room[roomNo - 1]?.room_artwork
+                        ?.filter((item) => item.src)
+                        .map((artwork, index) => (
+                            <Entity
+                                key={index}
+                                geometry="primitive: plane;"
+                                material={{
+                                    src: artwork.src,
+                                    color: "#cfcfcf",
+                                    side: "double",
+                                }}
+                                rotation={artwork.rotation}
+                                position={artwork.position}
+                                class="clickable"
+                                artwork-modal={{
+                                    src: artwork.src,
+                                    artworksData: artworksData,
+                                }}
+                            />
+                        ))}
+
+                    {roomNo < (tourData?.tour_room.length ?? 0) ? (
                         <Entity
-                            key={index}
-                            geometry="primitive: plane;"
+                            geometry={{ primitive: "sphere", radius: 0.5 }}
                             material={{
-                                src: artwork.src,
+                                src: tourData?.tour_room[roomNo]?.room_background,
                                 color: "#cfcfcf",
                                 side: "double",
                             }}
-                            rotation={artwork.rotation}
-                            position={artwork.position}
+                            position="0 1.8 2"
+                            rotation="0 0 0"
+                            animation__rotation={{ property: "rotation", dur: 10000, to: "0 360 0", loop: true }}
                             class="clickable"
-                            artwork-modal={{
-                                src: artwork.src,
-                                artworksData: artworksData,
-                            }}
+                            link-control={roomNo + 1}
                         />
-                    ))}
+                    ) : roomNo !== 1 && roomNo === tourData?.tour_room.length ? (
+                        <Entity
+                            geometry={{ primitive: "sphere", radius: 0.5 }}
+                            material={{
+                                src: tourData?.tour_room[0]?.room_background,
+                                color: "#cfcfcf",
+                                side: "double",
+                            }}
+                            position="0 1.8 2"
+                            rotation="0 0 0"
+                            animation__rotation={{ property: "rotation", dur: 10000, to: "0 360 0", loop: true }}
+                            class="clickable"
+                            link-control={1}
+                        />
+                    ) : null}
 
-                {roomNo < (tourData?.tour_room.length ?? 0) ? (
                     <Entity
-                        geometry={{ primitive: "sphere", radius: 0.5 }}
-                        material={{
-                            src: tourData?.tour_room[roomNo]?.room_background,
-                            color: "#cfcfcf",
-                            side: "double",
-                        }}
-                        position="0 1.8 2"
-                        rotation="0 0 0"
-                        animation__rotation={{ property: "rotation", dur: 10000, to: "0 360 0", loop: true }}
-                        class="clickable"
-                        link-control={roomNo + 1}
+                        primitive="a-sky"
+                        src={tourData?.tour_room[roomNo - 1]?.room_background}
                     />
-                ) : roomNo !== 1 && roomNo === tourData?.tour_room.length ? (
                     <Entity
-                        geometry={{ primitive: "sphere", radius: 0.5 }}
-                        material={{
-                            src: tourData?.tour_room[0]?.room_background,
-                            color: "#cfcfcf",
-                            side: "double",
-                        }}
-                        position="0 1.8 2"
-                        rotation="0 0 0"
-                        animation__rotation={{ property: "rotation", dur: 10000, to: "0 360 0", loop: true }}
-                        class="clickable"
-                        link-control={1}
+                        light={{ type: "hemisphere", color: "#ffffff", intensity: 1.18, distance: 60.02 }}
                     />
-                ) : null}
-
-                <Entity
-                    primitive="a-sky"
-                    src={tourData?.tour_room[roomNo - 1]?.room_background}
-                />
-                <Entity
-                    light={{ type: "hemisphere", color: "#ffffff", intensity: 1.18, distance: 60.02 }}
-                />
-                <Entity
-                    primitive='a-camera'
-                    animation={zoomIn
-                        ? "property: camera.zoom; from: 1; to: 1.2; easing: easeInQuad; dur: 1300"
-                        : "property: camera.zoom; from: 1.2 ; to: 1 ; dur: 1000"}
-                    look-controls="pointerLockEnabled: false"
-                    position="0 1.6 0"
-                />
-            </Scene>
+                    <Entity
+                        primitive='a-camera'
+                        animation={zoomIn
+                            ? "property: camera.zoom; from: 1; to: 1.2; easing: easeInQuad; dur: 1300"
+                            : "property: camera.zoom; from: 1.2 ; to: 1 ; dur: 1000"}
+                        look-controls="pointerLockEnabled: false"
+                        position="0 1.6 0"
+                    />
+                </Scene>
+            )}
         </>
     );
 }

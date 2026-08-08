@@ -19,6 +19,7 @@ export default function ProfileSection({ currentUserData, setUserData, slug }: P
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [fullnameEmptyMsg, setFullnameEmptyMsg] = useState('');
+    const [saveErrorMsg, setSaveErrorMsg] = useState('');
     const [editMode, setEditMode] = useState(false);
     const [profileImage, setProfileImage] = useState<File | string | null>(null);
     const [formData, setFormData] = useState({
@@ -77,18 +78,21 @@ export default function ProfileSection({ currentUserData, setUserData, slug }: P
                 return;
             }
             setFullnameEmptyMsg('');
-            await UpdateUser(formData, profileImage, currentUser!.uid, currentUserData!);
-            const updatedUserData: AppUser = {
-                ...currentUserData!,
-                user_name: formData.fullname,
-                user_bio: formData.bio,
-                user_photoURL: formData.photoURL,
-            };
-            setUserData(updatedUserData);
+            setSaveErrorMsg('');
+            const updatedFields = await UpdateUser(
+                formData,
+                profileImage,
+                currentUser!.uid,
+                currentUserData!
+            );
+            // Use what was actually written, not formData — its photoURL is
+            // still the local blob: preview until the upload resolves.
+            setUserData({ ...currentUserData!, ...updatedFields });
 
             router.reload();
         } catch (error) {
             console.error("Error updating user profile:", error);
+            setSaveErrorMsg("Could not save your profile. Please try again.");
         }
     };
 
@@ -170,6 +174,7 @@ export default function ProfileSection({ currentUserData, setUserData, slug }: P
                     </button>
                 </div>
                 <p className="font-bold text-center py-2 text-red-600">{fullnameEmptyMsg}</p>
+                <p className="font-bold text-center py-2 text-red-600">{saveErrorMsg}</p>
             </div>
         );
     } else {

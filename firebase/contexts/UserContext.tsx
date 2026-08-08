@@ -3,6 +3,7 @@ import GetUsers from '../users/GetUsers';
 import GetUser from '../users/GetUser';
 import AddUser from '../users/AddUser';
 import UpdateUser from '../users/UpdateUser';
+import type { UpdateUserFormData, UpdatedUserFields } from '../users/UpdateUser';
 import { useFetchData } from '../hooks/useFetchData';
 import type { AppUser } from '@/types';
 
@@ -13,7 +14,12 @@ interface UserContextValue {
     fetchUsers: () => Promise<void>;
     fetchUserByEmail: (email: string) => Promise<any>;
     createUser: (userData: any) => Promise<any>;
-    updateUser: (userId: any, updates: any) => Promise<any>;
+    updateUser: (
+        formData: UpdateUserFormData,
+        profileImage: File | string | null,
+        uid: string,
+        userData: AppUser
+    ) => Promise<UpdatedUserFields>;
     searchUsers: (query: string) => AppUser[];
     getUserById: (userId: string) => AppUser | undefined;
 }
@@ -52,9 +58,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const updateUser = async (userId: any, updates: any): Promise<any> => {
+    const updateUser = async (
+        formData: UpdateUserFormData,
+        profileImage: File | string | null,
+        uid: string,
+        userData: AppUser
+    ): Promise<UpdatedUserFields> => {
         try {
-            return await (UpdateUser as any)(userId, updates);
+            return await UpdateUser(formData, profileImage, uid, userData);
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : String(err));
             throw err;

@@ -20,5 +20,15 @@ export async function uploadToCloudinary(file: File): Promise<string> {
     }
 
     const data = await response.json();
-    return data.secure_url as string;
+
+    // A 2xx can still come back without secure_url (eager/async transforms,
+    // moderation hooks). Casting it through would put undefined into the
+    // Firestore image arrays, which fails far from here with an opaque error.
+    if (typeof data?.secure_url !== "string") {
+        throw new Error(
+            `Cloudinary upload returned no secure_url: ${JSON.stringify(data)}`
+        );
+    }
+
+    return data.secure_url;
 }

@@ -34,6 +34,7 @@ const Project = ({ currentUser, status, slug }: ProjectProps) => {
     const [isURLValid, setIsURLValid] = useState(true);
     const [errImgMsg, setErrImgMsg] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
+    const [uploadErrorMsg, setUploadErrorMsg] = useState("");
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -169,7 +170,11 @@ const Project = ({ currentUser, status, slug }: ProjectProps) => {
             if (error) {
                 console.error("Error uploading images or adding document: ", error);
                 setSuccessMsg("");
+                setUploadErrorMsg(
+                    "Could not save your project. Please try again."
+                );
             } else {
+                setUploadErrorMsg("");
                 setSuccessMsg("Project Data Saved! Redirecting...");
                 setTimeout(() => {
                     setSuccessMsg("");
@@ -389,6 +394,7 @@ const Project = ({ currentUser, status, slug }: ProjectProps) => {
                             {status === 'new' ? 'Create Project' : 'Update Project'}
                         </button>
                         <p className="text-green-600">{successMsg}</p>
+                        <p className="text-red-600">{uploadErrorMsg}</p>
                     </div>
                 </div>
             </div>
